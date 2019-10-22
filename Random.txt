@@ -1,0 +1,6 @@
+Evolutionary Nerual Networks
+Dispersed Neural Networks
+	Run a large scale nerual network across multiple nodes
+Sparse Neural Networks
+	Create a sparse representation of a neural network from
+	an existing dense network.
