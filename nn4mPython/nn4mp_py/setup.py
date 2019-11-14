@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name='nn4mp',
+setup(name='nn4mp_py',
         version='0.1',
         description='Python package for generating microcontroller code from'
         'neural networks.',
