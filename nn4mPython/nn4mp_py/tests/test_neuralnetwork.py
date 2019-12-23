@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+from .context import nn4mp_py
+import unittest
 
-import nn4mp_py
 def nnTest():
     nn = nn4mp.NeuralNetwork()
 

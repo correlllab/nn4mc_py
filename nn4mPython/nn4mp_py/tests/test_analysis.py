@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-import sys
-import nn4mp_py
+from .context import nn4mp_py
+import unittest
 
 def analyze():
     AL = nn4mp.Analyzer()
