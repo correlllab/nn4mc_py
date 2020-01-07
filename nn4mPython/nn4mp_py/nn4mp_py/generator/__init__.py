@@ -1,1 +1,2 @@
-from nn4mp.generator.code_generator import *
+from .code_generator import *
+from .templates import *

@@ -1,13 +1,18 @@
-from .context import nn4mp_py
+from .context import nn4mp_py.analysis as nnAl
 import unittest
 
-def analyze():
-    AL = nn4mp.Analyzer()
+class TestAnalyzer(unittest.TestCase):
 
-    AL.load_model(sys.argv[0])
-    AL.cheapify()
-    AL.
+    def setUp():
+        pass
+    
+    def test_placeholder():
+        AL = nnAl.Analyzer()
+
+        AL.load_model(sys.argv[0])
+        AL.cheapify()
+        AL.
 
 
 if __name__ == '__main__':
-    analyze()
+    unittest.main()
