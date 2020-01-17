@@ -8,6 +8,7 @@ setup(name='nn4mp_py',
         author='Cooper Simpson, Sarah Manzano, Dana Hughes',
         #package_dir = {'':'nn4mp'},
         packages=find_packages(),
-        install_requires=['h5py'],
-        scripts=['tests/neuralnetwork_test']
+        install_requires=['h5py', 'numpy'],
+        #scripts=['tests/neuralnetwork_test'],
+        
         )

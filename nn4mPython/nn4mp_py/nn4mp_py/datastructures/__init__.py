@@ -1,3 +1,3 @@
-from nn4mp.datastructures.Layer import *
-from nn4mp.datastructures.NeuralNetwork import *
-from nn4mp.datastructures.Weights import *
+from .layer import *
+from .neuralNetwork import *
+from .weights import *
