@@ -1,6 +1,2 @@
-class Tensor:
-    pass
-
-class Weight:
-    def __init__(self, id):
-            self.identifier = id
+from ._tensor import *
+from ._weights import *

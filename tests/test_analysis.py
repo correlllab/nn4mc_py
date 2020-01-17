@@ -1,17 +1,17 @@
-from .context import nn4mp_py.analysis as nnAl
+from context import nnAl
 import unittest
 
 class TestAnalyzer(unittest.TestCase):
 
     def setUp():
         pass
-    
+
     def test_placeholder():
         AL = nnAl.Analyzer()
 
         AL.load_model(sys.argv[0])
         AL.cheapify()
-        AL.
+        AL.compare()
 
 
 if __name__ == '__main__':

@@ -1,25 +1,25 @@
-from .context import nn4mp_py.datastructures as nnDs
+from context import nnDs
 import unittest
 
-def TestNeuralNetwork(unittest.TestCase):
-    
-    def setUp():
+class TestNeuralNetwork(unittest.TestCase):
+
+    def setUp(self):
         pass
-        
-    def test_iterator_1():
+
+    def test_iterator_1(self):
         nn = nnDs.NeuralNetwork()
+        layers = []
 
-        l0 = nnDs.Input('Input Layer')
-        l1 = nnDs.Conv1D('Conv1D Layer')
-        l2 = nnDs.Dense('Dense Layer')
+        layers.append(nnDs.Input('Input Layer'))
+        layers.append(nnDs.Conv1D('Conv1D Layer'))
+        layers.append(nnDs.Dense('Dense Layer'))
 
-        nn.addLayer(l0)
-        nn.addLayer(l1)
-        nn.addLayer(l2)
-        nn.addLayer(l3)
+        nn.addLayer(layers[0])
+        nn.addLayer(layers[1])
+        nn.addLayer(layers[2])
 
-        nn.addEdge(l0,l1)
-        nn.addEdge(l1,l2)
+        nn.addEdge(layers[0],layers[1])
+        nn.addEdge(layers[1],layers[2])
 
         for node in nn.iterate():
             print(node.layer.identifier)

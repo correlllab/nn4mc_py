@@ -1,5 +1,5 @@
 from queue import Queue
-from nn4mp.datastructures.Layer import *
+from nn4mc_py.datastructures.layer import *
 
 class LayerNode: #Class to hold Layer and other data.
     def __init__(self, layer):
