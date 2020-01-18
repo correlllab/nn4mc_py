@@ -1,8 +1,13 @@
+from nn4mc_py.datastructures.weights import Weight
+
 class Layer:
-    def __init__(self, id):
-        self.identifier = id
-        self.w = []
-        self.b = []
+    def __init__(self, id, type='unspecified'):
+        self.identifier = id #Unique ID
+        self.layer_type = type #Layer type (i.e convolution1D)
+
+        #Think these will probably need to be np arrays
+        self.w = Weight()
+        self.b = Weight()
 
     def isInput(self):
         return False
@@ -21,6 +26,8 @@ class Conv1D(Layer):
     activation = ''
     use_bias = True
 
+    #dilation_rate = []
+
 class Conv2D(Layer):
     filters = 0
     kernel_size = []
@@ -28,6 +35,9 @@ class Conv2D(Layer):
     padding = ''
     activation = ''
     use_bias = True
+
+    #dilation_rate = []
+    #data_format = ''
 
 class Dense(Layer):
     units = 0
@@ -42,10 +52,14 @@ class MaxPooling1D(Layer):
     strides = []
     padding = ''
 
+    #data_format = ''
+
 class MaxPooling2D(Layer):
     pool_size = []
     strides = []
     padding = ''
+
+    #data_format = ''
 
 class SimpleRNN(Layer):
     units = 0
@@ -81,3 +95,6 @@ class Input(Layer):
 
     def isInput(self):
         return True
+
+class Activation(Layer):
+    activation = ''

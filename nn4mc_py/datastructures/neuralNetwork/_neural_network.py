@@ -1,5 +1,5 @@
 from queue import Queue
-from nn4mc_py.datastructures.layer import *
+from nn4mc_py.datastructures import layer
 
 class LayerNode: #Class to hold Layer and other data.
     def __init__(self, layer):
@@ -10,7 +10,7 @@ class LayerNode: #Class to hold Layer and other data.
         return hash(self.layer.identifier)
 
     def __eq__(self,other): #Can be equal to another LayerNode or just a Layer
-        if isinstance(other, Layer):
+        if isinstance(other, layer.Layer):
             return self.layer.identifier == other.identifier
 
         elif isinstance(other,LayerNode):
