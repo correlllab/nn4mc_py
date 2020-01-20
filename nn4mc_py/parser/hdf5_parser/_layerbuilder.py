@@ -22,7 +22,10 @@ class MaxPooling1DBuilder(LayerBuilder):
 class MaxPooling2DBuilder(LayerBuilder):
     pass
 
-class SimpleRNN(LayerBuilder):
+class DropoutBuilder(LayerBuilder):
+    pass
+
+class SimpleRNNBuilder(LayerBuilder):
     pass
 
 class GRUBuilder(LayerBuilder):

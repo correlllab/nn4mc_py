@@ -61,6 +61,9 @@ class MaxPooling2D(Layer):
 
     #data_format = ''
 
+class Dropout(Layer):
+    pass
+
 class SimpleRNN(Layer):
     units = 0
     activation = ''
