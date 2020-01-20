@@ -1,4 +1,4 @@
-from .context import nnPr
+from context import nnPr
 import unittest
 
 class TestHDF5Parser(unittest.TestCase):
@@ -6,7 +6,7 @@ class TestHDF5Parser(unittest.TestCase):
     def setUp():
         pass
 
-    def test_placeholder():
+    def test_basic_1():
         pass
 
 

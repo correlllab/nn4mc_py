@@ -1,4 +1,4 @@
-from .context import nnTr
+from context import nnTr
 import unittest
 
 class TestTranslator(unittest.TestCase):

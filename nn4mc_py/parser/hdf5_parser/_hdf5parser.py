@@ -1,4 +1,5 @@
-from ._parser import Parser
+from nn4mc_py.parser._parser import Parser
+from ._layerbuilder import *
 import h5py
 
 class Opdata:
@@ -21,7 +22,13 @@ class HDF5Parser(Parser):
         self.layer_map = {}
 
     def parse(self):
-        pass
+        parseModelConfig()
+
+        parseWeights()
+
+        callLayerBuilders()
+
+        constructNeuralNetwork()
 
     def parseModelConfig(self):
         with h5py.File(self.file_name, 'r') as h5file:
@@ -32,15 +39,11 @@ class HDF5Parser(Parser):
         with h5py.File(self.file_name,'r') as h5file: #Open file in readonly
             weightGroup = h5file['model_weights'] #Open weight group.
 
-
-    def constructBuilderMap(self):
-        pass
-
     def callLayerBuilders(self):
         pass
 
-    def buildEdges(self):
+    def constructNeuralNetwork(self):
         pass
 
-    def constructNeuralNetwork(self):
+    def buildEdges(self):
         pass

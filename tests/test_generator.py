@@ -1,4 +1,4 @@
-from .context import nnGn
+from context import nnGn
 import unittest
 
 class TestGenerator(unittest.TestCase):

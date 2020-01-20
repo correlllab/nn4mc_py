@@ -6,6 +6,9 @@ class TestNeuralNetwork(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test_basic_1(self):
+        pass
+
     def test_iterator_1(self):
         nn = nnDs.NeuralNetwork()
         layers = []
