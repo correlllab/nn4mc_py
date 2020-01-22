@@ -1,0 +1,5 @@
+access weight in hdf5:
+f['/']['model_weights']['conv1d_1']['conv1d_1']['bias:0'][0]
+
+access metadata in hdf5:
+f['/'].attrs['model_config']
