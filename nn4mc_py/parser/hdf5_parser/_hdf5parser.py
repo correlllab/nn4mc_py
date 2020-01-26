@@ -1,4 +1,5 @@
 from nn4mc_py.parser._parser import Parser
+from nn4mc_py.datastructures import NeuralNetwork, Layer
 from ._layerbuilder import *
 import h5py
 
@@ -23,11 +24,7 @@ class HDF5Parser(Parser):
     def __init__(self, file_name):
         self.file_name = file_name #HDF5 model file
 
-        self.layer_builder_list = []
-        self.layer_IDs = []
-        self.layer_edges = []
-
-        self.layer_map = {}
+        self.nn = NeuralNetwork()
 
     #Parses the model and creates a NeuralNetwork
     #NOTE:
@@ -35,8 +32,6 @@ class HDF5Parser(Parser):
         parseModelConfig()
 
         parseWeights()
-
-        callLayerBuilders()
 
         constructNeuralNetwork()
 
@@ -46,7 +41,19 @@ class HDF5Parser(Parser):
         with h5py.File(self.file_name, 'r') as h5file: #Open file
             configAttr = h5file['/'].attrs['model_config'] #Gets all metadata
 
-            #Do something with this
+            #NOTE: Could check to see if its sequential here
+            for model_layer in configAttr['config']['layers']:
+                type = model_layer['class_name']
+                name = model_layer['name']
+                builder = eval(self.builder_map[type])
+
+                #Build a layer object from metadata
+                layer = builder.build_layer(model_layer, name, type)
+
+                self.nn.addLayer(layer) #Add Layer to neural network
+
+                #NOTE: Could do edges here as well looking back 1 step
+
 
     #Parses all of the weights
     #NOTE:
@@ -68,15 +75,5 @@ class HDF5Parser(Parser):
 
     #
     #NOTE:
-    def callLayerBuilders(self):
-        pass
-
-    #
-    #NOTE:
     def constructNeuralNetwork(self):
-        pass
-
-    #
-    #NOTE:
-    def buildEdges(self):
         pass
