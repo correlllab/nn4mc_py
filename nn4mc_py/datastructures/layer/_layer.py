@@ -1,4 +1,4 @@
-from nn4mc_py.datastructures.weights import Weight
+from ._weights import Weight
 
 class Layer:
     def __init__(self, id, type='unspecified'):

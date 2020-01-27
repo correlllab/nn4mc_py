@@ -1,5 +1,6 @@
 class Weight:
     identifier = ''
+    values = None
 
-    # def __init__(self, id):
-    #         self.identifier = id
+    def addData(self, nparray):
+        self.values = nparray

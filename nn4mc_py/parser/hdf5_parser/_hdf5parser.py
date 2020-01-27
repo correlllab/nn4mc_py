@@ -1,7 +1,9 @@
 from nn4mc_py.parser._parser import Parser
-from nn4mc_py.datastructures import NeuralNetwork, Layer
+from nn4mc_py.datastructures import NeuralNetwork, Layer, Input
 from ._layerbuilder import *
 import h5py
+import numpy as np
+import json
 
 # This class deals with parsing an HDF5 file from a keras neural network model.
 # It will scrape the file and generate a NeuralNetwork object
@@ -29,31 +31,40 @@ class HDF5Parser(Parser):
     #Parses the model and creates a NeuralNetwork
     #NOTE:
     def parse(self):
-        parseModelConfig()
+        self.parseModelConfig()
 
-        parseWeights()
+        self.parseWeights()
 
-        constructNeuralNetwork()
+        self.constructNeuralNetwork()
 
     #Parses all of the layer metadata
     #NOTE:
     def parseModelConfig(self):
         with h5py.File(self.file_name, 'r') as h5file: #Open file
             configAttr = h5file['/'].attrs['model_config'] #Gets all metadata
+            configJSON = self.bytesToJSON(configAttr)
+
+            #This adds an input layer before everything, not sure if it is
+            #really neccessary.
+            last_layer = Input('input_1')
+            self.nn.addLayer(last_layer)
 
             #NOTE: Could check to see if its sequential here
-            for model_layer in configAttr['config']['layers']:
+            for model_layer in configJSON['config']['layers']:
                 type = model_layer['class_name']
-                name = model_layer['name']
+                name = model_layer['config']['name']
                 builder = eval(self.builder_map[type])
 
                 #Build a layer object from metadata
-                layer = builder.build_layer(model_layer, name, type)
+                layer = builder.build_layer(model_layer['config'], name, type)
 
                 self.nn.addLayer(layer) #Add Layer to neural network
 
-                #NOTE: Could do edges here as well looking back 1 step
+                #NOTE: This makes a big assumption that it will always be
+                #sequential which it may not !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                self.nn.addEdge(last_layer, layer)
 
+                last_layer = layer
 
     #Parses all of the weights
     #NOTE:
@@ -63,17 +74,27 @@ class HDF5Parser(Parser):
 
             for id in weightGroup.keys():
                 try: #Access weights and biases
-                    #NOTE: Not a numpy array, but hdf5 dataset is similar
-                    weight = weightGroup[id][id]['kernel:0']
-                    bias = weightGroup[id][id]['bias:0']
+                    #NOTE: numpy array, hdf5 dataset is similar
+                    weight = np.array(weightGroup[id][id]['kernel:0'][()])
+                    bias = np.array(weightGroup[id][id]['bias:0'][()])
 
-                except: #Layer type with not weights
-                    weight = None
-                    bias = None
+                    if weight.size > 0 and bias.size > 0:
+                        layer = nn.getLayer(id)
 
-                #Do something here
+                        layer.w.addData(weight)
+                        layer.b.addData(bias)
+
+                except: #Layer type with no weights
+                    pass
 
     #
     #NOTE:
     def constructNeuralNetwork(self):
         pass
+
+
+    def bytesToJSON(self, byte_array):
+        string = byte_array.decode('utf8')
+        JSON = json.loads(string)
+
+        return JSON

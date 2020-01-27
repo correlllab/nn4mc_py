@@ -8,11 +8,17 @@ class TestHDF5Parser(unittest.TestCase):
         pass
 
     def test_basic_1(self):
-        k = nnPr.HDF5Parser('Test')
-        str = k.builder_map['Dense']
-        b = eval(str)
+        p = nnPr.HDF5Parser('Test')
 
-        print(type(b))
+        print('OK')
+
+    def test_file_1(self):
+        p = nnPr.HDF5Parser('../data/test_1.hdf5')
+
+        p.parse()
+
+        for node in p.nn.iterate():
+            print(node.layer.identifier)
 
 
 if __name__=='__main__':
