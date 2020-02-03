@@ -1,5 +1,4 @@
 #Constants
-
 #Template files
 LAYER_TEMPLATE_HEADER = 'include/layers'
 LAYER_TEMPLATE_SOURCE = 'src/layers'
