@@ -65,17 +65,15 @@ class Generator():
         #For each type scrape file and replace delimiters
         for layer_type in layers:
             #Replace delimiters and add to layer_templates
-            with open(LAYER_TEMPLATE_HEADER + layer_type, 'r') as header:
+            with open(LAYER_TEMPLATE_HEADER + layer_type + '.template', 'r') as header:
                 contents = header.read()
-
                 contents = self.replaceDelimiters(contents)
 
                 self.layer_templates['header'].append(contents)
 
             #Replace delimiters, and extract call and fwd templates
-            with open(LAYER_TEMPLATE_SOURCE + layer_type, 'r') as source:
+            with open(LAYER_TEMPLATE_SOURCE + layer_type + '.template', 'r') as source:
                 contents = source.read()
-
                 init, fwd = self.getFunctionStrings(contents)
                 contents = self.replaceDelimiters(contents)
 
@@ -85,19 +83,23 @@ class Generator():
 
         #For each type scrape and replace delimiters
         for act_type in activations:
-            with open(ACTIVATION_HEADER, 'r') as header:
+            with open(ACTIVATION_HEADER + '.template', 'r') as header:
                 contents = header.read()
-
                 contents = self.replaceDelimiters(contents)
 
                 self.layer_templates['header'].append(contents)
 
-            with open(ACTIVATION_SOURCE, 'r') as source:
+            with open(ACTIVATION_SOURCE + '.template', 'r') as source:
                 contents = source.read()
-
                 contents = self.replaceDelimiters(contents)
 
                 self.layer_templates['source'].append(contents)
+
+        #Scrape weight-data
+        with open(PARAMETERS_HEADER, 'r') as params:
+            contents = params.read()
+            contents = self.replaceDelimiters(contents)
+            #Continue on here
 
     # Iterates through graph to extract all metadata and
     # weight data and place in appropriate templates to
