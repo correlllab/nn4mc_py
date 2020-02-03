@@ -84,13 +84,11 @@ class HDF5Parser(Parser):
                         layer.w.addData(weight)
                         layer.b.addData(bias)
 
+                        layer.input_shape = weight.shape
+                        layer.output_shape = bias.shape
+
                 except: #Layer type with no weights
                     pass
-
-    #
-    #NOTE:
-    def constructNeuralNetwork(self):
-        pass
 
 
     def bytesToJSON(self, byte_array):

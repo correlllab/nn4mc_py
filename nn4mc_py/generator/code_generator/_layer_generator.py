@@ -6,8 +6,8 @@ def processTemplate(self, contents):
 
     contents = contents[start:end]
 
-    contents.replace(self.WEIGHT_DATATYPE_DELIMITER, self.weight_datatype)
-    contents.replace(self.INDEX_DATATYPE_DELIMITER, self.index_datatype)
+    contents.replace(self.WEIGHT_DATATYPE_DELIMITER, self.WEIGHT_DATATYPE)
+    contents.replace(self.INDEX_DATATYPE_DELIMITER, self.INDEX_DATATYPE)
 
     #Not sure about this one
     #contents.replace('<%LAYER_DATATYPE')
@@ -15,22 +15,22 @@ def processTemplate(self, contents):
     return contents
 
 def getFunctionStrings(self, contents):
-    start = contents.find(self.INIT_START_DELIMITER)
-    end = contents.find(self.INIT_END_DELIMITER)
+    start = contents.find(self.START_INIT_DELIMITER)
+    end = contents.find(self.END_INIT_DELIMITER)
 
-    start += self.INIT_START_DELIMITER.len()
+    start += self.START_INIT_DELIMITER.len()
 
     init = contents[start:end]
 
-    start = contents.find(self.FWD_START_DELIMITER)
-    end = contents.find(self.FWD_END_DELIMITER)
+    start = contents.find(self.START_CALL_DELIMITER)
+    end = contents.find(self.END_CALL_DELIMITER)
 
-    start += self.FWD_END_DELIMITER.len()
+    start += self.END_CALL_DELIMITER.len()
 
     fwd = contents[start:end]
 
     return init, fwd
-    
+
 def addLayer(self, node):
     layer_type = node.layer.identifier
 

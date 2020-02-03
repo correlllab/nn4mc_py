@@ -1,6 +1,10 @@
 from ._weights import Weight
 
 class Layer:
+    #Input and output data shapes: None if not unspecified
+    input_shape = None
+    output_shape = None
+
     def __init__(self, id, type='unspecified'):
         self.identifier = id #Unique ID
         self.layer_type = type #Layer type (i.e convolution1D)
