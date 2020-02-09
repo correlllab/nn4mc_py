@@ -1,3 +1,4 @@
+<%BEGIN_DEFINITION_TEMPLATE>
 /*************
 * neural_net_params.h
 *
@@ -17,13 +18,12 @@ extern "C" {
 #endif
 
 
-<%BEGIN_DEFINITION_TEMPLATE>
-const <%WEIGHT_DATATYPE_DELIMITER> <%WEIGHT_NAME><%WEIGHT_INDEX> = <%WEIGHT_DATA>;
+<%WEIGHT>
 
-<%END_DEFINITION_TEMPLATE>
 
 #ifdef __cplusplus
 }
 
 #endif
 #endif
+<%END_DEFINITION_TEMPLATE>

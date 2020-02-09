@@ -4,19 +4,6 @@ import numpy as np
 import os
 
 class Generator():
-    self.writer_map = {'Conv1D' : 'Conv1DWriter()',
-                    'Conv2D' : 'Conv2DWriter()',
-                    'Dense' : 'DenseWriter()',
-                    'Flatten' : 'FlattenWriter()',
-                    'MaxPooling1D' : 'MaxPooling1DWriter()',
-                    'MaxPooling2D' : 'MaxPooling2DWriter()',
-                    'Dropout' : 'DropoutWriter()',
-                    'SimpleRNN' : 'SimpleRNNWriter()',
-                    'GRU' : 'GRUWriter()',
-                    'LSTM' : 'LSTMWriter()',
-                    'Input' : 'InputWriter()',
-                    'Activation' : 'ActivationWriter()'}
-
     TEMPLATE_TYPE = 'c_standard'
     INDEX_DATATYPE = 'int'
     LAYER_OUTPUT_DATATYPE = 'float'
@@ -29,9 +16,8 @@ class Generator():
 
         self.layer_templates = {'header' : [], 'source' : []}
         self.activation_functions = {'header' : [], 'source' : []}
-
-        self.init_templates = {}
-        self.fwd_templates = {}
+        self.parameters_template = ''
+        self.neural_network_template = {'header' : '', 'source' : ''}
 
     # Generates the code
     #NOTE:
@@ -74,11 +60,8 @@ class Generator():
             #Replace delimiters, and extract call and fwd templates
             with open(LAYER_TEMPLATE_SOURCE + layer_type + '.template', 'r') as source:
                 contents = source.read()
-                init, fwd = self.getFunctionStrings(contents)
                 contents = self.replaceDelimiters(contents)
 
-                self.init_templates[layer_type] = init
-                self.fwd_templates[layer_type] = fwd
                 self.layer_templates['source'].append(contents)
 
         #For each type scrape and replace delimiters
@@ -95,11 +78,27 @@ class Generator():
 
                 self.layer_templates['source'].append(contents)
 
-        #Scrape weight-data
-        with open(PARAMETERS_HEADER, 'r') as params:
+        #Scrape weight file
+        with open(PARAMETERS_HEADER + '.template', 'r') as params:
             contents = params.read()
             contents = self.replaceDelimiters(contents)
-            #Continue on here
+
+            self.parameters_template = contents
+
+        #Scrape nn4mc main file and add include statements
+        with open(NEURAL_NETWORK_HEADER + '.template', 'r') as header:
+            contents = header.read()
+            contents = self.replaceDelimiters(contents)
+
+            self.neural_network_template['header'] = contents
+
+        with open(NEURAL_NETWORK_SOURCE + '.template', 'r') as source:
+            contents = source.read()
+            contents = self.replaceDelimiters(contents)
+
+            #Also need to add the include statements here
+
+            self.neural_network_template['source'] = contents
 
     # Iterates through graph to extract all metadata and
     # weight data and place in appropriate templates to
@@ -109,10 +108,23 @@ class Generator():
         #For each node we need to deal with the weights and biases
         #and write the init and fwd functions
         for node in self.neural_network.iterate():
+            weight_string = node.layer.w.getParams()
+            bias_string = node.layer.b.getParams()
+            init_string = node.layer.generateInit()
+            fwd_string = node.layer.generateFwd()
+
             #Deal with weights and bias stuff
+            self.parameters_template = self.parameters_template.replace(
+            W_WEIGHT_DELIMITER, weight_string + W_WEIGHT_DELIMITER)
+            self.parameters_template = self.parameters_template.replace(
+            W_WEIGHT_DELIMITER, bias_string + W_WEIGHT_DELIMITER)
 
             #Deal with writing the layer
-            pass
+
+
+        #Remove the weight placement delimiter
+        self.parameters_template = self.parameters_template.replace(
+        W_WEIGHT_DELIMITER, '')
 
     # Builds the output file structure
     #NOTE: Need to add more error handling
@@ -136,34 +148,17 @@ class Generator():
         pass
 
     def replaceDelimiters(self, contents):
-        start = contents.find(self.START_DELIMITER)
-        end = contents.find(self.END_DELIMITER)
+        start = contents.find(START_DELIMITER)
+        end = contents.find(END_DELIMITER)
 
         start += self.START_DELIMITER.len()
 
         contents = contents[start:end]
 
-        contents.replace(self.WEIGHT_DATATYPE_DELIMITER, self.WEIGHT_DATATYPE)
-        contents.replace(self.INDEX_DATATYPE_DELIMITER, self.INDEX_DATATYPE)
+        contents = contents.replace(WEIGHT_DATATYPE_DELIMITER, self.WEIGHT_DATATYPE)
+        contents = contents.replace(INDEX_DATATYPE_DELIMITER, self.INDEX_DATATYPE)
         #I think there might be more to this than I am thinking
-        contents.replace(self.LAYER_DATATYPE_DELIMITER, self.LAYER_DATATYPE)
-        contents.replace(self.ACTIVATION_DATATYPE_DELIMITER, self.ACTIVATION_DATATYPE)
+        contents = contents.replace(LAYER_DATATYPE_DELIMITER, self.LAYER_DATATYPE)
+        contents = contents.replace(ACTIVATION_DATATYPE_DELIMITER, self.ACTIVATION_DATATYPE)
 
         return contents
-
-    def getFunctionStrings(self, contents):
-        start = contents.find(self.START_INIT_DELIMITER)
-        end = contents.find(self.END_INIT_DELIMITER)
-
-        start += self.START_INIT_DELIMITER.len()
-
-        init = contents[start:end]
-
-        start = contents.find(self.START_CALL_DELIMITER)
-        end = contents.find(self.END_CALL_DELIMITER)
-
-        start += self.END_CALL_DELIMITER.len()
-
-        fwd = contents[start:end]
-
-        return init, fwd
