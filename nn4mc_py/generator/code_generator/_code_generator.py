@@ -90,13 +90,19 @@ class Generator():
             contents = header.read()
             contents = self.replaceDelimiters(contents)
 
+            include_string = ''
+            #Might need to be edited
+            for layer_type in layers:
+                include_string = include_string + '#include ' +\
+                                layer_type + '.h\n'
+
+            contents = contents.replace(NN_INCLUDE_DELIMITER, include_string)
+
             self.neural_network_template['header'] = contents
 
         with open(NEURAL_NETWORK_SOURCE + '.template', 'r') as source:
             contents = source.read()
             contents = self.replaceDelimiters(contents)
-
-            #Also need to add the include statements here
 
             self.neural_network_template['source'] = contents
 

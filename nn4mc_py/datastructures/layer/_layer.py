@@ -39,22 +39,21 @@ class Conv1D(Layer):
     #dilation_rate = []
 
     def generateInit(self):
-        init_string = self.identifier + ' = buildConv1D(&'
-                    + w.identifier + '[0], '
-                    + b.identifier + ', '
-                    + self.kernel_size[0] + ', '
-                    + self.strides[0] + ', '
-                    + self.input_shape[0] + ', '
-                    + self.input_shape[1] + + ', '
-                    + self.filters + ', '
-                    + self.activation + + ');'
+        init_string = self.identifier + ' = buildConv1D(&' +\
+                    w.identifier + '[0], ' +\
+                    b.identifier + ', ' +\
+                    self.kernel_size[0] + ', ' +\
+                    self.strides[0] + ', ' +\
+                    self.input_shape[0] + ', ' +\
+                    self.input_shape[1] + ', ' +\
+                    self.filters + ', ' +\
+                    self.activation + + ');'
 
         return init_string
 
     #Need to finish this
     def generateFwd(self):
-        fwd_string = 'data = fwdConv1D(' + self.identifier
-                    + ', ' +
+        fwd_string = 'data = fwdConv1D(' + self.identifier + ', data);'
 
         return fwd_string
 
@@ -70,18 +69,18 @@ class Conv2D(Layer):
     #data_format = ''
 
     def generateInit(self):
-        init_string = self.identifier + ' = buildConv2D(&'
-                    + w.identifier + '[0], '
-                    + b.identifier + ', '
-                    + self.kernel_size[0] + ', '
-                    + self.kernel_size[1] + ', '
-                    + self.filters + ', '
-                    + self.strides[0] + ', '
-                    + self.strides[1] + ', '
-                    + self.input_shape[0] + ', '
-                    + self.input_shape[1] + + ', '
-                    + self.input_shape[2] + + ', '
-                    + self.activation + ');'
+        init_string = self.identifier + ' = buildConv2D(&' +\
+                    w.identifier + '[0], ' +\
+                    b.identifier + ', ' +\
+                    self.kernel_size[0] + ', ' +\
+                    self.kernel_size[1] + ', ' +\
+                    self.filters + ', ' +\
+                    self.strides[0] + ', ' +\
+                    self.strides[1] + ', ' +\
+                    self.input_shape[0] + ', ' +\
+                    self.input_shape[1] + ', ' +\
+                    self.input_shape[2] + ', ' +\
+                    self.activation + ');'
 
     def generateFwd(self):
         pass
@@ -93,12 +92,12 @@ class Dense(Layer):
 
     #Input shape and output size?
     def generateInit():
-        init_string = self.identifier + ' = buildDense(&'
-                    + w.identifier + '[0], '
-                    + b.identifier + ', '
-                    + self.input_shape[0] + ', '
-                    + self.output_size + ', '
-                    + self.activation + ');'
+        init_string = self.identifier + ' = buildDense(&' +\
+                    w.identifier + '[0], ' +\
+                    b.identifier + ', ' +\
+                    self.input_shape[0] + ', ' +\
+                    self.output_size + ', ' +\
+                    self.activation + ');'
 
     def generateFwd():
         pass
