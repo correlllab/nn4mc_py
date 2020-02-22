@@ -1,10 +1,10 @@
 #Constants
 #Template files
-LAYER_TEMPLATE_HEADER = '/include/layers'
-LAYER_TEMPLATE_SOURCE = '/src/layers'
+LAYER_TEMPLATE_HEADER = '/include/layers/'
+LAYER_TEMPLATE_SOURCE = '/src/layers/'
 
-ACTIVATION_HEADER = '/include/activation_func.h'
-ACTIVATION_SOURCE = '/src/activation_func.cpp'
+ACTIVATION_HEADER = '/include/activations.h'
+ACTIVATION_SOURCE = '/src/activations.cpp'
 
 PARAMETERS_HEADER = '/include/parameters.h'
 

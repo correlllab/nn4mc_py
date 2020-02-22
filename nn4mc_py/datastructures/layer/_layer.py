@@ -91,16 +91,18 @@ class Dense(Layer):
     use_bias = True
 
     #Input shape and output size?
-    def generateInit():
+    def generateInit(self):
         init_string = self.identifier + ' = buildDense(&' +\
-                    w.identifier + '[0], ' +\
-                    b.identifier + ', ' +\
-                    self.input_shape[0] + ', ' +\
-                    self.output_size + ', ' +\
+                    self.w.identifier + '[0], ' +\
+                    self.b.identifier + ', ' +\
+                    str(self.input_shape[0]) + ', ' +\
+                    str(self.output_size) + ', ' +\
                     self.activation + ');'
 
-    def generateFwd():
-        pass
+        return init_string
+
+    def generateFwd(self):
+        return 'placeholder'
 
 class Flatten(Layer):
     def generateInit():
