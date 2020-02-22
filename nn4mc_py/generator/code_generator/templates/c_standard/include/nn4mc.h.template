@@ -20,7 +20,8 @@ extern "C" {
 
 <%STRUCTS>
 
-
+<%LAYER_DATATYPE_DELIMITER>* fwdNN(<%LAYER_DATATYPE_DELIMITER>*);
+void buildLayers();
 
 #endif
 

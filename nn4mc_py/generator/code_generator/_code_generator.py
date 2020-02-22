@@ -13,11 +13,10 @@ class Generator():
     def __init__(self, nn_obj, output_directory):
         self.nn = nn_obj
         self.output_dir = output_directory
+        self.templates = 'templates/' + self.TEMPLATE_TYPE
 
-        self.layer_templates = {'header' : [], 'source' : []}
-        self.activation_functions = {'header' : [], 'source' : []}
-        self.parameters_template = ''
-        self.neural_network_template = {'header' : '', 'source' : ''}
+        self.header_files = {}
+        self.source_files = {}
 
     # Generates the code
     #NOTE:
@@ -51,42 +50,72 @@ class Generator():
         #For each type scrape file and replace delimiters
         for layer_type in layers:
             #Replace delimiters and add to layer_templates
-            with open(LAYER_TEMPLATE_HEADER + layer_type + '.template', 'r') as header:
+            file = LAYER_TEMPLATE_HEADER + layer_type
+            with open(self.templates + file + '.template', 'r') as header:
                 contents = header.read()
                 contents = self.replaceDelimiters(contents)
 
-                self.layer_templates['header'].append(contents)
+                self.header_files[file] = contents
 
-            #Replace delimiters, and extract call and fwd templates
-            with open(LAYER_TEMPLATE_SOURCE + layer_type + '.template', 'r') as source:
+            #Replace delimiters and add to layer_templates
+            file = LAYER_TEMPLATE_SOURCE + layer_type
+            with open(self.templates + file + '.template', 'r') as source:
                 contents = source.read()
                 contents = self.replaceDelimiters(contents)
 
-                self.layer_templates['source'].append(contents)
+                self.source_files[file] = contents
 
         #For each type scrape and replace delimiters
-        for act_type in activations:
-            with open(ACTIVATION_HEADER + '.template', 'r') as header:
-                contents = header.read()
-                contents = self.replaceDelimiters(contents)
+        #NOTE: Need to change this to grab only the neccessary functions
+        file = ACTIVATION_HEADER
+        with open(self.templates + file + '.template', 'r') as header:
+            contents = header.read()
+            head_contents = self.replaceDelimiters(contents)
 
-                self.layer_templates['header'].append(contents)
+            activations = ''
+            for act_type in activations:
+                begin = '<%' + upper(act_type) + '_BEGIN>'
+                end = '<%' + upper(act_type) + '_END>'
 
-            with open(ACTIVATION_SOURCE + '.template', 'r') as source:
-                contents = source.read()
-                contents = self.replaceDelimiters(contents)
+                start = contents.find(begin) + len(begin)
+                stop = contents.find(end)
 
-                self.layer_templates['source'].append(contents)
+                activations = activations + contents[start:stop] + '\n'
+
+            head_contents = head_contents.replace(ACTIVATIONS_DELIMITER, activations)
+
+            self.header_files[file] = head_contents
+
+        file = ACTIVATION_SOURCE
+        with open(self.templates + file + '.template', 'r') as source:
+            contents = source.read()
+            head_contents = self.replaceDelimiters(contents)
+
+            activations = ''
+            for act_type in activations:
+                begin = '<%' + upper(act_type) + '_BEGIN>'
+                end = '<%' + upper(act_type) + '_END>'
+
+                start = contents.find(begin) + len(begin)
+                stop = contents.find(end)
+
+                activations = activations + contents[start:stop] + '\n'
+
+            head_contents = head_contents.replace(ACTIVATIONS_DELIMITER, activations)
+
+            self.source_files[file] = head_contents
 
         #Scrape weight file
-        with open(PARAMETERS_HEADER + '.template', 'r') as params:
+        file = PARAMETERS_HEADER
+        with open(self.templates + file + '.template', 'r') as params:
             contents = params.read()
             contents = self.replaceDelimiters(contents)
 
-            self.parameters_template = contents
+            self.header_files[file] = contents
 
         #Scrape nn4mc main file and add include statements
-        with open(NEURAL_NETWORK_HEADER + '.template', 'r') as header:
+        file = NEURAL_NETWORK_HEADER
+        with open(self.templates + file + '.template', 'r') as header:
             contents = header.read()
             contents = self.replaceDelimiters(contents)
 
@@ -98,13 +127,14 @@ class Generator():
 
             contents = contents.replace(NN_INCLUDE_DELIMITER, include_string)
 
-            self.neural_network_template['header'] = contents
+            self.header_files[file] = contents
 
-        with open(NEURAL_NETWORK_SOURCE + '.template', 'r') as source:
+        file = NEURAL_NETWORK_SOURCE
+        with open(self.templates + file + '.template', 'r') as source:
             contents = source.read()
             contents = self.replaceDelimiters(contents)
 
-            self.neural_network_template['source'] = contents
+            self.source_files[file] = contents
 
     # Iterates through graph to extract all metadata and
     # weight data and place in appropriate templates to
@@ -113,6 +143,10 @@ class Generator():
     def processLayers(self):
         #For each node we need to deal with the weights and biases
         #and write the init and fwd functions
+        param_template = self.header_files[PARAMETERS_HEADER]
+        nn_header = self.header_files[NEURAL_NETWORK_HEADER]
+        nn_source = self.source_files[NEURAL_NETWORK_SOURCE]
+
         for node in self.neural_network.iterate():
             weight_string = node.layer.w.getParams()
             bias_string = node.layer.b.getParams()
@@ -120,17 +154,37 @@ class Generator():
             fwd_string = node.layer.generateFwd()
 
             #Deal with weights and bias stuff
-            self.parameters_template = self.parameters_template.replace(
-            W_WEIGHT_DELIMITER, weight_string + W_WEIGHT_DELIMITER)
-            self.parameters_template = self.parameters_template.replace(
-            W_WEIGHT_DELIMITER, bias_string + W_WEIGHT_DELIMITER)
+            param_template = param_template.replace(
+                W_WEIGHT_DELIMITER, weight_string + W_WEIGHT_DELIMITER)
+            param_template = param_template.replace(
+                W_WEIGHT_DELIMITER, bias_string + W_WEIGHT_DELIMITER)
 
             #Deal with writing the layer
+            #HEADER: Add the structs
+            pos = nn_header.find(NN_STRUCT_DELIMITER)
+            nn_header = nn_header.replace(NN_STRUCT_DELIMITER,
+                'struct ' + node.layer.layer_type + ' ' + node.layer.identifier +\
+                ';\n' + NN_STRUCT_DELIMITER)
 
+            #SOURCE: Add the init and fwd calls
+            pos = nn_source.find(NN_INIT_DELIMITER)
+            nn_source = nn_source.replace(NN_INIT_DELIMITER,
+                node.layer.identifier + ' = ' + init_string + NN_INIT_DELIMITER)
+
+            pos = nn_source.find(NN_FWD_DELIMITER)
+            nn_source = nn_source.replace(NN_FWD_DELIMITER,
+                'data = ' + fwd_string + NN_FWD_DELIMITER)
 
         #Remove the weight placement delimiter
-        self.parameters_template = self.parameters_template.replace(
+        param_template = param_template.replace(
         W_WEIGHT_DELIMITER, '')
+        nn_header = nn_header.replace(NN_STRUCT_DELIMITER, '')
+        nn_source = nn_source.replace(NN_INIT_DELIMITER, '')
+        nn_source = nn_source.replace(NN_FWD_DELIMITER, '')
+
+        self.header_files[PARAMETERS_HEADER] = param_template
+        self.header_files[NEURAL_NETWORK_HEADER] = nn_header
+        self.source_files[NEURAL_NETWORK_SOURCE] = nn_source
 
     # Builds the output file structure
     #NOTE: Need to add more error handling
@@ -149,9 +203,15 @@ class Generator():
             print('Some error occured.')
 
     # Dumps all files into output structure
-    #NOTE:
+    #NOTE: Done
     def dump(self):
-        pass
+        for header in self.header_files.keys():
+            with open(self.output_dir + '/nn4mc' + header, 'a') as outfile:
+                outfile.write(self.header_files[header])
+
+        for source in self.source_files.keys():
+            with open(self.output_dir + '/nn4mc' + source, 'a') as outfile:
+                outfile.write(self.header_files[source])
 
     def replaceDelimiters(self, contents):
         start = contents.find(START_DELIMITER)

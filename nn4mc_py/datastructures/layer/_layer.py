@@ -2,8 +2,8 @@ from ._weights import Weight
 
 class Layer:
     #Input and output data shapes: None if not unspecified
-    input_shape = None
-    output_shape = None
+    input_shape = [None, None, None]
+    output_shape = [None, None, None]
 
     def __init__(self, id, type='unspecified'):
         self.identifier = id #Unique ID

@@ -4,3 +4,11 @@ Dispersed Neural Networks
 Sparse Neural Networks
 	Create a sparse representation of a neural network from
 	an existing dense network.
+
+
+Pruning
+Weight Sharing
+Quantization
+Low-Rank Approximation
+Binary/Ternary Net
+Winograd Transform

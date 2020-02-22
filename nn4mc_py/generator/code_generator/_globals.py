@@ -1,15 +1,15 @@
 #Constants
 #Template files
-LAYER_TEMPLATE_HEADER = 'include/layers'
-LAYER_TEMPLATE_SOURCE = 'src/layers'
+LAYER_TEMPLATE_HEADER = '/include/layers'
+LAYER_TEMPLATE_SOURCE = '/src/layers'
 
-ACTIVATION_HEADER = 'include/activation_func.h'
-ACTIVATION_SOURCE = 'src/activation_func.cpp'
+ACTIVATION_HEADER = '/include/activation_func.h'
+ACTIVATION_SOURCE = '/src/activation_func.cpp'
 
-PARAMETERS_HEADER = 'include/parameters.h'
+PARAMETERS_HEADER = '/include/parameters.h'
 
-NEURAL_NETWORK_HEADER = 'include/nn4mc.h'
-NEURAL_NETWORK_SOURCE = 'src/nn4mc.cpp'
+NEURAL_NETWORK_HEADER = '/include/nn4mc.h'
+NEURAL_NETWORK_SOURCE = '/src/nn4mc.cpp'
 
 #Delimiters
 #Start and end of template
@@ -34,9 +34,13 @@ ACTIVATION_DATATYPE_DELIMITER = '<%ACTIVATION_DATATYPE_DELIMITER>'
 NN_INIT_DELIMITER = '<%BUILD_FUNCTION>'
 NN_FWD_DELIMITER = '<%FWD_FUNCTION>'
 NN_INCLUDE_DELIMITER = '<%INCLUDE>'
-NN_STRUC_DELIMITER = '<%STRUCTS>'
+NN_STRUCT_DELIMITER = '<%STRUCTS>'
 
 W_WEIGHT_DELIMITER = '<%WEIGHT>'
+
+ACTIVATIONS_DELIMITER = '<%ACTIVATIONS>'
+
+ACTIVATION_FUNCTION_DELIMITER = '<%ACTIVATION_FUNCTION>'
 
 # #Weight stuff and init stuff
 # WEIGHT_NAME = '<%WEIGHT_NAME>'
