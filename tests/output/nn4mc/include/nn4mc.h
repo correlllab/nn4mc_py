@@ -16,11 +16,20 @@ extern "C" {
 
 
 #include "neural_network_params.h"
-#include dense.h
+#include Conv1D.h
+#include Dense.h
 
 
-struct dense dense_1;
-struct dense dense_2;
+struct Conv1D conv1d_1;
+struct Conv1D conv1d_2;
+struct Dense dense_1;
+struct Dense dense_2;
+struct Dense dense_3;
+struct Dense dense_4;
+struct Dense dense_5;
+struct Dense dense_6;
+struct Dense dense_7;
+struct Dense dense_8;
 
 
 float* fwdNN(float*);

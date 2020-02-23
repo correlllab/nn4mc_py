@@ -5,5 +5,8 @@
 float activate(float input, int output_shape, char type);
 
 
+float relu(float input);
+
+
 
 #endif

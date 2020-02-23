@@ -21,7 +21,7 @@ class TestGenerator(unittest.TestCase):
         layers[1].b.identifier = 'b2'
 
         for layer in layers:
-            if layer.layer_type != 'Input':
+            if layer.layer_type != 'Input' and layer.layer_type != 'Flatten':
                 layer.w.addData(np.array([[0,0],[0,0]]))
                 layer.b.addData(np.array([0,0]))
 

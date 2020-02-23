@@ -8,24 +8,39 @@ class Weight:
     #Convert numpy array to string representation
     #NOTE: Not accounting for different datatypes
     def getParams(self):
-        # #const <%WEIGHT_DATATYPE_DELIMITER> <%WEIGHT_NAME><%WEIGHT_INDEX> = <%WEIGHT_DATA>;
-        # shape = self.values.shape
-        # param_string = 'float ' + self.identifier +\
-        #                 '[' + str(shape[0]) + '][' + str(shape[1]) + '] = {'
-        #
-        # for i in range(shape[0]):
-        #     param_string = param_string + '{'
-        #     for j in range(shape[1]):
-        #         param_string = param_string + str(self.values[i][j])
-        #
-        #         if j<shape[1]-1:
-        #             param_string = param_string + ', '
-        #
-        #     if i<shape[0]-1:
-        #         param_string = param_string + '},\n'
-        #
-        # param_string = param_string + '}\n'
+        if self.values.any() == None:
+            return ''
 
-        param_string = '{1,2,3}'
+        shape = self.values.shape
+
+        if len(shape) == 1:
+            param_string = 'float ' + self.identifier +\
+                            '[' + str(shape[0]) + '] = {'
+
+            param_string = param_string + '{'
+            for i in range(shape[0]):
+                param_string = param_string + str(self.values[i])
+
+                if i<shape[0]-1:
+                    param_string = param_string + ', '
+
+            param_string = param_string + '}\n'
+
+        else:
+            param_string = 'float ' + self.identifier +\
+                            '[' + str(shape[0]) + '][' + str(shape[1]) + '] = {'
+
+            for i in range(shape[0]):
+                param_string = param_string + '{'
+                for j in range(shape[1]):
+                    param_string = param_string + str(self.values[i][j])
+
+                    if j<shape[1]-1:
+                        param_string = param_string + ', '
+
+                if i<shape[0]-1:
+                    param_string = param_string + '},\n\t\t\t\t\t\t\t\t\t'
+
+            param_string = param_string + '}\n'
 
         return param_string

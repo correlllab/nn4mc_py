@@ -41,7 +41,7 @@ class Generator():
 
         #Get lists of all activations and layers
         for node in self.nn.iterate():
-            if node.layer.layer_type != 'input':
+            if node.layer.layer_type != 'Input' and node.layer.layer_type != 'Flatten':
                 type = node.layer.layer_type
                 activation = node.layer.activation
 
@@ -75,17 +75,18 @@ class Generator():
             contents = header.read()
             head_contents = self.replaceDelimiters(contents)
 
-            activations = ''
+            activations_string = ''
             for act_type in activations:
-                begin = '<%' + upper(act_type) + '_BEGIN>'
-                end = '<%' + upper(act_type) + '_END>'
+                begin = '<%' + act_type.upper() + '_BEGIN>'
+                end = '<%' + act_type.upper() + '_END>'
 
                 start = contents.find(begin) + len(begin)
                 stop = contents.find(end)
 
-                activations = activations + contents[start:stop] + '\n'
+                activations_string = activations_string + contents[start:stop] + '\n'
 
-            head_contents = head_contents.replace(G.ACTIVATIONS_DELIMITER, activations)
+            activations_string = self.replaceDelimiters(activations_string)
+            head_contents = head_contents.replace(G.ACTIVATIONS_DELIMITER, activations_string)
 
             self.header_files[file] = head_contents
 
@@ -94,17 +95,18 @@ class Generator():
             contents = source.read()
             head_contents = self.replaceDelimiters(contents)
 
-            activations = ''
+            activations_string = ''
             for act_type in activations:
-                begin = '<%' + upper(act_type) + '_BEGIN>'
-                end = '<%' + upper(act_type) + '_END>'
+                begin = '<%' + act_type.upper() + '_BEGIN>'
+                end = '<%' + act_type.upper() + '_END>'
 
                 start = contents.find(begin) + len(begin)
                 stop = contents.find(end)
 
-                activations = activations + contents[start:stop] + '\n'
+                activations_string = activations_string + contents[start:stop] + '\n'
 
-            head_contents = head_contents.replace(G.ACTIVATIONS_DELIMITER, activations)
+            activations_string = self.replaceDelimiters(activations_string)
+            head_contents = head_contents.replace(G.ACTIVATIONS_DELIMITER, activations_string)
 
             self.source_files[file] = head_contents
 
@@ -151,7 +153,7 @@ class Generator():
         nn_source = self.source_files[G.NEURAL_NETWORK_SOURCE]
 
         for node in self.nn.iterate():
-            if node.layer.layer_type != 'input':
+            if node.layer.layer_type != 'Input' and node.layer.layer_type != 'Flatten':
                 weight_string = node.layer.w.getParams()
                 bias_string = node.layer.b.getParams()
                 init_string = node.layer.generateInit()
@@ -173,11 +175,11 @@ class Generator():
                 #SOURCE: Add the init and fwd calls
                 pos = nn_source.find(G.NN_INIT_DELIMITER)
                 nn_source = nn_source.replace(G.NN_INIT_DELIMITER,
-                    node.layer.identifier + ' = ' + init_string +G.NN_INIT_DELIMITER)
+                    init_string + G.NN_INIT_DELIMITER)
 
                 pos = nn_source.find(G.NN_FWD_DELIMITER)
                 nn_source = nn_source.replace(G.NN_FWD_DELIMITER,
-                    'data = ' + fwd_string + G.NN_FWD_DELIMITER)
+                    fwd_string + G.NN_FWD_DELIMITER)
 
         #Remove the weight placement delimiter
         param_template = param_template.replace(
@@ -210,20 +212,21 @@ class Generator():
     #NOTE: Done
     def dump(self):
         for header in self.header_files.keys():
-            with open(self.output_dir + 'nn4mc' + header, 'a') as outfile:
+            with open(self.output_dir + 'nn4mc' + header, 'w') as outfile:
                 outfile.write(self.header_files[header])
 
         for source in self.source_files.keys():
-            with open(self.output_dir + 'nn4mc' + source, 'a') as outfile:
-                outfile.write(self.header_files[source])
+            with open(self.output_dir + 'nn4mc' + source, 'w') as outfile:
+                outfile.write(self.source_files[source])
 
     def replaceDelimiters(self, contents):
         start = contents.find(G.START_DELIMITER)
         end = contents.find(G.END_DELIMITER)
 
-        start += len(G.START_DELIMITER)
+        if start != -1:
+            start += len(G.START_DELIMITER)
 
-        contents = contents[start:end]
+            contents = contents[start:end]
 
         contents = contents.replace(G.WEIGHT_DATATYPE_DELIMITER, self.WEIGHT_DATATYPE)
         contents = contents.replace(G.INDEX_DATATYPE_DELIMITER, self.INDEX_DATATYPE)

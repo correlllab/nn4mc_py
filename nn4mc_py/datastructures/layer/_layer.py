@@ -40,20 +40,20 @@ class Conv1D(Layer):
 
     def generateInit(self):
         init_string = self.identifier + ' = buildConv1D(&' +\
-                    w.identifier + '[0], ' +\
-                    b.identifier + ', ' +\
-                    self.kernel_size[0] + ', ' +\
-                    self.strides[0] + ', ' +\
-                    self.input_shape[0] + ', ' +\
-                    self.input_shape[1] + ', ' +\
-                    self.filters + ', ' +\
-                    self.activation + + ');'
+                    self.w.identifier + '[0], ' +\
+                    self.b.identifier + ', ' +\
+                    str(self.kernel_size[0]) + ', ' +\
+                    str(self.strides[0]) + ', ' +\
+                    str(self.input_shape[0]) + ', ' +\
+                    str(self.input_shape[1]) + ', ' +\
+                    str(self.filters) + ', ' +\
+                    self.activation + ');\n'
 
         return init_string
 
     #Need to finish this
     def generateFwd(self):
-        fwd_string = 'data = fwdConv1D(' + self.identifier + ', data);'
+        fwd_string = 'data = fwdConv1D(' + self.identifier + ', data);\n'
 
         return fwd_string
 
@@ -70,25 +70,28 @@ class Conv2D(Layer):
 
     def generateInit(self):
         init_string = self.identifier + ' = buildConv2D(&' +\
-                    w.identifier + '[0], ' +\
-                    b.identifier + ', ' +\
-                    self.kernel_size[0] + ', ' +\
-                    self.kernel_size[1] + ', ' +\
-                    self.filters + ', ' +\
-                    self.strides[0] + ', ' +\
-                    self.strides[1] + ', ' +\
-                    self.input_shape[0] + ', ' +\
-                    self.input_shape[1] + ', ' +\
-                    self.input_shape[2] + ', ' +\
-                    self.activation + ');'
+                    self.w.identifier + '[0], ' +\
+                    self.b.identifier + ', ' +\
+                    str(self.kernel_size[0]) + ', ' +\
+                    str(self.kernel_size[1]) + ', ' +\
+                    str(self.filters) + ', ' +\
+                    str(self.strides[0]) + ', ' +\
+                    str(self.strides[1]) + ', ' +\
+                    str(self.input_shape[0]) + ', ' +\
+                    str(self.input_shape[1]) + ', ' +\
+                    str(self.input_shape[2]) + ', ' +\
+                    self.activation + ');\n'
 
     def generateFwd(self):
-        pass
+        fwd_string = 'data = fwdConv2D(' + self.identifier + ', data);\n'
+
+        return fwd_string
 
 class Dense(Layer):
     units = 0
     activation = ''
     use_bias = True
+    output_size = 0 #NOTE: This is wrong
 
     #Input shape and output size?
     def generateInit(self):
@@ -97,12 +100,14 @@ class Dense(Layer):
                     self.b.identifier + ', ' +\
                     str(self.input_shape[0]) + ', ' +\
                     str(self.output_size) + ', ' +\
-                    self.activation + ');'
+                    self.activation + ');\n'
 
         return init_string
 
     def generateFwd(self):
-        return 'placeholder'
+        fwd_string = 'data = fwdDense(' + self.identifier + ', data);\n'
+
+        return fwd_string
 
 class Flatten(Layer):
     def generateInit():
@@ -118,11 +123,19 @@ class MaxPooling1D(Layer):
 
     #data_format = ''
 
-    def generateInit():
-        pass
+    def generateInit(self):
+        init_string = self.identifier + ' = buildMaxPooling1D(&' +\
+                    str(self.pool_size[0]) + ', ' +\
+                    str(self.strides[0]) + ', ' +\
+                    str(input_shape[0]) + ', ' +\
+                    str(input_shape[1]) + ');\n'
 
-    def generateFwd():
-        pass
+        return init_string
+
+    def generateFwd(self):
+        fwd_string = 'data = fwdMaxPooling1D(' + self.identifier + ', data);\n'
+
+        return fwd_string
 
 class MaxPooling2D(Layer):
     pool_size = []
@@ -131,11 +144,21 @@ class MaxPooling2D(Layer):
 
     #data_format = ''
 
-    def generateInit():
-        pass
+    def generateInit(self):
+        init_string = self.identifier + ' = buildMaxPooling2D(&' +\
+                    str(self.pool_size[0]) + ', ' +\
+                    str(self.pool_size[1]) + ', ' +\
+                    str(self.strides[0]) + ', ' +\
+                    str(input_shape[0]) + ', ' +\
+                    str(input_shape[1]) + ', ' +\
+                    str(input_shape[2]) + ');\n'
 
-    def generateFwd():
-        pass
+        return init_string
+
+    def generateFwd(self):
+        fwd_string = 'data = fwdMaxPooling2D(' + self.identifier + ', data);\n'
+
+        return fwd_string
 
 class Dropout(Layer):
     def generateInit():

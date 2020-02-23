@@ -19,6 +19,7 @@ class TestHDF5Parser(unittest.TestCase):
 
         for node in p.nn.iterate():
             print(node.layer.identifier)
+            print(node.layer.w.values)
 
 
 if __name__=='__main__':

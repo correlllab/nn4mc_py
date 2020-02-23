@@ -35,7 +35,7 @@ class HDF5Parser(Parser):
 
         self.parseWeights()
 
-        self.constructNeuralNetwork()
+        #self.constructNeuralNetwork()
 
     #Parses all of the layer metadata
     #NOTE:
@@ -46,7 +46,7 @@ class HDF5Parser(Parser):
 
             #This adds an input layer before everything, not sure if it is
             #really neccessary.
-            last_layer = Input('input_1')
+            last_layer = Input('input_1','Input')
             self.nn.addLayer(last_layer)
 
             #NOTE: Could check to see if its sequential here
@@ -79,7 +79,7 @@ class HDF5Parser(Parser):
                     bias = np.array(weightGroup[id][id]['bias:0'][()])
 
                     if weight.size > 0 and bias.size > 0:
-                        layer = nn.getLayer(id)
+                        layer = self.nn.getLayer(id)
 
                         layer.w.addData(weight)
                         layer.b.addData(bias)
@@ -87,8 +87,7 @@ class HDF5Parser(Parser):
                         layer.input_shape = weight.shape
                         layer.output_shape = bias.shape
 
-                except: #Layer type with no weights
-                    pass
+                except Exception as e: print(e)
 
 
     def bytesToJSON(self, byte_array):
