@@ -81,8 +81,7 @@ class HDF5Parser(Parser):
                     if weight.size > 0 and bias.size > 0:
                         layer = self.nn.getLayer(id)
 
-                        layer.w.addData(weight)
-                        layer.b.addData(bias)
+                        layer.addParameters((id + '_w', weight), (id + '_b', bias))
 
                         layer.input_shape = weight.shape
                         layer.output_shape = bias.shape

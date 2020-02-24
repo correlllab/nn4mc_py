@@ -1,32 +1,44 @@
 from ._weights import Weight
 
+#Parent class for all available layer types
+#NOTE: This is implemented in an abstract class
+#manner, but there could be some changes made to make
+#this more correct.
 class Layer:
     #Input and output data shapes: None if not unspecified
+    #TODO!: Compute these properly
     input_shape = [None, None, None]
     output_shape = [None, None, None]
+    self.w = None
+    self.b = None
 
     def __init__(self, id, type='unspecified'):
         self.identifier = id #Unique ID
         self.layer_type = type #Layer type (i.e convolution1D)
 
-        #Think these will probably need to be np arrays
-        self.w = Weight()
-        self.b = Weight()
+    #Add weight and bias parameters
+    #Takes tuple of (id, values) for weights and biases
+    def addParameters(self, weights, bias):
+        self.w = Weight(weights[0], weights[1])
+        self.b = Weight(bias[0], bias[1])
 
-    def isInput(self):
+    def isInput(self): #Defualt behavior is not input
         return False
 
-    def generateInit():
+    def generateInit(): #For derived classes
         pass
 
-    def generateFwd():
+    def generateFwd(): #For derived classes
         pass
 
-    def __hash__(self):
+    def __hash__(self): #Hashes on the identifier
         return hash(self.identifier)
 
-    def __eq__(self, other):
+    def __eq__(self, other): #Equality on the unique identifier
         return self.identifier == other.identifier
+
+################################################################################
+#Derived classes (i.e specific layer types)
 
 class Conv1D(Layer):
     filters = 0
@@ -36,6 +48,7 @@ class Conv1D(Layer):
     activation = ''
     use_bias = True
 
+    #NOTE: Not sure if this is needed
     #dilation_rate = []
 
     def generateInit(self):
@@ -51,7 +64,6 @@ class Conv1D(Layer):
 
         return init_string
 
-    #Need to finish this
     def generateFwd(self):
         fwd_string = 'data = fwdConv1D(' + self.identifier + ', data);\n'
 
@@ -65,6 +77,7 @@ class Conv2D(Layer):
     activation = ''
     use_bias = True
 
+    #NOTE: Not sure if these are needed
     #dilation_rate = []
     #data_format = ''
 
@@ -91,9 +104,8 @@ class Dense(Layer):
     units = 0
     activation = ''
     use_bias = True
-    output_size = 0 #NOTE: This is wrong
+    output_size = 0 #TODO: Fix this, it is wrong
 
-    #Input shape and output size?
     def generateInit(self):
         init_string = self.identifier + ' = buildDense(&' +\
                     self.w.identifier + '[0], ' +\
@@ -109,6 +121,8 @@ class Dense(Layer):
 
         return fwd_string
 
+#NOTE: Not sure about this whole class
+#I think some stuff needs to be changed, at least in the templates
 class Flatten(Layer):
     def generateInit():
         pass
@@ -121,6 +135,7 @@ class MaxPooling1D(Layer):
     strides = []
     padding = ''
 
+    #NOTE: Not sure if these are needed
     #data_format = ''
 
     def generateInit(self):
@@ -142,6 +157,7 @@ class MaxPooling2D(Layer):
     strides = []
     padding = ''
 
+    #NOTE: Not sure if these are needed
     #data_format = ''
 
     def generateInit(self):
@@ -159,6 +175,9 @@ class MaxPooling2D(Layer):
         fwd_string = 'data = fwdMaxPooling2D(' + self.identifier + ', data);\n'
 
         return fwd_string
+
+################################################################################
+#TODO: Finish implementing these
 
 class Dropout(Layer):
     def generateInit():

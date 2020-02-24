@@ -1,11 +1,14 @@
+#Class to hold weight or bias arrays for layers
 class Weight:
-    identifier = ''
-    values = None
+    def __init__(self, id, nparray=None):
+        self.identifier = id #Unique identifier
+        self.values = nparray #Numpy array
 
     def addData(self, nparray):
-        self.values = nparray
+        self.values = nparray #Numpy array
 
     #Convert numpy array to string representation
+    #for code generation
     #NOTE: Not accounting for different datatypes
     def getParams(self):
         if self.values.any() == None:
