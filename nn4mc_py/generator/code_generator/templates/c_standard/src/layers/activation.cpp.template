@@ -1,15 +1,15 @@
 <%BEGIN_DEFINITION_TEMPLATE>
-/*************
-* activation.cpp
-*
-* Activation Layer
-* Hardware Plateform: ESP-32
-*
-* This file defines the functions needed to build a dense layer, and perform a forward pass.
+/********************
+    activation.cpp
+
+    Code generated using nn4mc.
+
+    This file implements an activation as a layer.
+
 */
 
 #include "activation.h"
-#include "activation_func.h"
+#includ "activations.h"
 
 struct Activation buildActivation(<%INDEX_DATATYPE_DELIMITER> input_size, <%INDEX_DATATYPE_DELIMITER> output_size, <%ACTIVATION_DATATYPE_DELIMITER> activation)
 {
@@ -38,12 +38,3 @@ struct Activation buildActivation(<%INDEX_DATATYPE_DELIMITER> input_size, <%INDE
 
 }
 <%END_DEFINITION_TEMPLATE>
-
-
-<%BEGIN_INITIALIZE_TEMPLATE>
-        <%LAYER_NAME> = buildActivation(<%INPUT_SHAPE_0>, <%OUTPUT_SIZE>, <%ACTIVATION>);
-<%END_INITIALIZE_TEMPLATE>
-
-<%BEGIN_CALL_TEMPLATE>
-        data = fwdActivation(<%LAYER_NAME>, <%INPUT>);
-<%END_CALL_TEMPLATE>

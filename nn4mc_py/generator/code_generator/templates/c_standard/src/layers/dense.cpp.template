@@ -1,15 +1,15 @@
 <%BEGIN_DEFINITION_TEMPLATE>
-/*************
-* conv1d.cpp
-*
-* Conv1D Layer
-* Hardware Plateform: ESP-32
-*
-* This file defines the functions needed to build a dense layer, and perform a forward pass.
+/********************
+    dense.cpp
+
+    Code generated using nn4mc.
+
+    This file implements a densely connected layer.
+
 */
 
 #include "dense.h"
-#include "activation_func.h"
+#include "activations.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -59,12 +59,3 @@ struct Dense buildDense(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DELIM
 
 }
 <%END_DEFINITION_TEMPLATE>
-
-
-<%BEGIN_INITIALIZE_TEMPLATE>
-        <%LAYER_NAME> = buildDense(&<%WEIGHT_NAME>[0], <%BIAS_NAME>, <%INPUT_SHAPE_0>, <%OUTPUT_SIZE>, <%ACTIVATION>);
-<%END_INITIALIZE_TEMPLATE>
-
-<%BEGIN_CALL_TEMPLATE>
-        data = fwdDense(<%LAYER_NAME>, <%INPUT>);
-<%END_CALL_TEMPLATE>
