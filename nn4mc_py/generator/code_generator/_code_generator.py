@@ -3,7 +3,12 @@ import nn4mc_py.generator.code_generator._globals as G
 import numpy as np
 import os
 
+#This class deals with iterating on a NerualNetwork object and
+#generating C code.
+#NOTE:
 class Generator():
+    #NOTE: The following constants should actually be variable in the future
+    #more customization in terms of these values.
     TEMPLATE_TYPE = 'c_standard'
     INDEX_DATATYPE = 'int'
     LAYER_OUTPUT_DATATYPE = 'float'
@@ -11,8 +16,8 @@ class Generator():
     WEIGHT_DATATYPE = 'const float'
 
     def __init__(self, nn_obj, output_directory):
-        self.nn = nn_obj
-        self.output_dir = output_directory
+        self.nn = nn_obj #NerualNetwork object to iterate on
+        self.output_dir = output_directory #Output file path
 
         path = os.path.dirname(__file__)
         self.templates_path = os.path.join(path, 'templates/' + self.TEMPLATE_TYPE)
@@ -50,7 +55,7 @@ class Generator():
                 if activation != '' and activation not in activations and activation != 'linear':
                     activations.append(activation)
 
-        #For each type scrape file and replace delimiters
+        #For each layer type scrape file and replace delimiters
         for layer_type in layers:
             #Replace delimiters and add to layer_templates
             file = G.LAYER_TEMPLATE_HEADER + layer_type + '.h'
@@ -68,7 +73,7 @@ class Generator():
 
                 self.source_files[file] = contents
 
-        #For each type scrape and replace delimiters
+        #For each activation type scrape and replace delimiters
         #NOTE: Need to change this to grab only the neccessary functions
         file = G.ACTIVATION_HEADER
         with open(self.templates_path + file + '.template', 'r') as header:
@@ -118,7 +123,7 @@ class Generator():
 
             self.header_files[file] = contents
 
-        #Scrape nn4mc main file and add include statements
+        #Scrape nn4mc main include file and add include statements
         file = G.NEURAL_NETWORK_HEADER
         with open(self.templates_path + file + '.template', 'r') as header:
             contents = header.read()
@@ -134,6 +139,7 @@ class Generator():
 
             self.header_files[file] = contents
 
+        #Scrape nn4mc main source file
         file = G.NEURAL_NETWORK_SOURCE
         with open(self.templates_path + file + '.template', 'r') as source:
             contents = source.read()
@@ -205,8 +211,8 @@ class Generator():
         try:
             for dir in directories:
                 os.mkdir(dir)
-        except:
-            print('Some error occured.')
+        except Exception as e:
+            print(e)
 
     # Dumps all files into output structure
     #NOTE: Done
@@ -219,6 +225,8 @@ class Generator():
             with open(self.output_dir + 'nn4mc' + source, 'w') as outfile:
                 outfile.write(self.source_files[source])
 
+    #Looks for all standard delimiters and replaces them with actual values
+    #NOTE:
     def replaceDelimiters(self, contents):
         start = contents.find(G.START_DELIMITER)
         end = contents.find(G.END_DELIMITER)

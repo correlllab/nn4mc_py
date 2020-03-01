@@ -1,11 +1,14 @@
 from nn4mc_py.datastructures.layer._layer import *
 import copy
 
+#Parent class for all layer builders
 class LayerBuilder:
-    layer_id = ''
-
+    #Builds a layer object from JSON metadata
     def build_layer(self, json_obj, id, layer_type):
         pass
+
+################################################################################
+#Derived classes
 
 class Conv1DBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
@@ -119,6 +122,7 @@ class LSTMBuilder(LayerBuilder):
 
         return new_layer
 
+################################################################################
 #NOTE: These two might need a little more work
 
 class InputBuilder(LayerBuilder):

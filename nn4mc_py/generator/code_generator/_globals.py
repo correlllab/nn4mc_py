@@ -1,4 +1,5 @@
-#Constants
+#Contains all global file names, and delimiters for use
+#in code generator.
 
 #Template files
 LAYER_TEMPLATE_HEADER = '/include/layers/'

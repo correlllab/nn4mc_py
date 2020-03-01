@@ -1,54 +1,69 @@
 from queue import Queue
 from nn4mc_py.datastructures import layer
 
-class LayerNode: #Class to hold Layer and other data.
+#Auxillary data structure for nodes in graph representation.
+class LayerNode:
     def __init__(self, layer):
-        self.visited = False
         self.layer = layer
+        self.visited = False
 
-    def __hash__(self): #Hashes on the identifier string
+    #Hashes on the identifier string.
+    def __hash__(self):
         return hash(self.layer.identifier)
 
-    def __eq__(self,other): #Can be equal to another LayerNode or just a Layer
+    #Equality can be to another LayerNode or just a Layer.
+    def __eq__(self,other):
         if isinstance(other, layer.Layer):
             return self.layer.identifier == other.identifier
 
         elif isinstance(other,LayerNode):
             return self.layer.identifier == other.layer.identifier
 
-class NeuralNetwork: #Graph data structure
+################################################################################
+#Graph datastructure to represent neural network connection structure.
+#Creates common representation to be iterated on by code generator downstream.
+#NOTE:
+class NeuralNetwork:
     def __init__(self):
         self.layers = {} #Dictionary of LayerNodes and list of edges
         self.input = [] #List of input LayerNodes
 
+    #Returns a layer if it exists
     def getLayer(self, id):
-        for layernode in self.layers.keys():
+        for layernode in self.layers:
             if layernode.layer.identifier == id:
                 return layernode.layer
 
         return None
 
-    def addLayer(self, layer): #Adds LayerNode to dict with empty list as value
-        newLayer = LayerNode(layer)
-        self.layers[newLayer] = []
+    #Adds LayerNode to graph with empty list of edges
+    def addLayer(self, layer):
+        newLayer = LayerNode(layer) #New layer
+        self.layers[newLayer] = [] #No edges
 
-        if(layer.isInput()): #Adds to input list if it is Input Layer
+        if(layer.isInput()): #Adds to input list if Input Layer
             self.input.append(newLayer)
 
+    #Adds new edge between two layers
     #NOTE: Start and end are Layer objects
-    def addEdge(self, start, end): #Adds edge between two LayerNodes with corresponding Layers
-        for key in self.layers: #Find the LayerNode associated with end
-            if key == end:
-                node = key
+    #NOTE: Not dealing with undefined edges (i.e start or end not existing)
+    def addEdge(self, start, end):
+        for layernode in self.layers: #Find the LayerNode associated with end
+            if layernode == end:
+                node = layernode
 
         self.layers[start].append(node) #Add LayerNode to starts list
 
+    #NOTE: Not being used
     #NOTE: Start and end are id's
     def addEdgeID(self, start, end):
         pass
 
-
-    def iterate(self): #Essentially a BFS which uses yield on each loop.
+    #Iterator for the graph datastructure
+    #Uses BFS to search the graph and yields nodes as they are found
+    #NOTE: Not dealing with anything but sequential model (graph is overkill)
+    #NOTE: Could be edited to deal with non-sequential model
+    def iterate(self):
         for node in self.layers:
             node.visited = False
 
@@ -66,4 +81,4 @@ class NeuralNetwork: #Graph data structure
                     edge.visited = True
                     q.put(edge)
 
-            yield node
+            yield node #Returns a node

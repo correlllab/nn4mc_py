@@ -25,27 +25,27 @@ class HDF5Parser(Parser):
 
     def __init__(self, file_name):
         self.file_name = file_name #HDF5 model file
-
-        self.nn = NeuralNetwork()
+        self.nn = NeuralNetwork() #NeuralNetwork to be filled
 
     #Parses the model and creates a NeuralNetwork
     #NOTE:
     def parse(self):
+        #Parse model configuration (i.e metadata)
         self.parseModelConfig()
 
+        #Parse weights and biases
         self.parseWeights()
-
-        #self.constructNeuralNetwork()
 
     #Parses all of the layer metadata
     #NOTE:
     def parseModelConfig(self):
-        with h5py.File(self.file_name, 'r') as h5file: #Open file
+        with h5py.File(self.file_name, 'r') as h5file: #Open hdf5 file
             configAttr = h5file['/'].attrs['model_config'] #Gets all metadata
             configJSON = self.bytesToJSON(configAttr)
 
             #This adds an input layer before everything, not sure if it is
             #really neccessary.
+            #NOTE: Determine if this is neccessary
             last_layer = Input('input_1','Input')
             self.nn.addLayer(last_layer)
 
@@ -81,14 +81,17 @@ class HDF5Parser(Parser):
                     if weight.size > 0 and bias.size > 0:
                         layer = self.nn.getLayer(id)
 
-                        layer.addParameters((id + '_w', weight), (id + '_b', bias))
+                        #Add parameters to layer
+                        layer.addParameters((id+'_w', weight), (id+'_b', bias))
 
+                        #NOTE: Need to actually compute this shapes
+                        #It is not as simple as done below
                         layer.input_shape = weight.shape
                         layer.output_shape = bias.shape
 
                 except Exception as e: print(e)
 
-
+    #Converts byte array to JSON for scraping
     def bytesToJSON(self, byte_array):
         string = byte_array.decode('utf8')
         JSON = json.loads(string)
