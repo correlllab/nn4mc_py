@@ -1,19 +1,31 @@
 
+/********************
+    nn4mc.cpp
+
+    Code generated using nn4mc.
+
+    This file implements the nerual network and associated functions.
+
+*/
+
+#ifdef __cplusplus
+#extern "C" {
+
 #include "neural_network.h"
 #include <stdlib.h>
 
 void buildLayers(){
 
-    conv1d_1 = buildConv1D(&[0], , 4, 1, 4, 2, 8, linear);
-conv1d_2 = buildConv1D(&[0], , 4, 1, 4, 8, 8, linear);
-dense_1 = buildDense(&[0], , 352, 0, relu);
-dense_2 = buildDense(&[0], , 64, 0, relu);
-dense_3 = buildDense(&[0], , 42, 0, relu);
-dense_4 = buildDense(&[0], , 28, 0, relu);
-dense_5 = buildDense(&[0], , 18, 0, relu);
-dense_6 = buildDense(&[0], , 12, 0, relu);
-dense_7 = buildDense(&[0], , 8, 0, relu);
-dense_8 = buildDense(&[0], , 5, 0, linear);
+    conv1d_1 = buildConv1D(&conv1d_1_w[0], conv1d_1_b, 4, 1, None, None, 8, linear);
+conv1d_2 = buildConv1D(&conv1d_2_w[0], conv1d_2_b, 4, 1, None, None, 8, linear);
+dense_1 = buildDense(&dense_1_w[0], dense_1_b, None, 0, relu);
+dense_2 = buildDense(&dense_2_w[0], dense_2_b, None, 0, relu);
+dense_3 = buildDense(&dense_3_w[0], dense_3_b, None, 0, relu);
+dense_4 = buildDense(&dense_4_w[0], dense_4_b, None, 0, relu);
+dense_5 = buildDense(&dense_5_w[0], dense_5_b, None, 0, relu);
+dense_6 = buildDense(&dense_6_w[0], dense_6_b, None, 0, relu);
+dense_7 = buildDense(&dense_7_w[0], dense_7_b, None, 0, relu);
+dense_8 = buildDense(&dense_8_w[0], dense_8_b, None, 0, linear);
 
 
 }
@@ -37,3 +49,5 @@ data = fwdDense(dense_8, data);
     return data;
 }
 
+}
+#endif

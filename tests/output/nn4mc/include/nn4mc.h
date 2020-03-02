@@ -1,9 +1,10 @@
 
 /********************
+    nn4mc.h
 
-    NEURAL_NETWORK_H
+    Code generated using nn4mc.
 
-Code Generated using nn4mc
+    This file defines a a neural network and associated functions.
 
 */
 
@@ -12,28 +13,28 @@ Code Generated using nn4mc
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
 
 #include "neural_network_params.h"
-#include Conv1D.h
-#include Dense.h
+#include conv1d.h
+#include dense.h
 
 
-struct Conv1D conv1d_1;
-struct Conv1D conv1d_2;
-struct Dense dense_1;
-struct Dense dense_2;
-struct Dense dense_3;
-struct Dense dense_4;
-struct Dense dense_5;
-struct Dense dense_6;
-struct Dense dense_7;
-struct Dense dense_8;
+struct conv1d conv1d_1;
+struct conv1d conv1d_2;
+struct dense dense_1;
+struct dense dense_2;
+struct dense dense_3;
+struct dense dense_4;
+struct dense dense_5;
+struct dense dense_6;
+struct dense dense_7;
+struct dense dense_8;
 
 
 float* fwdNN(float*);
 void buildLayers();
 
+}
+#endif
 #endif
 

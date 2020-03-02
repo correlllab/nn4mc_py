@@ -1,5 +1,14 @@
 
-#include "activation_func.h"
+/********************
+    activations.cpp
+
+    Code generated using nn4mc.
+
+    This file implements all activation functions.
+
+*/
+
+#include "activations.h"
 #include <math.h>
 #include <stdlib.h>
 

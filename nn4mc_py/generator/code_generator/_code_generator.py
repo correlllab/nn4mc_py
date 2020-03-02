@@ -46,8 +46,8 @@ class Generator():
 
         #Get lists of all activations and layers
         for node in self.nn.iterate():
-            if node.layer.layer_type != 'Input' and node.layer.layer_type != 'Flatten':
-                type = node.layer.layer_type
+            type = node.layer.layer_type
+            if type != 'input' and type != 'flatten':
                 activation = node.layer.activation
 
                 if type not in layers:
@@ -159,7 +159,7 @@ class Generator():
         nn_source = self.source_files[G.NEURAL_NETWORK_SOURCE]
 
         for node in self.nn.iterate():
-            if node.layer.layer_type != 'Input' and node.layer.layer_type != 'Flatten':
+            if node.layer.layer_type != 'input' and node.layer.layer_type != 'flatten':
                 weight_string = node.layer.w.getParams()
                 bias_string = node.layer.b.getParams()
                 init_string = node.layer.generateInit()

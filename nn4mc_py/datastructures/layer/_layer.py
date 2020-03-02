@@ -9,18 +9,24 @@ class Layer:
     #TODO!: Compute these properly
     input_shape = [None, None, None]
     output_shape = [None, None, None]
-    self.w = None
-    self.b = None
+    w = None
+    b = None
 
     def __init__(self, id, type='unspecified'):
         self.identifier = id #Unique ID
-        self.layer_type = type #Layer type (i.e convolution1D)
+        self.layer_type = type #Layer type (i.e conv1d)
 
     #Add weight and bias parameters
     #Takes tuple of (id, values) for weights and biases
     def addParameters(self, weights, bias):
         self.w = Weight(weights[0], weights[1])
         self.b = Weight(bias[0], bias[1])
+
+        #Compute input and output shapes
+        self.computeInOutShape()
+
+    def computeInOutShape(self):
+        pass
 
     def isInput(self): #Defualt behavior is not input
         return False
@@ -69,6 +75,9 @@ class Conv1D(Layer):
 
         return fwd_string
 
+    def computeInOutShape(self):
+        pass
+
 class Conv2D(Layer):
     filters = 0
     kernel_size = []
@@ -100,6 +109,9 @@ class Conv2D(Layer):
 
         return fwd_string
 
+    def computeInOutShape(self):
+        pass
+
 class Dense(Layer):
     units = 0
     activation = ''
@@ -121,6 +133,11 @@ class Dense(Layer):
 
         return fwd_string
 
+    def computeInOutShape(self):
+        #I think this is correct
+        self.input_shape[0] = self.w.shape[1]
+        self.output_size = self.b.shape[0]
+
 #NOTE: Not sure about this whole class
 #I think some stuff needs to be changed, at least in the templates
 class Flatten(Layer):
@@ -128,6 +145,9 @@ class Flatten(Layer):
         pass
 
     def generateFwd():
+        pass
+
+    def computeInOutShape(self):
         pass
 
 class MaxPooling1D(Layer):
@@ -151,6 +171,9 @@ class MaxPooling1D(Layer):
         fwd_string = 'data = fwdMaxPooling1D(' + self.identifier + ', data);\n'
 
         return fwd_string
+
+    def computeInOutShape(self):
+        pass
 
 class MaxPooling2D(Layer):
     pool_size = []
@@ -176,6 +199,9 @@ class MaxPooling2D(Layer):
 
         return fwd_string
 
+    def computeInOutShape(self):
+        pass
+
 ################################################################################
 #TODO: Finish implementing these
 
@@ -184,6 +210,9 @@ class Dropout(Layer):
         pass
 
     def generateFwd():
+        pass
+
+    def computeInOutShape(self):
         pass
 
 class SimpleRNN(Layer):
@@ -195,6 +224,9 @@ class SimpleRNN(Layer):
         pass
 
     def generateFwd():
+        pass
+
+    def computeInOutShape(self):
         pass
 
 class GRU(Layer):
@@ -215,6 +247,9 @@ class GRU(Layer):
     def generateFwd():
         pass
 
+    def computeInOutShape(self):
+        pass
+
 class LSTM(Layer):
     units = 0
     dropout = 0.0
@@ -231,6 +266,9 @@ class LSTM(Layer):
         pass
 
     def generateFwd():
+        pass
+
+    def computeInOutShape(self):
         pass
 
 class Input(Layer):

@@ -46,7 +46,7 @@ class HDF5Parser(Parser):
             #This adds an input layer before everything, not sure if it is
             #really neccessary.
             #NOTE: Determine if this is neccessary
-            last_layer = Input('input_1','Input')
+            last_layer = Input('input_1','input')
             self.nn.addLayer(last_layer)
 
             #NOTE: Could check to see if its sequential here
@@ -56,7 +56,7 @@ class HDF5Parser(Parser):
                 builder = eval(self.builder_map[type])
 
                 #Build a layer object from metadata
-                layer = builder.build_layer(model_layer['config'], lower(name), lower(type))
+                layer = builder.build_layer(model_layer['config'], name.lower(), type.lower())
 
                 self.nn.addLayer(layer) #Add Layer to neural network
 
@@ -84,11 +84,7 @@ class HDF5Parser(Parser):
                         #Add parameters to layer
                         layer.addParameters((id+'_w', weight), (id+'_b', bias))
 
-                        #NOTE: Need to actually compute this shapes
-                        #It is not as simple as done below
-                        layer.input_shape = weight.shape
-                        layer.output_shape = bias.shape
-
+                #Add better exception handling
                 except Exception as e: print(e)
 
     #Converts byte array to JSON for scraping
