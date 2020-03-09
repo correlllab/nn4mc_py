@@ -30,7 +30,6 @@ class Layer(ABC):
     def computeInOutShape(self):
         pass
 
-    @abstractmethod
     def isInput(self): #Defualt behavior is not input
         return False
 
@@ -282,5 +281,13 @@ class Input(Layer):
     def isInput(self):
         return True
 
+    def computeInOutShape(self):
+        pass
+
+    def generateInit(self):
+        pass
+
+    def generateFwd(self):
+        pass
 class Activation(Layer):
     activation = ''
