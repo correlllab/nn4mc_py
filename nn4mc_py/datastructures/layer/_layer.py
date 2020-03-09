@@ -1,14 +1,15 @@
 from ._weights import Weight
+from abc import ABC, abstractmethod
 
 #Parent class for all available layer types
 #NOTE: This is implemented in an abstract class
 #manner, but there could be some changes made to make
 #this more correct.
-class Layer:
+class Layer(ABC):
     #Input and output data shapes: None if not unspecified
     #TODO!: Compute these properly
-    input_shape = [None, None, None]
-    output_shape = [None, None, None]
+    input_shape = [None, None, None] # we might have to change this
+    output_shape = [None, None, None] # we might have to change this
     w = None
     b = None
 
@@ -25,15 +26,19 @@ class Layer:
         #Compute input and output shapes
         self.computeInOutShape()
 
+    @abstractmethod
     def computeInOutShape(self):
         pass
 
+    @abstractmethod
     def isInput(self): #Defualt behavior is not input
         return False
 
+    @abstractmethod
     def generateInit(): #For derived classes
         pass
 
+    @abstractmethod
     def generateFwd(): #For derived classes
         pass
 
