@@ -63,8 +63,6 @@ class HDF5Parser(Parser):
             last_layer = Input('input_1','input')
             self.nn.addLayer(last_layer)
 
-            input_shape = self.nn_input_size
-
             #NOTE: Could check to see if its sequential here
             for model_layer in configJSON['config']['layers']:
                 type = model_layer['class_name']
@@ -75,8 +73,8 @@ class HDF5Parser(Parser):
                 layer = builder.build_layer(model_layer['config'], name.lower(), type.lower())
 
                 self.nn.addLayer(layer) #Add Layer to neural network
-
                 self.nn.addEdge(last_layer, layer)
+
 
                 last_layer = layer
 
@@ -85,6 +83,8 @@ class HDF5Parser(Parser):
     def parseWeights(self):
         with h5py.File(self.file_name,'r') as h5file: #Open file
             weightGroup = h5file['model_weights'] #Open weight group
+
+            input_shape = self.nn_input_size
 
             for id in weightGroup.keys():
                 try: #Access weights and biases
@@ -97,6 +97,8 @@ class HDF5Parser(Parser):
 
                         #Add parameters to layer
                         layer.addParameters((id+'_w', weight), (id+'_b', bias))
+
+                    input_shape = layer.computeOutShape(input_shape)
 
                 #Add better exception handling
                 except Exception as e: print(e)
