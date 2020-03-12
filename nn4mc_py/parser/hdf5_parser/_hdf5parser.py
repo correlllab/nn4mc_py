@@ -63,6 +63,8 @@ class HDF5Parser(Parser):
             last_layer = Input('input_1','input')
             self.nn.addLayer(last_layer)
 
+            input_shape = self.nn_input_size
+
             #NOTE: Could check to see if its sequential here
             for model_layer in configJSON['config']['layers']:
                 type = model_layer['class_name']
@@ -74,8 +76,6 @@ class HDF5Parser(Parser):
 
                 self.nn.addLayer(layer) #Add Layer to neural network
 
-                #NOTE: This makes a big assumption that it will always be
-                #sequential which it may not !!!!!!!!!!!!!!!!!!!!!!!!!!!
                 self.nn.addEdge(last_layer, layer)
 
                 last_layer = layer
