@@ -22,8 +22,9 @@ class Layer(ABC):
         self.w = Weight(weights[0], weights[1])
         self.b = Weight(bias[0], bias[1])
 
-        #Compute input and output shapes
-        self.computeOutShape()
+        # Compute input and output shapes
+        # This is being edited elsewhere
+        # self.computeOutShape()
 
     @abstractmethod
     def computeOutShape(self):
@@ -139,7 +140,7 @@ class Dense(Layer):
         init_string = self.identifier + ' = buildDense(&' +\
                     self.w.identifier + '[0], ' +\
                     self.b.identifier + ', ' +\
-                    str(self.input_shape[0]) + ', ' +\
+                    str(self.input_shape) + ', ' +\
                     str(self.output_size) + ', ' +\
                     self.activation + ');\n'
 
@@ -152,7 +153,7 @@ class Dense(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_size = self.b.shape[0]
+        self.output_size = self.b.values.shape[0]
         return self.output_size
 
 # NOTE: Not sure about this whole class
@@ -256,7 +257,7 @@ class SimpleRNN(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = self.b.shape[0]
+        self.output_shape = self.b.values.shape[0]
         return self.output_shape
 
 class GRU(Layer):
@@ -279,7 +280,7 @@ class GRU(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = self.b.shape[0]
+        self.output_shape = self.b.values.shape[0]
         return self.output_shape
 
 class LSTM(Layer):
@@ -302,7 +303,7 @@ class LSTM(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = self.b.shape[0]
+        self.output_shape = self.b.values.shape[0]
         return self.output_shape
 
 class Input(Layer):
