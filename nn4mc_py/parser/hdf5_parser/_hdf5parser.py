@@ -26,9 +26,21 @@ class HDF5Parser(Parser):
     def __init__(self, file_name):
         self.file_name = file_name #HDF5 model file
         self.nn = NeuralNetwork() #NeuralNetwork to be filled
+        self.nn_input_size = None
 
     #Parses the model and creates a NeuralNetwork
     #NOTE:
+
+    def parse_nn_input(self, model_config : dict):
+        """
+            INPUT: model_config is the json object dictionary
+            OUTPUT: numpy array with the input size of the model
+        """
+        if model_config.get('build_input_shape'):
+            self.nn_input_size = model_config['build_input_shape'][1:]
+        if model_config['layers'][0].get('config','batch_input_shape'):
+            self.nn_input_size = model_config['layers'][0]['config']['batch_input_shape'][1:]
+
     def parse(self):
         #Parse model configuration (i.e metadata)
         self.parseModelConfig()
@@ -42,6 +54,8 @@ class HDF5Parser(Parser):
         with h5py.File(self.file_name, 'r') as h5file: #Open hdf5 file
             configAttr = h5file['/'].attrs['model_config'] #Gets all metadata
             configJSON = self.bytesToJSON(configAttr)
+
+            self.parse_nn_input(configJSON['config'])
 
             #This adds an input layer before everything, not sure if it is
             #really neccessary.
@@ -59,10 +73,8 @@ class HDF5Parser(Parser):
                 layer = builder.build_layer(model_layer['config'], name.lower(), type.lower())
 
                 self.nn.addLayer(layer) #Add Layer to neural network
-
-                #NOTE: This makes a big assumption that it will always be
-                #sequential which it may not !!!!!!!!!!!!!!!!!!!!!!!!!!!
                 self.nn.addEdge(last_layer, layer)
+
 
                 last_layer = layer
 
@@ -71,6 +83,8 @@ class HDF5Parser(Parser):
     def parseWeights(self):
         with h5py.File(self.file_name,'r') as h5file: #Open file
             weightGroup = h5file['model_weights'] #Open weight group
+
+            input_shape = self.nn_input_size
 
             for id in weightGroup.keys():
                 try: #Access weights and biases
@@ -83,6 +97,8 @@ class HDF5Parser(Parser):
 
                         #Add parameters to layer
                         layer.addParameters((id+'_w', weight), (id+'_b', bias))
+
+                    input_shape = layer.computeOutShape(input_shape)
 
                 #Add better exception handling
                 except Exception as e: print(e)
