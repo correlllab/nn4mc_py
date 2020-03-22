@@ -82,9 +82,13 @@ class SimpleRNNBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = SimpleRNN(id, layer_type)
 
-        new_layer.units
-        new_layer.activation
-        new_layer.use_bias
+        new_layer.units = json_obj['units']
+        new_layer.activation = json_obj['activation']
+        new_layer.use_bias = json_obj['use_bias']
+        new_layer.return_sequences = json_obj['return_sequences']
+        new_layer.return_state = json_obj['return_state']
+        new_layer.go_backwards = json_obj['go_backwards']
+        new_layer.stateful = json_obj['stateful']
 
         return new_layer
 
@@ -92,16 +96,16 @@ class GRUBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = GRU(id, layer_type)
 
-        new_layer.units
-        new_layer.dropout
-        new_layer.recurrent_dropout
-        new_layer.activation
-        new_layer.recurrent_activation
-        new_layer.use_bias
-        new_layer.go_backwards
-        new_layer.stateful
-        new_layer.unrool
-        new_layer.reset_after
+        new_layer.units = json_obj['units']
+        new_layer.dropout = json_obj['dropout']
+        new_layer.recurrent_dropout = json_obj['recurrent_dropout']
+        new_layer.activation = json_obj['activation']
+        new_layer.recurrent_activation = json_obj['recurrent_activation']
+        new_layer.use_bias = json_obj['use_bias']
+        new_layer.go_backwards = json_obj['go_backwards']
+        new_layer.stateful = json_obj['stateful']
+        new_layer.unroll = json_obj['unroll']
+        new_layer.reset_after = json_obj['reset_after']
 
         return new_layer
 
@@ -109,32 +113,32 @@ class LSTMBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = LSTM(id, layer_type)
 
-        new_layer.units
-        new_layer.dropout
-        new_layer.implementation
-        new_layer.recurrent_dropout
-        new_layer.activation
-        new_layer.recurrent_activation
-        new_layer.use_bias
-        new_layer.go_backwards
-        new_layer.stateful
-        new_layer.unrool
+        new_layer.units = json_obj['units']
+        new_layer.dropout = json_obj['dropout']
+        new_layer.implementation = json_obj['implementation']
+        new_layer.recurrent_dropout = json_obj['recurrent_dropout']
+        new_layer.activation = json_obj['activation']
+        new_layer.recurrent_activation = json_obj['recurrent_activation']
+        new_layer.use_bias = json_obj['use_bias']
+        new_layer.go_backwards = json_obj['go_backwards']
+        new_layer.stateful = json_obj['stateful']
+        new_layer.unroll = json_obj['unroll']
 
         return new_layer
 
 ################################################################################
 #NOTE: These two might need a little more work
 
-class InputBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Input(id, layer_type)
-
-        return new_layer
-
 class ActivationBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = Activation(id, layer_type)
 
         new_layer.activation = json_obj['activation']
+
+        return new_layer
+
+class InputBuilder(LayerBuilder):
+    def build_layer(self, json_obj, id, layer_type):
+        new_layer = Input(id, layer_type)
 
         return new_layer

@@ -160,10 +160,10 @@ class Dense(Layer):
 # I think some stuff needs to be changed, at least in the templates
 class Flatten(Layer):
     def generateInit():
-        pass
+        return ''
 
     def generateFwd():
-        pass
+        return ''
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -182,7 +182,7 @@ class MaxPooling1D(Layer):
     #data_format = ''
 
     def generateInit(self):
-        init_string = self.identifier + ' = buildMaxPooling1D(&' +\
+        init_string = self.identifier + ' = buildMaxPooling1D(' +\
                     str(self.pool_size[0]) + ', ' +\
                     str(self.strides[0]) + ', ' +\
                     str(input_shape[0]) + ', ' +\
@@ -209,7 +209,7 @@ class MaxPooling2D(Layer):
     #data_format = ''
 
     def generateInit(self):
-        init_string = self.identifier + ' = buildMaxPooling2D(&' +\
+        init_string = self.identifier + ' = buildMaxPooling2D(' +\
                     str(self.pool_size[0]) + ', ' +\
                     str(self.pool_size[1]) + ', ' +\
                     str(self.strides[0]) + ', ' +\
@@ -230,27 +230,42 @@ class MaxPooling2D(Layer):
         return input_shape
 
 ################################################################################
-#TODO: Finish implementing these
+#TODO: Check on this
 
 class Dropout(Layer):
     def generateInit():
-        pass
+        return ''
 
     def generateFwd():
-        pass
+        return ''
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = input_shape
         return self.output_shape
+################################################################################
+#TODO: Check on all fwd and init generators, they arent finished in nn4mc std
 
 class SimpleRNN(Layer):
     units = 0
     activation = ''
     use_bias = True
+    return_sequences = False
+    return_state = False
+    go_backwards = False
+    stateful = False
 
     def generateInit():
-        pass
+        init_string = self.identifier + ' = buildSimpleRNN(&' +\
+                    self.w.identifier + '[0], ' +\
+                    self.b.identifier + ',' +\
+                    str(self.input_shape[0]) + ',' +\
+                    str(self.input_shape[1]) + ',' +\
+                    str(self.) + ',' +\ #Window size thing
+                    str(self.output_shape[0]) + ',' +\
+
+
+                    self.activation + ');\n'
 
     def generateFwd():
         pass
@@ -267,10 +282,10 @@ class GRU(Layer):
     activation = ''
     recurrent_activation = ''
     use_bias = True
-    go_backwards = True
-    stateful = True
-    unrool = True
-    reset_after = True
+    go_backwards = False
+    stateful = False
+    unroll = False
+    reset_after = False
 
     def generateInit():
         pass
@@ -291,9 +306,9 @@ class LSTM(Layer):
     activation = ''
     recurrent_activation = ''
     use_bias = True
-    go_backwards = True
-    stateful = True
-    unrool = True
+    go_backwards = False
+    stateful = False
+    unroll = False
 
     def generateInit():
         pass
@@ -306,20 +321,29 @@ class LSTM(Layer):
         self.output_shape = self.b.values.shape[0]
         return self.output_shape
 
+class Activation(Layer):
+    activation = ''
+
+    def generateInit():
+        pass
+
+    def generateFwd():
+        pass
+
+    def computeOutShape(self, input_shape):
+        pass
+
 class Input(Layer):
     size = 0
 
-    def isInput(self):
-        return True
+    def generateInit(self):
+        return ''
+
+    def generateFwd(self):
+        return ''
 
     def computeOutShape(self, input_shape):
         return input_shape
 
-    def generateInit(self):
-        pass
-
-    def generateFwd(self):
-        pass
-
-class Activation(Layer):
-    activation = ''
+    def isInput(self):
+        return True
