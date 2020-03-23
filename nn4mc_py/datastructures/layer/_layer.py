@@ -256,16 +256,17 @@ class SimpleRNN(Layer):
     stateful = False
 
     def generateInit():
-        init_string = self.identifier + ' = buildSimpleRNN(&' +\
-                    self.w.identifier + '[0], ' +\
-                    self.b.identifier + ',' +\
-                    str(self.input_shape[0]) + ',' +\
-                    str(self.input_shape[1]) + ',' +\
-                    str(self.) + ',' +\ #Window size thing
-                    str(self.output_shape[0]) + ',' +\
-
-
-                    self.activation + ');\n'
+        pass
+        # init_string = self.identifier + ' = buildSimpleRNN(&' +\
+        #             self.w.identifier + '[0], ' +\
+        #             self.b.identifier + ',' +\
+        #             str(self.input_shape[0]) + ',' +\
+        #             str(self.input_shape[1]) + ',' +\
+        #             # str(self.) + ',' +\ Window size thing
+        #             str(self.output_shape[0]) + ',' +\
+        #
+        #
+        #             self.activation + ');\n'
 
     def generateFwd():
         pass

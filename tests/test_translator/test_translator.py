@@ -1,4 +1,4 @@
-from context import nnTr
+import nn4mc_py.translator as nnTr
 import unittest
 
 class TestTranslator(unittest.TestCase):

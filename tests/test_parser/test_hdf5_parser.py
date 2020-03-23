@@ -1,6 +1,5 @@
-from context import nnPr
+import nn4mc_py.parser.hdf5_parser as nnPr
 import unittest
-from nn4mc_py.parser.hdf5_parser._layerbuilder import *
 
 class TestHDF5Parser(unittest.TestCase):
 

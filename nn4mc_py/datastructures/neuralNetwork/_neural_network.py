@@ -54,11 +54,6 @@ class NeuralNetwork:
 
         self.layers[start].append(node) #Add LayerNode to starts list
 
-    #NOTE: Not being used
-    #NOTE: Start and end are id's
-    def addEdgeID(self, start, end):
-        pass
-
     #Iterator for the graph datastructure
     #Uses BFS to search the graph and yields nodes as they are found
     #NOTE: Not dealing with anything but sequential model (graph is overkill)
