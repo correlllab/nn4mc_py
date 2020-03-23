@@ -1,5 +1,5 @@
 from queue import Queue
-from nn4mc_py.datastructures import layer
+from nn4mc_py.datastructures import Layer
 
 #Auxillary data structure for nodes in graph representation.
 class LayerNode:
@@ -13,7 +13,7 @@ class LayerNode:
 
     #Equality can be to another LayerNode or just a Layer.
     def __eq__(self,other):
-        if isinstance(other, layer.Layer):
+        if isinstance(other, Layer):
             return self.layer.identifier == other.identifier
 
         elif isinstance(other,LayerNode):

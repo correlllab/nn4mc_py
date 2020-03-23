@@ -1,4 +1,4 @@
-import nn4mc_py.parser.hdf5_parser as nnPr
+import nn4mc_py.parser as nnPr
 import unittest
 
 class TestHDF5Parser(unittest.TestCase):

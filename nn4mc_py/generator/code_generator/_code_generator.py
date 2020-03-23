@@ -1,5 +1,5 @@
-from nn4mc_py.datastructures import *
-import nn4mc_py.generator.code_generator._globals as G
+from nn4mc_py.datastructures import NeuralNetwork
+from ._globals import G
 import numpy as np
 import os
 

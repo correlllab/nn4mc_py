@@ -1,1 +1,1 @@
-from .code_generator import *
+from .code_generator._code_generator import Generator
