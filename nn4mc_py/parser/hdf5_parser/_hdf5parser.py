@@ -30,7 +30,6 @@ class HDF5Parser(Parser):
 
     #Parses the model and creates a NeuralNetwork
     #NOTE:
-
     def parse_nn_input(self, model_config : dict):
         """
             INPUT: model_config is the json object dictionary

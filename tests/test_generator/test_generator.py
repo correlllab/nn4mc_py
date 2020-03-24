@@ -9,6 +9,20 @@ class TestGenerator(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test_basic_creation(self):
+        nn = nnDs.NeuralNetwork()
+        generator = nnGn.Generator(nn, 'test')
+
+        self.assertIsInstance(nnDs.NeuralNetwork, generator.nn)
+        self.assertEqual('test', generator.output_dir)
+        #Other assertions here maybe?
+
+    def test_replace_delimiters(self):
+        pass
+
+    def test_process_templates(self):
+        pass
+
     def test_basic(self):
         nn = nnDs.NeuralNetwork()
         layers = []

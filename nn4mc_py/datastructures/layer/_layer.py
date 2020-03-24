@@ -22,16 +22,12 @@ class Layer(ABC):
         self.w = Weight(weights[0], weights[1])
         self.b = Weight(bias[0], bias[1])
 
-        # Compute input and output shapes
-        # This is being edited elsewhere
-        # self.computeOutShape()
+    def isInput(self): #Defualt behavior is not input
+        return False
 
     @abstractmethod
     def computeOutShape(self):
         pass
-
-    def isInput(self): #Defualt behavior is not input
-        return False
 
     @abstractmethod
     def generateInit(): #For derived classes

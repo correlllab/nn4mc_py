@@ -1,13 +1,16 @@
 import nn4mc_py.datastructures as nnDs
-import unittest
+import unittest as ut
 
-class TestNeuralNetwork(unittest.TestCase):
+class TestNeuralNetwork(ut.TestCase):
 
     def setUp(self):
         pass
 
     def test_basic_creation(self):
-        pass
+        nn = nnDs.NeuralNetwork()
+
+        self.assertEqual(len(nn.layers), 0)
+        self.assertEqual(len(nn.input), 0)
 
     def test_add_layer(self):
         pass
@@ -45,6 +48,7 @@ class TestNeuralNetwork(unittest.TestCase):
     def test_iterator(self):
         nn = nnDs.NeuralNetwork()
         layers = []
+        output = []
 
         layers.append(nnDs.Input('Input Layer'))
         layers.append(nnDs.Conv1D('Conv1D Layer'))
@@ -58,8 +62,10 @@ class TestNeuralNetwork(unittest.TestCase):
         nn.addEdge(layers[1],layers[2])
 
         for node in nn.iterate():
-            print(node.layer.identifier)
+            output.append(node.layer)
+
+        self.assertEqual(layers, output)
 
 
 if __name__ == "__main__":
-    unittest.main()
+    ut.main()
