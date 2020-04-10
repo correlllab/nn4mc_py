@@ -100,7 +100,7 @@ class HDF5Parser(Parser):
                     input_shape = layer.computeOutShape(input_shape)
 
                 #Add better exception handling
-                except Exception as e: print(e)
+                except Exception as e: print('Error in accessing weight: ' + str(e))
 
     #Converts byte array to JSON for scraping
     def bytesToJSON(self, byte_array):

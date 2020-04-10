@@ -72,6 +72,9 @@ class MaxPooling2DBuilder(LayerBuilder):
 
         return new_layer
 
+################################################################################
+#NOTE: These might need a little more work
+
 class DropoutBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = Dropout(id, layer_type)
@@ -125,9 +128,6 @@ class LSTMBuilder(LayerBuilder):
         new_layer.unroll = json_obj['unroll']
 
         return new_layer
-
-################################################################################
-#NOTE: These two might need a little more work
 
 class ActivationBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
