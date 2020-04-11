@@ -18,6 +18,8 @@ class Conv1DBuilder(LayerBuilder):
         new_layer.kernel_size = copy.copy(json_obj['kernel_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
         new_layer.padding = json_obj['padding']
+        new_layer.data_format = json_obj['data_format']
+        new_layer.dilation_rate = copy.copy(json_obj['dilation_rate'])
         new_layer.activation = json_obj['activation']
         new_layer.use_bias = json_obj['use_bias']
 
@@ -31,6 +33,8 @@ class Conv2DBuilder(LayerBuilder):
         new_layer.kernel_size = copy.copy(json_obj['kernel_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
         new_layer.padding = json_obj['padding']
+        new_layer.data_format = json_obj['data_format']
+        new_layer.dilation_rate = copy.copy(json_obj['dilation_rate'])
         new_layer.activation = json_obj['activation']
         new_layer.use_bias = json_obj['use_bias']
 
@@ -46,12 +50,6 @@ class DenseBuilder(LayerBuilder):
 
         return new_layer
 
-class FlattenBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Flatten(id, layer_type)
-
-        return new_layer
-
 class MaxPooling1DBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = MaxPooling1D(id, layer_type)
@@ -59,6 +57,7 @@ class MaxPooling1DBuilder(LayerBuilder):
         new_layer.pool_size = copy.copy(json_obj['pool_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
         new_layer.padding = json_obj['padding']
+        new_layer.data_format = json_obj['data_format']
 
         return new_layer
 
@@ -69,15 +68,7 @@ class MaxPooling2DBuilder(LayerBuilder):
         new_layer.pool_size = copy.copy(json_obj['pool_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
         new_layer.padding = json_obj['padding']
-
-        return new_layer
-
-################################################################################
-#NOTE: These might need a little more work
-
-class DropoutBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Dropout(id, layer_type)
+        new_layer.data_format = json_obj['data_format']
 
         return new_layer
 
@@ -118,10 +109,10 @@ class LSTMBuilder(LayerBuilder):
 
         new_layer.units = json_obj['units']
         new_layer.dropout = json_obj['dropout']
-        new_layer.implementation = json_obj['implementation']
         new_layer.recurrent_dropout = json_obj['recurrent_dropout']
         new_layer.activation = json_obj['activation']
         new_layer.recurrent_activation = json_obj['recurrent_activation']
+        new_layer.implementation = json_obj['implementation']
         new_layer.use_bias = json_obj['use_bias']
         new_layer.go_backwards = json_obj['go_backwards']
         new_layer.stateful = json_obj['stateful']
@@ -134,6 +125,18 @@ class ActivationBuilder(LayerBuilder):
         new_layer = Activation(id, layer_type)
 
         new_layer.activation = json_obj['activation']
+
+        return new_layer
+
+class FlattenBuilder(LayerBuilder):
+    def build_layer(self, json_obj, id, layer_type):
+        new_layer = Flatten(id, layer_type)
+
+        return new_layer
+
+class DropoutBuilder(LayerBuilder):
+    def build_layer(self, json_obj, id, layer_type):
+        new_layer = Dropout(id, layer_type)
 
         return new_layer
 

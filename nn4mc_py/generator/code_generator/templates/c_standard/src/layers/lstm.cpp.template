@@ -16,21 +16,108 @@
 #define max(a, b) (((a)>(b) ? (a) : (b)))
 #define min(a, b) (((a)<(b) ? (a) : (b)))
 
-struct LSTM buildLSTM()
+struct LSTM buildLSTM(<%WEIGHT_DATATYPE_DELIMITER> * W, <%WEIGHT_DATATYPE_DELIMITER> * Wrec, <%WEIGHT_DATATYPE_DELIMITER> * b, <%INDEX_DATATYPE_DELIMITER> input_sh0, <%INDEX_DATATYPE_DELIMITER> input_sh1, <%INDEX_DATATYPE_DELIMITER> output_sh, <%ACTIVATION_DATATYPE_DELIMITER> activation, <%ACTIVATION_DATATYPE_DELIMITER> recurrent_activation, <%LAYER_DATATYPE_DELIMITER> dropout, <%LAYER_DATATYPE_DELIMITER> recurrent_dropout, bool go_backwards)
 {
 	struct LSTM layer;
 
 	layer.weights = W;
 	layer.biases = b;
+    layer.wrec = Wrec;
 
+    layer.input_shape[0] = input_sh0;
+    layer.input_shape[1] = input_sh1;
+
+    layer.activation = activation;
+    layer.recurrent_activation = recurrent_activation;
+
+    layer.output_size = output_sh;
+
+    layer.dropout = dropout;
+    layer.recurrent_dropout = recurrent_dropout;
+
+    layer.go_backwards = go_backwards;
+
+    layer.prev_h = (<%LAYER_DATATYPE_DELIMITER>*)malloc(layer.output_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+    layer.prev_c = (<%LAYER_DATATYPE_DELIMITER>*)malloc(layer.output_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+
+    for (int i=0; i< layer.output_size; i++){
+        layer.prev_h[i] = 0.0;
+        layer.prev_c[i] = 0.0;
+    }
+
+
+    // TODO: Need to assign the above to 0''s
 	return layer;
 }
 
+void reverseInput(<%LAYER_DATATYPE_DELIMITER> * x, int start, int end){
+    while(start < end){
+        <%LAYER_DATATYPE_DELIMITER> temp = x[start];
+        x[start] = x[end];
+        x[end] = temp;
+        start++;
+        end--;
+    }
+}
 
-<%LAYER_DATATYPE_DELIMITER> * fwdLSTM(struct LSTM L, <%LAYER_DATATYPE_DELIMITER>* input)
+<%LAYER_DATATYPE_DELIMITER> * fwdLSTM(struct LSTM L, <%LAYER_DATATYPE_DELIMITER>* x)
 {
+    if (layer.go_backwards){
+        reverseInput(x, 0, L.input_shape[0]*L.input_shape[1] - 1);
+    }
 
-    free(input);
+    <%LAYER_DATATYPE_DELIMITER> * h = (<%LAYER_DATATYPE_DELIMITER>*)malloc(layer.output_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+
+    <%LAYER_DATATYPE_DELIMITER> * f = (<%LAYER_DATATYPE_DELIMITER>*)malloc(layer.output_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+    <%LAYER_DATATYPE_DELIMITER> * ig = (<%LAYER_DATATYPE_DELIMITER>*)malloc(layer.output_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+    <%LAYER_DATATYPE_DELIMITER> * c = (<%LAYER_DATATYPE_DELIMITER>*)malloc(layer.output_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+    <%LAYER_DATATYPE_DELIMITER> * og = (<%LAYER_DATATYPE_DELIMITER>*)malloc(layer.output_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+
+   for (<%INDEX_DATATYPE_DELIMITER> i = 0; i < L.output_size; i++){
+
+        <%INDEX_DATATYPE_DELIMITER> ind_i = i;
+        <%INDEX_DATATYPE_DELIMITER> ind_f = i + L.output_size;
+        <%INDEX_DATATYPE_DELIMITER> ind_o = i + 3*L.output_size;
+        <%INDEX_DATATYPE_DELIMITER> ind_c = i + 2*L.output_size;
+
+        f[i]  = L.biases[ind_f];
+        ig[i] = L.biases[ind_i];
+        c[i]  = L.biases[ind_c];
+        og[i] = L.biases[ind_o];
+
+      for (<%INDEX_DATATYPE_DELIMITER> j = 0; j < L.input_shape[0]*L.input_shape[1]; j++){
+
+           f[i] += *(L.weights + ind_f*L.output_size + j)*x[j];
+           ig[i]+= *(L.weights + ind_i*L.output_size + j)*x[j];
+           c[i] += *(L.weights + ind_c*L.output_size + j)*x[j];
+           og[i]+= *(L.weights + ind_o*L.output_size + j)*x[j];
+       }
+
+      for (<%INDEX_DATATYPE_DELIMITER> j = 0; j < L.output_size; j++){
+            f[i]+= *(L.wrec + ind_f*L.output_size + j)*L.prev_h[j];
+            ig[i]+= *(L.wrec + ind_i*L.output_size+j)*L.prev[j];
+            c[i] += *(L.wrec + ind_c*L.output_size+j)*L.prev[j];
+            og[i]+= *(L.wrec + ind_o*L.output_size+j)*L.prev[j];
+       }
+     }
+
+      for (<%INDEX_DATATYPE_DELIMITER> j = 0; j < L.output_size; j++){
+            f[j] = activate(f[j], L.output_size, L.recurrent_activation);
+            ig[j]= activate(ig[j], L.output_size, L.recurrent_activation);
+            c[j] = activate(c[j], L.output_size, L.activation);
+            og[j]= activate(c[j], L.output_size, L.recurrent_activation);
+       }
+
+      for (<%INDEX_DATATYPE_DELIMITER> j = 0; j < L.output_size; j++){
+            h[j] = og[j] * activate(f[j]*L.prev_c[j] + ig[j]*c[j], L.output_size, L.activation);
+       }
+
+    free(f);
+    free(ig);
+    free(c);
+    free(og);
+    free(x);
+
     return h;
 }
 

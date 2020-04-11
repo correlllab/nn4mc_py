@@ -2,9 +2,6 @@ from ._weights import Weight
 from abc import ABC, abstractmethod
 
 #Parent class for all available layer types
-#NOTE: This is implemented in an abstract class
-#manner, but there could be some changes made to make
-#this more correct.
 class Layer(ABC):
     #Input and output data shapes: None if not unspecified
     input_shape = None # we might have to change this
@@ -50,12 +47,11 @@ class Conv1D(Layer):
     filters = 0
     kernel_size = []
     strides = []
+    dilation_rate = []
     padding = ''
+    data_format = ''
     activation = ''
     use_bias = True
-
-    #NOTE: Not sure if this is needed
-    #dilation_rate = []
 
     def generateInit(self):
         init_string = self.identifier + ' = buildConv1D(&' +\
@@ -89,13 +85,11 @@ class Conv2D(Layer):
     filters = 0
     kernel_size = []
     strides = []
+    dilation_rate = []
     padding = ''
+    data_format = ''
     activation = ''
     use_bias = True
-
-    #NOTE: Not sure if these are needed
-    #dilation_rate = []
-    #data_format = ''
 
     def generateInit(self):
         init_string = self.identifier + ' = buildConv2D(&' +\
@@ -130,7 +124,6 @@ class Dense(Layer):
     units = 0
     activation = ''
     use_bias = True
-    output_size = 0 #TODO: Fix this, it is wrong
 
     def generateInit(self):
         init_string = self.identifier + ' = buildDense(&' +\
@@ -152,30 +145,11 @@ class Dense(Layer):
         self.output_size = self.b.values.shape[0]
         return self.output_size
 
-# NOTE: Not sure about this whole class
-# I think some stuff needs to be changed, at least in the templates
-class Flatten(Layer):
-    def generateInit():
-        return ''
-
-    def generateFwd():
-        return ''
-
-    def computeOutShape(self, input_shape):
-        self.input_shape = input_shape
-        temp = 1.0
-        for i in range(len(input_shape)):
-            temp*= input_shape[i]
-        self.output_shape = temp
-        return temp
-
 class MaxPooling1D(Layer):
     pool_size = []
     strides = []
     padding = ''
-
-    #NOTE: Not sure if these are needed
-    #data_format = ''
+    data_format = ''
 
     def generateInit(self):
         init_string = self.identifier + ' = buildMaxPooling1D(' +\
@@ -200,9 +174,7 @@ class MaxPooling2D(Layer):
     pool_size = []
     strides = []
     padding = ''
-
-    #NOTE: Not sure if these are needed
-    #data_format = ''
+    data_format = ''
 
     def generateInit(self):
         init_string = self.identifier + ' = buildMaxPooling2D(' +\
@@ -225,20 +197,6 @@ class MaxPooling2D(Layer):
         self.output_shape= input_shape
         return input_shape
 
-################################################################################
-#TODO: Check on this
-
-class Dropout(Layer):
-    def generateInit():
-        return ''
-
-    def generateFwd():
-        return ''
-
-    def computeOutShape(self, input_shape):
-        self.input_shape = input_shape
-        self.output_shape = input_shape
-        return self.output_shape
 ################################################################################
 #TODO: Check on all fwd and init generators, they arent finished in nn4mc std
 
@@ -318,6 +276,25 @@ class LSTM(Layer):
         self.output_shape = self.b.values.shape[0]
         return self.output_shape
 
+################################################################################
+# NOTE: Not sure about these
+# I think some stuff needs to be changed, at least in the templates, but they
+# are implemented just uncertain about some stuff.
+class Flatten(Layer):
+    def generateInit():
+        return ''
+
+    def generateFwd():
+        return ''
+
+    def computeOutShape(self, input_shape):
+        self.input_shape = input_shape
+        temp = 1.0
+        for i in range(len(input_shape)):
+            temp*= input_shape[i]
+        self.output_shape = temp
+        return temp
+
 class Activation(Layer):
     activation = ''
 
@@ -329,6 +306,18 @@ class Activation(Layer):
 
     def computeOutShape(self, input_shape):
         pass
+
+class Dropout(Layer):
+    def generateInit():
+        return ''
+
+    def generateFwd():
+        return ''
+
+    def computeOutShape(self, input_shape):
+        self.input_shape = input_shape
+        self.output_shape = input_shape
+        return self.output_shape
 
 class Input(Layer):
     size = 0

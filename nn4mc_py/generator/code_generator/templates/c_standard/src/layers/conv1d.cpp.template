@@ -16,7 +16,7 @@
 #define max(a, b) (((a)>(b) ? (a) : (b)))
 #define min(a, b) (((a)<(b) ? (a) : (b)))
 
-struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DELIMITER>* b, <%INDEX_DATATYPE_DELIMITER> kernel_size, <%INDEX_DATATYPE_DELIMITER> strides, <%INDEX_DATATYPE_DELIMITER> input_sh0, <%INDEX_DATATYPE_DELIMITER> input_sh1, <%INDEX_DATATYPE_DELIMITER> filters, <%ACTIVATION_DATATYPE_DELIMITER> activation)
+struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DELIMITER>* b, <%INDEX_DATATYPE_DELIMITER> kernel_size, <%INDEX_DATATYPE_DELIMITER> strides, <%INDEX_DATATYPE_DELIMITER> input_sh0, <%INDEX_DATATYPE_DELIMITER> input_sh1, <%INDEX_DATATYPE_DELIMITER> filters, <%ACTIVATION_DATATYPE_DELIMITER> activation, <%ACTIVATION_DATATYPE_DELIMITER> padding, <%ACTIVATION_DATATYPE_DELIMITER> data_format, <%INDEX_DATATYPE_DELIMITER> dilation_rate)
 {
 	struct Conv1D layer;
 
@@ -29,12 +29,19 @@ struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
 
 	layer.strides = strides;
     layer.kernel_shape[0] = kernel_size;
-	layer.input_shape[0] = input_sh0;
+
+    layer.input_shape[0] = input_sh0;
 	layer.input_shape[1] = input_sh1;
+
+    layer.dilation_rate = dilation_rate;
+
     layer.activation = activation;
+    layer.padding = padding;
+    layer.data_format = data_format;
+
     layer.filters= filters;
 
-	layer.output_shape[0] = (int)(layer.input_shape[0] - layer.kernel_shape[0] + 1);
+	layer.output_shape[0] = (int)((layer.input_shape[0] - layer.kernel_shape[0])/layer.strides + 1);
 	layer.output_shape[1] = layer.filters;
 
 	return layer;
@@ -44,9 +51,51 @@ struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
 <%LAYER_DATATYPE_DELIMITER> * fwdConv1D(struct Conv1D L, <%LAYER_DATATYPE_DELIMITER>* input)
 {
 
+    int input_size = L.input_shape[0] * L.input_shape[1];
+
+    if (L.padding == 0x02){ // padding is causal
+        int left_pad = L.dilation_rate * (L.kernel_shape[0] - 1);
+        input_size += left_pad;
+        <%LAYER_DATATYPE_DELIMITER>* new_input = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.input_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+        for (int i = 0; i< L.input_size; i++) new_input[i] = 0.0;
+        for (int i = 0; i<input_size - left_pad; i++) new_input[i+left_pad] = input[i];
+        free(input);
+        <%LAYER_DATATYPE_DELIMITER>* input = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.input_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+        for (i =0; i<L.input_size ; i++ ) input[i] = new_input[i];
+        free(new_input);
+        L.input_shape[0] = L.input_size;
+        L.output_shape[0] = (int)((L.input_shape[0] - L.kernel_shape[0])/L.strides + 1);
+    }
+
+    if (L.padding == 0x03){ // padding is same
+        if (L.output_shape[0]*L.output_shape[1] > L.input_shape[0]*L.input_shape[0]){
+            int pad = L.output_shape[0]*L.output_shape[1] - L.input_shape[0]*L.input_shape[0];
+        }
+        L.input_size += pad;
+        <%LAYER_DATATYPE_DELIMITER>* new_input = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.input_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+        for (int i = 0; i< L.input_size; i++) new_input[i] = 0.0;
+
+        for (int i=0; i< L.input_size - pad; i++) new_input[i+pad] = input[i];
+        free(input);
+        <%LAYER_DATATYPE_DELIMITER>* input = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.input_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
+        for (i =0; i < L.input_size ; i++) input[i] = new_input[i];
+        free(new_input);
+        L.input_shape[0] = L.input_size;
+        L.output_shape[0] = (int)((L.input_shape[0] - L.kernel_shape[0])/L.strides + 1);
+    }
+
+    if (L.data_format == 0x02){
+        for (int i = 0; i<L.input_shape[0]; i++){
+            for (int j =0 ; j<L.input_shape[1]; j++){
+                float temp = input[i + L.input_shape[1] * j];
+                input[i + L.input_shape[1]*j] = input[j+L.input_shape[1]*i];
+                input[j + L.input_shape[1] * i] = temp;
+            }
+        }
+    }
+
      <%LAYER_DATATYPE_DELIMITER> * h = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.output_shape[0]*L.output_shape[1] * sizeof(<%LAYER_DATATYPE_DELIMITER>));
 
-	// Loop through to calculate the output at each point
 	for(<%INDEX_DATATYPE_DELIMITER> i = 0; i < L.output_shape[0]; i++)
 	{
 		for(<%INDEX_DATATYPE_DELIMITER> j = 0; j < L.output_shape[1]; j++)
