@@ -15,7 +15,7 @@ class Layer(ABC):
 
     #Add weight and bias parameters
     #Takes tuple of (id, values) for weights and biases
-    def addParameters(self, type=None, data):
+    def addParameters(self, type, data):
         if type == 'weight':
             self.w = Weight(data[0], data[1])
 
@@ -24,7 +24,6 @@ class Layer(ABC):
 
         elif type == 'weight_rec':
             self.w_rec = Weight(data[0], data[1])
-
 
     def isInput(self): #Defualt behavior is not input
         return False
@@ -87,6 +86,7 @@ class Conv1D(Layer):
             output_shape[0] = input_shape[0] - self.kernel_size[0] + 1
             output_shape[1] = self.filters
         self.output_shape = output_shape
+
         return output_shape
 
 class Conv2D(Layer):
@@ -127,6 +127,7 @@ class Conv2D(Layer):
             output_shape[1] = input_shape[1] - self.kernel_size[1] + 1
             output_shape[2] = self.filters
         self.output_shape = output_shape
+
         return output_shape
 
 class Dense(Layer):
@@ -138,8 +139,8 @@ class Dense(Layer):
         init_string = self.identifier + ' = buildDense(&' +\
                     self.w.identifier + '[0], ' +\
                     self.b.identifier + ', ' +\
-                    str(self.input_shape) + ', ' +\
-                    str(self.output_size) + ', ' +\
+                    str(self.input_shape[0]) + ', ' +\
+                    str(self.output_shape[0]) + ', ' +\
                     self.activation + ');\n'
 
         return init_string
@@ -151,8 +152,9 @@ class Dense(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_size = self.b.values.shape[0]
-        return self.output_size
+        self.output_shape = [self.b.values.shape[0]]
+
+        return self.output_shape
 
 class MaxPooling1D(Layer):
     pool_size = []
@@ -177,6 +179,7 @@ class MaxPooling1D(Layer):
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = input_shape
+
         return self.output_shape
 
 class MaxPooling2D(Layer):
@@ -204,6 +207,7 @@ class MaxPooling2D(Layer):
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape= input_shape
+
         return input_shape
 
 ################################################################################
@@ -238,7 +242,8 @@ class SimpleRNN(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = self.b.values.shape[0]
+        self.output_shape = [self.b.values.shape[0]]
+
         return self.output_shape
 
 class GRU(Layer):
@@ -276,7 +281,8 @@ class GRU(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = self.b.values.shape[0]
+        self.output_shape = [self.b.values.shape[0]]
+
         return self.output_shape
 
 class LSTM(Layer):
@@ -314,7 +320,8 @@ class LSTM(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = self.b.values.shape[0]
+        self.output_shape = [self.b.values.shape[0]]
+
         return self.output_shape
 
 ################################################################################
@@ -332,7 +339,7 @@ class Flatten(Layer):
         self.input_shape = input_shape
         temp = 1.0
         for i in range(len(input_shape)):
-            temp*= input_shape[i]
+            temp *= input_shape[i]
         self.output_shape = temp
         return temp
 
