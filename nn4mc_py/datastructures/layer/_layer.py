@@ -15,9 +15,16 @@ class Layer(ABC):
 
     #Add weight and bias parameters
     #Takes tuple of (id, values) for weights and biases
-    def addParameters(self, weights, bias):
-        self.w = Weight(weights[0], weights[1])
-        self.b = Weight(bias[0], bias[1])
+    def addParameters(self, type=None, data):
+        if type == 'weight':
+            self.w = Weight(data[0], data[1])
+
+        elif type == 'bias':
+            self.b = Weight(data[0], data[1])
+
+        elif type == 'weight_rec':
+            self.w_rec = Weight(data[0], data[1])
+
 
     def isInput(self): #Defualt behavior is not input
         return False
@@ -63,6 +70,7 @@ class Conv1D(Layer):
                     str(self.input_shape[1]) + ', ' +\
                     str(self.filters) + ', ' +\
                     self.activation + ');\n'
+                    #Need to add padding, data_format, and dilation_rate
 
         return init_string
 
@@ -104,6 +112,7 @@ class Conv2D(Layer):
                     str(self.input_shape[1]) + ', ' +\
                     str(self.input_shape[2]) + ', ' +\
                     self.activation + ');\n'
+                    #Need to add padding, data_format, and dilation_rate
 
     def generateFwd(self):
         fwd_string = 'data = fwdConv2D(' + self.identifier + ', data);\n'
@@ -210,20 +219,22 @@ class SimpleRNN(Layer):
     stateful = False
 
     def generateInit():
-        pass
-        # init_string = self.identifier + ' = buildSimpleRNN(&' +\
-        #             self.w.identifier + '[0], ' +\
-        #             self.b.identifier + ',' +\
-        #             str(self.input_shape[0]) + ',' +\
-        #             str(self.input_shape[1]) + ',' +\
-        #             # str(self.) + ',' +\ Window size thing
-        #             str(self.output_shape[0]) + ',' +\
-        #
-        #
-        #             self.activation + ');\n'
+        init_string = self.identifier + ' = buildSimpleRNN(&' +\
+                    self.w.identifier + '[0], ' +\
+                    self.w_rec.identifier + '[0], ' +\
+                    self.b.identifier + ',' +\
+                    str(self.input_shape[0]) + ',' +\
+                    str(self.input_shape[1]) + ',' +\
+                    str(self.output_shape[0]) + ',' +\
+                    self.activation + ',' +\
+                    self.go_backwards + ');\n'
+
+        return init_string
 
     def generateFwd():
-        pass
+        fwd_string = 'data = fwdSimpleRNN(' + self.identifier + ', data);\n'
+
+        return fwd_string
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -243,10 +254,25 @@ class GRU(Layer):
     reset_after = False
 
     def generateInit():
-        pass
+        init_string = self.identifier + ' = buildGRU(&' +\
+                    self.w.identifier + '[0], ' +\
+                    self.w_rec.identifier + '[0], ' +\
+                    self.b.identifier + ',' +\
+                    str(self.input_shape[0]) + ',' +\
+                    str(self.input_shape[1]) + ',' +\
+                    str(self.output_shape[0]) + ',' +\
+                    self.activation + ',' +\
+                    self.recurrent_activation + ',' +\
+                    str(self.dropout) + ',' +\
+                    str(self.recurrent_dropout) + ',' +\
+                    self.go_backwards + + ');\n'
+
+        return init_string
 
     def generateFwd():
-        pass
+        fwd_string = 'data = fwdGRU(' + self.identifier + ', data);\n'
+
+        return fwd_string
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -266,10 +292,25 @@ class LSTM(Layer):
     unroll = False
 
     def generateInit():
-        pass
+        init_string = self.identifier + ' = buildGRU(&' +\
+                    self.w.identifier + '[0], ' +\
+                    self.w_rec.identifier + '[0], ' +\
+                    self.b.identifier + ',' +\
+                    str(self.input_shape[0]) + ',' +\
+                    str(self.input_shape[1]) + ',' +\
+                    str(self.output_shape[0]) + ',' +\
+                    self.activation + ',' +\
+                    self.recurrent_activation + ',' +\
+                    str(self.dropout) + ',' +\
+                    str(self.recurrent_dropout) + ',' +\
+                    self.go_backwards + + ');\n'
+
+        return init_string
 
     def generateFwd():
-        pass
+        fwd_string = 'data = fwdLSTM(' + self.identifier + ', data);\n'
+
+        return fwd_string
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape

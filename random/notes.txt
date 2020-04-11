@@ -1,5 +1,4 @@
-access weight in hdf5:
-f['/']['model_weights']['conv1d_1']['conv1d_1']['bias:0'][0]
-
-access metadata in hdf5:
-f['/'].attrs['model_config']
+Things that could be good to do soon:
+  -Add more exception handling
+  -Add more info as nn4mc processes
+    i.e now parsing weights, now dumping files

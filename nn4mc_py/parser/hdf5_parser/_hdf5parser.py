@@ -86,21 +86,27 @@ class HDF5Parser(Parser):
             input_shape = self.nn_input_size
 
             for id in weightGroup.keys():
-                try: #Access weights and biases
-                    #NOTE: numpy array, hdf5 dataset is similar
+                layer = self.nn.getLayer(id)
+
+                try: #Access weights if they exist
                     weight = np.array(weightGroup[id][id]['kernel:0'][()])
+                    layer.addParameters(type = 'weight', (id+'_W', weight))
+
+                except Exception as e: print(e)
+
+                try: #Access biases if they exist
                     bias = np.array(weightGroup[id][id]['bias:0'][()])
+                    layer.addParameters(type = 'bias', (id+'_b', bias))
 
-                    if weight.size > 0 and bias.size > 0:
-                        layer = self.nn.getLayer(id)
+                except Exception as e: print(e)
 
-                        #Add parameters to layer
-                        layer.addParameters((id+'_w', weight), (id+'_b', bias))
+                try: #Access recurrent weights if they exist
+                    rec_weight = np.array(weightGroup[id][id]['recurrent_kernel:0'][()])
+                    layer.addParameters(type = 'weight_rec', (id+'_Wrec', weight))
 
-                    input_shape = layer.computeOutShape(input_shape)
+                except Exception as e: print(e)
 
-                #Add better exception handling
-                except Exception as e: print('Error in accessing weight: ' + str(e))
+            input_shape = layer.computeOutShape(input_shape)
 
     #Converts byte array to JSON for scraping
     def bytesToJSON(self, byte_array):
