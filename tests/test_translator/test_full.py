@@ -18,9 +18,9 @@ class TestTranslator(unittest.TestCase):
         path2 = os.path.join(path, '../output/')
         # print(path2)
 
-        generator = nnGn.Generator(p.nn, path2)
+        generator = nnGn.Generator(p.nn)
 
-        generator.generate()
+        generator.generate(path2)
 
 
 if __name__=='__main__':

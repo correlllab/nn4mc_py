@@ -12,5 +12,9 @@ def translate(file_path='', file_type='', output_path='', template='c_standard')
     parser = eval(types[file_type] + '"' + file_path + '")')
     parser.parse()
 
-    generator = nnGr.Generator(parser.nn, output_path)
-    generator.generate()
+    generator = nnGr.Generator(parser.nn)
+    generator.generate(output_path)
+
+#This method is intended for nn4mc_web
+def web_traslate():
+    pass

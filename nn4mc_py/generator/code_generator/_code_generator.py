@@ -9,15 +9,15 @@ import os
 class Generator():
     #NOTE: The following constants should actually be variable in the future
     #more customization in terms of these values.
-    TEMPLATE_TYPE = 'c_standard'
     INDEX_DATATYPE = 'int'
     LAYER_OUTPUT_DATATYPE = 'float'
     ACTIVATION_DATATYPE = 'char'
     WEIGHT_DATATYPE = 'const float'
 
-    def __init__(self, nn_obj, output_directory):
+    #NOTE:
+    def __init__(self, nn_obj, template_type='c_standard'):
         self.nn = nn_obj #NerualNetwork object to iterate on
-        self.output_dir = output_directory #Output file path
+        self.TEMPLATE_TYPE = template_type #Templates
 
         path = os.path.dirname(__file__)
         self.templates_path = os.path.join(path, 'templates/' + self.TEMPLATE_TYPE)
@@ -26,15 +26,21 @@ class Generator():
         self.source_files = {}
 
     # Generates the code
-    #NOTE:
-    def generate(self):
+    #NOTE: F specifies file output, and W specifies web output
+    def generate(self, output_directory, output_type='F'):
+        self.output_dir = output_directory #Output file path
+
         self.buildFileTree() #Builds output file directory
 
         self.processTemplates() #Processes required templates
 
         self.processLayers() #Processes layers
 
-        self.dump() #Dumps output code
+        if output_type == 'F':
+            self.dump() #Dumps output code
+        elif output_type == 'W':
+            pass #Need to call other dump
+        else: pass #Raise an error
 
     # Iterates through graph to extract which layers and
     # activations are required. Also replaces any delimiters
@@ -225,7 +231,13 @@ class Generator():
             with open(self.output_dir + 'nn4mc' + source, 'w') as outfile:
                 outfile.write(self.source_files[source])
 
-    #Looks for all standard delimiters and replaces them with actual values
+    # This function is intended to be used for nn4mc_web
+    #NOTE: This will not dump to any files, but will instead dumo to some
+    #other yet to be determined datastructure. Replace ? with proper name.
+    def dumpTo?(self):
+        pass
+
+    # Looks for all standard delimiters and replaces them with actual values
     #NOTE:
     def replaceDelimiters(self, contents):
         start = contents.find(G.START_DELIMITER)

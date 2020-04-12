@@ -11,10 +11,9 @@ class TestGenerator(unittest.TestCase):
 
     def test_basic_creation(self):
         nn = nnDs.NeuralNetwork()
-        generator = nnGn.Generator(nn, 'test')
+        generator = nnGn.Generator(nn)
 
         self.assertIsInstance(nnDs.NeuralNetwork, generator.nn)
-        self.assertEqual('test', generator.output_dir)
         #Other assertions here maybe?
 
     def test_replace_delimiters(self):
@@ -58,9 +57,9 @@ class TestGenerator(unittest.TestCase):
         path2 = os.path.join(path, 'output/')
         print(path2)
 
-        generator = nnGn.Generator(nn, path2)
+        generator = nnGn.Generator(nn)
 
-        generator.generate()
+        generator.generate(path2)
 
 
 if __name__=='__main__':
