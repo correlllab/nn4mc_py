@@ -1,1 +1,1 @@
-include nn4mc_py/*.template
+include nn4mc_py/generator/code_generator/templates/c_standard/**/*.template
