@@ -1,4 +1,4 @@
-from nn4mc_py.datastructures.layer._layer import *
+from nn4mc.datastructures.layer._layer import *
 import copy
 
 #Parent class for all layer builders
@@ -22,7 +22,7 @@ class Conv1DBuilder(LayerBuilder):
         new_layer.dilation_rate = copy.copy(json_obj['dilation_rate'])
         new_layer.activation = json_obj['activation']
         new_layer.use_bias = json_obj['use_bias']
-        
+
         return new_layer
 
 class Conv2DBuilder(LayerBuilder):

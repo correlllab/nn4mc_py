@@ -1,5 +1,5 @@
-import nn4mc_py.parser as nnPr
-import nn4mc_py.generator as nnGr
+import nn4mc.parser as nnPr
+import nn4mc.generator as nnGr
 
 types = {'hdf5' : 'nnPr.HDF5Parser(',
         'pk' : 'nnPr.PYTorchParser('}

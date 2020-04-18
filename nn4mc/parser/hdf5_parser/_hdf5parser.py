@@ -1,5 +1,5 @@
-from nn4mc_py.parser._parser import Parser
-from nn4mc_py.datastructures import NeuralNetwork
+from nn4mc.parser._parser import Parser
+from nn4mc.datastructures import NeuralNetwork
 from ._layerbuilder import *
 import h5py
 import numpy as np

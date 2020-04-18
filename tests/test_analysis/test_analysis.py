@@ -1,4 +1,4 @@
-import nn4mc_py.analysis as nnAl
+import nn4mc.analysis as nnAl
 import unittest
 
 class TestAnalyzer(unittest.TestCase):

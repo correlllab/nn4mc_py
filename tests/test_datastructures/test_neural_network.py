@@ -1,4 +1,4 @@
-import nn4mc_py.datastructures as nnDs
+import nn4mc.datastructures as nnDs
 import unittest as ut
 
 class TestNeuralNetwork(ut.TestCase):

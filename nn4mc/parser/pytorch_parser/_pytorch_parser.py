@@ -1,4 +1,4 @@
-from nn4mc_py.parser._parser import Parser
+from nn4mc.parser._parser import Parser
 import h5py
 
 class PYTorchParser(Parser):

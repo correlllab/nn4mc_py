@@ -1,5 +1,5 @@
 from queue import Queue
-from nn4mc_py.datastructures import Layer
+from nn4mc.datastructures import Layer
 
 #Auxillary data structure for nodes in graph representation.
 class LayerNode:

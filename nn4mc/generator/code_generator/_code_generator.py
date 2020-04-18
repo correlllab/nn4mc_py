@@ -1,4 +1,4 @@
-from nn4mc_py.datastructures import NeuralNetwork
+from nn4mc.datastructures import NeuralNetwork
 from ._globals import G
 import numpy as np
 import os

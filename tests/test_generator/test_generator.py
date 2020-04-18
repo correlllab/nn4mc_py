@@ -1,5 +1,5 @@
-import nn4mc_py.generator as nnGn
-import nn4mc_py.datastructures as nnDs
+import nn4mc.generator as nnGn
+import nn4mc.datastructures as nnDs
 import unittest
 import numpy as np
 import os

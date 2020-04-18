@@ -1,4 +1,4 @@
-import nn4mc_py.translator as nnTr
+import nn4mc.translator as nnTr
 import unittest
 import os
 
