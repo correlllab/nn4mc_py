@@ -1,7 +1,7 @@
 from nn4mc.datastructures import NeuralNetwork
 from ._globals import G
 import numpy as np
-import os
+import os, json
 
 #This class deals with iterating on a NerualNetwork object and
 #generating C code.
@@ -27,19 +27,20 @@ class Generator():
 
     # Generates the code
     #NOTE: F specifies file output, and W specifies web output
-    def generate(self, output_directory, output_type='F'):
-        self.output_dir = output_directory #Output file path
-
-        self.buildFileTree() #Builds output file directory
+    def generate(self, output_dir='', output_type='F'):
 
         self.processTemplates() #Processes required templates
 
         self.processLayers() #Processes layers
 
         if output_type == 'F':
-            self.dump() #Dumps output code
-        elif output_type == 'W':
-            pass #Need to call other dump
+            self.buildFileTree(output_dir) #Builds output file directory
+            self.dump(output_dir) #Dumps output code
+
+        elif output_type == 'J':
+            JSON_data = self.dump_JSON() #Need to call other dump
+            return JSON_data
+
         else: pass #Raise an error
 
     # Iterates through graph to extract which layers and
@@ -206,13 +207,13 @@ class Generator():
 
     # Builds the output file structure
     #NOTE: Need to add more error handling
-    def buildFileTree(self):
+    def buildFileTree(self, output_dir):
         directories = []
-        directories.append(self.output_dir + '/nn4mc')
-        directories.append(self.output_dir + '/nn4mc/include')
-        directories.append(self.output_dir + '/nn4mc/include/layers')
-        directories.append(self.output_dir + '/nn4mc/src')
-        directories.append(self.output_dir + '/nn4mc/src/layers')
+        directories.append(output_dir + '/nn4mc')
+        directories.append(output_dir + '/nn4mc/include')
+        directories.append(output_dir + '/nn4mc/include/layers')
+        directories.append(output_dir + '/nn4mc/src')
+        directories.append(output_dir + '/nn4mc/src/layers')
 
         try:
             for dir in directories:
@@ -222,20 +223,23 @@ class Generator():
 
     # Dumps all files into output structure
     #NOTE: Done
-    def dump(self):
+    def dump(self, output_dir):
         for header in self.header_files.keys():
-            with open(self.output_dir + 'nn4mc' + header, 'w') as outfile:
+            with open(output_dir + 'nn4mc' + header, 'w') as outfile:
                 outfile.write(self.header_files[header])
 
         for source in self.source_files.keys():
-            with open(self.output_dir + 'nn4mc' + source, 'w') as outfile:
+            with open(output_dir + 'nn4mc' + source, 'w') as outfile:
                 outfile.write(self.source_files[source])
 
     # This function is intended to be used for nn4mc_web
-    #NOTE: This will not dump to any files, but will instead dumo to some
-    #other yet to be determined datastructure. Replace ? with proper name.
-    def dumpTo?(self):
-        pass
+    #NOTE: This will not dump to any files, but will instead dump to JSON
+    def dump_JSON(self):
+        #Merge our dictionaries
+        file_data = {**self.header_files, **self.source_files}
+
+        #Return the json data
+        return json.dumps(file_data)
 
     # Looks for all standard delimiters and replaces them with actual values
     #NOTE:
