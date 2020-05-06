@@ -11,18 +11,18 @@ Please note that nn4mc_py is still in development and may have many bugs. We are
 ### Installation
 
 Simply use the Python package manager pip and run the following command.
-'''
+```
 pip install nn4mc
-'''
+```
 
 ### Usage
 
 You will most likely only need to import the translator module
-'''python
+```python
 import nn4mc.translator as nnTr
-'''
+```
 
 Then you can translate a file with the following command
-'''python
-nnTr.translate(path/to/file, 'hdf5', output/path)
-'''
+```python
+nnTr.translate("path/to/file", 'hdf5', "output/path")
+```
