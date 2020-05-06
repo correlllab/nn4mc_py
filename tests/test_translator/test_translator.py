@@ -16,11 +16,11 @@ class TestTranslator(unittest.TestCase):
 
         nnTr.translate(file, 'hdf5', path2)
 
-    def test_translate_JSON(self):
+    def test_translate_dict(self):
         with open('../data/test_1.hdf5', 'rb') as file_obj:
-            JSON = nnTr.translateToJSON(file_obj, 'hdf5')
+            dict = nnTr.translatePlain(file_obj, 'hdf5')
 
-        print(JSON)
+        print(dict)
 
 if __name__=='__main__':
     unittest.main()

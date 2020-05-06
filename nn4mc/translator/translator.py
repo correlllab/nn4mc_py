@@ -17,7 +17,7 @@ def translate(file_path, file_type, output_path, *, template='c_standard'):
 
 #This method is intended for nn4mc_web
 #NOTE: Need to fix the eval thing given file object
-def translateToJSON(file_obj, file_type, *, template='c_standard'):
+def translatePlain(file_obj, file_type, *, template='c_standard'):
     if file_type not in types:
         #Raise error
         pass
@@ -26,6 +26,6 @@ def translateToJSON(file_obj, file_type, *, template='c_standard'):
     parser.parse()
 
     generator = nnGr.Generator(parser.nn)
-    output = generator.generate(output_type='J')
+    output = generator.generate(output_type='D')
 
     return output

@@ -37,9 +37,9 @@ class Generator():
             self.buildFileTree(output_dir) #Builds output file directory
             self.dump(output_dir) #Dumps output code
 
-        elif output_type == 'J':
-            JSON_data = self.dump_JSON() #Need to call other dump
-            return JSON_data
+        elif output_type == 'D':
+            file_data = {**self.header_files, **self.source_files}
+            return file_data
 
         else: pass #Raise an error
 
@@ -231,15 +231,6 @@ class Generator():
         for source in self.source_files.keys():
             with open(output_dir + 'nn4mc' + source, 'w') as outfile:
                 outfile.write(self.source_files[source])
-
-    # This function is intended to be used for nn4mc_web
-    #NOTE: This will not dump to any files, but will instead dump to JSON
-    def dump_JSON(self):
-        #Merge our dictionaries
-        file_data = {**self.header_files, **self.source_files}
-
-        #Return the json data
-        return json.dumps(file_data)
 
     # Looks for all standard delimiters and replaces them with actual values
     #NOTE:

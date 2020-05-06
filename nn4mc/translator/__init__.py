@@ -1,1 +1,1 @@
-from .translator import translate, translateToJSON
+from .translator import translate, translatePlain
