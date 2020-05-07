@@ -28,6 +28,7 @@ class Generator():
     # Generates the code
     #NOTE: F specifies file output, and W specifies web output
     def generate(self, output_dir='', output_type='F'):
+        print(output_dir)
 
         self.processTemplates() #Processes required templates
 
@@ -225,11 +226,11 @@ class Generator():
     #NOTE: Done
     def dump(self, output_dir):
         for header in self.header_files.keys():
-            with open(output_dir + 'nn4mc' + header, 'w') as outfile:
+            with open(output_dir + '/nn4mc' + header, 'w') as outfile:
                 outfile.write(self.header_files[header])
 
         for source in self.source_files.keys():
-            with open(output_dir + 'nn4mc' + source, 'w') as outfile:
+            with open(output_dir + '/nn4mc' + source, 'w') as outfile:
                 outfile.write(self.source_files[source])
 
     # Looks for all standard delimiters and replaces them with actual values
