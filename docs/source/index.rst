@@ -10,7 +10,7 @@ Welcome to nn4mc_py's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-        test
+   test
 
 Indices and tables
 ==================
