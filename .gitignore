@@ -1,5 +1,12 @@
+### Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.egg-info/
 build/
 dist/
+
+### CMake
+Makefile
+
+### Sphinx
+docs/_build/
