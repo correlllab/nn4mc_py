@@ -29,16 +29,16 @@ struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
 
 	layer.strides = strides;
     layer.kernel_shape[0] = kernel_size;
-
+	
     layer.input_shape[0] = input_sh0;
 	layer.input_shape[1] = input_sh1;
-
+    
     layer.dilation_rate = dilation_rate;
 
     layer.activation = activation;
     layer.padding = padding;
     layer.data_format = data_format;
-
+    
     layer.filters= filters;
 
 	layer.output_shape[0] = (int)((layer.input_shape[0] - layer.kernel_shape[0])/layer.strides + 1);
@@ -63,10 +63,10 @@ struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
         <%LAYER_DATATYPE_DELIMITER>* input = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.input_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
         for (i =0; i<L.input_size ; i++ ) input[i] = new_input[i];
         free(new_input);
-        L.input_shape[0] = L.input_size;
+        L.input_shape[0] = L.input_size;  
         L.output_shape[0] = (int)((L.input_shape[0] - L.kernel_shape[0])/L.strides + 1);
     }
-
+    
     if (L.padding == 0x03){ // padding is same
         if (L.output_shape[0]*L.output_shape[1] > L.input_shape[0]*L.input_shape[0]){
             int pad = L.output_shape[0]*L.output_shape[1] - L.input_shape[0]*L.input_shape[0];
@@ -75,7 +75,7 @@ struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
         <%LAYER_DATATYPE_DELIMITER>* new_input = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.input_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
         for (int i = 0; i< L.input_size; i++) new_input[i] = 0.0;
 
-        for (int i=0; i< L.input_size - pad; i++) new_input[i+pad] = input[i];
+        for (int i=0; i< L.input_size - pad; i++) new_input[i+pad] = input[i]; 
         free(input);
         <%LAYER_DATATYPE_DELIMITER>* input = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.input_size*sizeof(<%LAYER_DATATYPE_DELIMITER>));
         for (i =0; i < L.input_size ; i++) input[i] = new_input[i];
@@ -91,7 +91,7 @@ struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
                 input[i + L.input_shape[1]*j] = input[j+L.input_shape[1]*i];
                 input[j + L.input_shape[1] * i] = temp;
             }
-        }
+        } 
     }
 
      <%LAYER_DATATYPE_DELIMITER> * h = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.output_shape[0]*L.output_shape[1] * sizeof(<%LAYER_DATATYPE_DELIMITER>));
@@ -122,3 +122,12 @@ struct Conv1D buildConv1D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
 }
 
 <%END_DEFINITION_TEMPLATE>
+
+
+<%BEGIN_INITIALIZE_TEMPLATE>
+        <%LAYER_NAME> = buildConv1D(&<%WEIGHT_NAME>[0], <%BIAS_NAME>, <%KERNEL_SIZE>, <%STRIDE_SIZE>, <%INPUT_SHAPE_0>, <%INPUT_SHAPE_1>, <%FILTERS>, <%ACTIVATION>, <%PADDING>, <%DATA_FORMAT>, <%DILATION_RATE>);
+<%END_INITIALIZE_TEMPLATE>
+
+<%BEGIN_CALL_TEMPLATE>
+        data = fwdConv1D(<%LAYER_NAME>, <%INPUT>);
+<%END_CALL_TEMPLATE>

@@ -24,6 +24,8 @@ class Generator():
 
         self.header_files = {}
         self.source_files = {}
+        self.init_strings = {}
+        self.fwd_strings = {}
 
     # Generates the code
     #NOTE: F specifies file output, and W specifies web output
@@ -77,9 +79,12 @@ class Generator():
             file = G.LAYER_TEMPLATE_SOURCE + layer_type + '.cpp'
             with open(self.templates_path + file + '.template', 'r') as source:
                 contents = source.read()
+                strings = self.extractStrings(contents)
                 contents = self.replaceDelimiters(contents)
 
                 self.source_files[file] = contents
+                self.init_strings[layer_type] = strings[0]
+                self.fwd_strings[layer_type] = strings[1]
 
         #For each activation type scrape and replace delimiters
         file = G.ACTIVATION_HEADER
@@ -168,8 +173,8 @@ class Generator():
         for node in self.nn.iterate():
             if node.layer.layer_type != 'input' and node.layer.layer_type != 'flatten':
                 param_string = node.layer.getParameters()
-                init_string = node.layer.generateInit()
-                fwd_string = node.layer.generateFwd()
+                init_string = node.layer.generateString(init_strings[node.layer.layer_type])
+                fwd_string = node.layer.generateString(fwd_strings[node.layer.layer_type])
                 act_string = node.layer.generateAct()
 
                 #Deal with weights and bias stuff
@@ -255,3 +260,26 @@ class Generator():
         contents = contents.replace(G.ACTIVATION_DATATYPE_DELIMITER, self.ACTIVATION_DATATYPE)
 
         return contents
+
+    #Looks for initialization and forward strings and extracts them
+    def extractStrings(self, contents):
+        init_string = None
+        fwd_string = None
+
+        start = contents.find(G.START_INIT)
+        end = contents.find(G.END_INIT)
+
+        if start != -1:
+            start += len(G.START_INIT)
+
+            init_string = contents[start:end]
+
+        start = contents.find(G.START_FWD)
+        end = contents.find(G.END_FWD)
+
+        if start != -1:
+            start += len(G.START_FWD)
+
+            fwd_string = contents[start:end]
+
+        return (init_string, fwd_string)

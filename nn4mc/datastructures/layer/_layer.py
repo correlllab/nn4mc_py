@@ -1,5 +1,6 @@
 from ._weights import Weight
 from abc import ABC, abstractmethod
+from ._globals import G
 
 #Parent class for all available layer types
 class Layer(ABC):
@@ -33,7 +34,7 @@ class Layer(ABC):
         return param_string
 
     def generateAct(self):
-        if self.activation!='':
+        if self.activation!='' and self.activation!='linear':
             if self.activation=='softmax':
                 act_string = 'data = ' + self.activation +\
                  '(data, ' + self.output_shape + ' );\n'
@@ -42,13 +43,19 @@ class Layer(ABC):
         else:
             return ''
 
-    @abstractmethod
-    def generateInit(): #For derived classes
-        pass
+    def generateString(self, temp_string): #For derived classes
+        start = temp_string.find(G.start_delim)
+        end = temp_string.find(G.end_delim)
+        while(start != -1):
+            meta = temp_string[start+len(start_delim):end]
 
-    @abstractmethod
-    def generateFwd(): #For derived classes
-        pass
+            temp_string = temp_string.replace(temp_string[start:end+len(end_delim)],
+            G.delim_map[meta])
+
+            start = temp_string.find(G.start_delim)
+            end = temp_string.find(G.end_delim)
+
+        return temp_string
 
     @abstractmethod
     def isInput(self): #Defualt behavior is not input

@@ -24,7 +24,7 @@ recurrent_dropout, bool go_backwards)
 	layer.weights = W;
 	layer.biases = b;
     layer.wrec = Wrec
-
+    
     layer.input_shape[0] = input_sh0;
     layer.input_shape[1] = input_sh1;
 
@@ -52,7 +52,7 @@ void reverseInput(<%LAYER_DATATYPE_DELIMITER> * x, int start, int end){
         start++;
         end--;
     }
-}
+} 
 
 <%LAYER_DATATYPE_DELIMITER> * fwdGRU(struct GRU L, <%LAYER_DATATYPE_DELIMITER>* input)
 {
@@ -100,16 +100,24 @@ void reverseInput(<%LAYER_DATATYPE_DELIMITER> * x, int start, int end){
             hh[i]= activate(hh[i], L.output_shape, L.activation);
             h[i] = z[i]*L.prev_h[i] + (1 - z[i]) * hh[i];
             L.prev_h[i] = h[i];
-       }
-
-    }
+       }        
+      
+    } 
 
     free(z);
     free(input);
     free(r);
     free(hh);
-
+    
     return h;
 }
 
 <%END_DEFINITION_TEMPLATE>
+
+<%BEGIN_INITIALIZE_TEMPLATE>
+        <%LAYER_NAME> = buildGRU(&<%WEIGHT_NAME>[0], &<%RECURRENT_WEIGHT_NAME>[0], <%BIAS_NAME>, <%INPUT_SHAPE_0>, <%INPUT_SHAPE_1>, <%OUTPUT_SIZE>, <%ACTIVATION>, <%RECURRENT_ACTIVATION>, <%DROPOUT>, <%RECURRENT_DROPOUT>, <%GO_BACKWARDS>);
+<%END_INITIALIZE_TEMPLATE>
+
+<%BEGIN_CALL_TEMPLATE>
+        data = fwdGRU(<%LAYER_NAME>, <%INPUT>);
+<%END_CALL_TEMPLATE>

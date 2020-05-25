@@ -35,7 +35,7 @@ struct Conv2D buildConv2D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
 
     layer.kernel_shape[0] = kernel_shape_0;
     layer.kernel_shape[1] = kernel_shape_1;
-
+   
     layer.dilation_rate[0] = dilation_rate_0;
     layer.dilation_rate[1] = dilation_rate_1;
 
@@ -58,7 +58,7 @@ struct Conv2D buildConv2D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
 {
 
     if (L.padding == 0x02){
-            // TODO
+            // TODO             
 
     }
 
@@ -109,3 +109,12 @@ struct Conv2D buildConv2D(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DEL
 }
 
 <%END_DEFINITION_TEMPLATE>
+
+
+<%BEGIN_INITIALIZE_TEMPLATE>
+        <%LAYER_NAME> = buildConv2D(&<%WEIGHT_NAME>[0], <%BIAS_NAME>, <%KERNEL_SHAPE_0>, <%KERNEL_SHAPE_1>, <%FILTERS>, <%STRIDE_SHAPE_0>, <%STRIDE_SHAPE_1>, <%INPUT_SHAPE_0>, <%INPUT_SHAPE_1>, <%INPUT_SHAPE_2>, <%ACTIVATION>, <%PADDING>, <%DATA_FORMAT>,<%DILATION_RATE_0>, <%DILATION_RATE_1>);
+<%END_INITIALIZE_TEMPLATE>
+
+<%BEGIN_CALL_TEMPLATE>
+        data = fwdConv2D(<%LAYER_NAME>, <%INPUT>);
+<%END_CALL_TEMPLATE>
