@@ -1,9 +1,12 @@
 from nn4mc.datastructures.layer._layer import *
+from abc import ABC, abstractmethod
 import copy
 
 #Parent class for all layer builders
-class LayerBuilder:
+class LayerBuilder(ABC):
+
     #Builds a layer object from JSON metadata
+    @abstractmethod
     def build_layer(self, json_obj, id, layer_type):
         pass
 

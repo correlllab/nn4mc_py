@@ -82,7 +82,6 @@ class Generator():
                 self.source_files[file] = contents
 
         #For each activation type scrape and replace delimiters
-        #NOTE: Need to change this to grab only the neccessary functions
         file = G.ACTIVATION_HEADER
         with open(self.templates_path + file + '.template', 'r') as header:
             contents = header.read()
@@ -168,16 +167,14 @@ class Generator():
 
         for node in self.nn.iterate():
             if node.layer.layer_type != 'input' and node.layer.layer_type != 'flatten':
-                weight_string = node.layer.w.getParams()
-                bias_string = node.layer.b.getParams()
+                param_string = node.layer.getParameters()
                 init_string = node.layer.generateInit()
                 fwd_string = node.layer.generateFwd()
+                act_string = node.layer.generateAct()
 
                 #Deal with weights and bias stuff
                 param_template = param_template.replace(
-                    G.W_WEIGHT_DELIMITER, weight_string + G.W_WEIGHT_DELIMITER)
-                param_template = param_template.replace(
-                    G.W_WEIGHT_DELIMITER, bias_string + G.W_WEIGHT_DELIMITER)
+                    G.W_WEIGHT_DELIMITER, param_string + G.W_WEIGHT_DELIMITER)
 
                 #Deal with writing the layer
                 #HEADER: Add the structs
@@ -195,7 +192,12 @@ class Generator():
                 nn_source = nn_source.replace(G.NN_FWD_DELIMITER,
                     fwd_string + G.NN_FWD_DELIMITER)
 
-        #Remove the weight placement delimiter
+                #Add the activation funcion
+                pos = nn_source.find(G.NN_FWD_DELIMITER)
+                nn_source = nn_source.replace(G.NN_FWD_DELIMITER,
+                    act_string + G.NN_FWD_DELIMITER)
+
+        #Remove delimiters
         param_template = param_template.replace(
         G.W_WEIGHT_DELIMITER, '')
         nn_header = nn_header.replace(G.NN_STRUCT_DELIMITER, '')
@@ -220,7 +222,7 @@ class Generator():
             for dir in directories:
                 os.mkdir(dir)
         except Exception as e:
-            print(e)
+            print('GENERATOR: Output directory exists, moving on.')
 
     # Dumps all files into output structure
     #NOTE: Done
@@ -233,6 +235,8 @@ class Generator():
             with open(output_dir + '/nn4mc' + source, 'w') as outfile:
                 outfile.write(self.source_files[source])
 
+################################################################################
+#Helper Functions
     # Looks for all standard delimiters and replaces them with actual values
     #NOTE:
     def replaceDelimiters(self, contents):

@@ -6,10 +6,9 @@ class Layer(ABC):
     #Input and output data shapes: None if not unspecified
     input_shape = None # we might have to change this
     output_shape = None # we might have to change this
-    w = None
-    b = None
+    params = {'w':Weight(None, None), 'b':Weight(None, None), 'w_rec':Weight(None, None)}
 
-    def __init__(self, id, type='unspecified'):
+    def __init__(self, id, type=None):
         self.identifier = id #Unique ID
         self.layer_type = type #Layer type (i.e conv1d)
 
@@ -17,20 +16,31 @@ class Layer(ABC):
     #Takes tuple of (id, values) for weights and biases
     def addParameters(self, type, data):
         if type == 'weight':
-            self.w = Weight(data[0], data[1])
+            self.params['w'] = Weight(data[0], data[1])
 
         elif type == 'bias':
-            self.b = Weight(data[0], data[1])
+            self.params['b'] = Weight(data[0], data[1])
 
         elif type == 'weight_rec':
-            self.w_rec = Weight(data[0], data[1])
+            self.params['w_rec'] = Weight(data[0], data[1])
 
-    def isInput(self): #Defualt behavior is not input
-        return False
+    def getParameters(self):
+        param_string = ''
+        for weight in self.params:
+            if weight.identifier!=None:
+                param_string = param_string + weight.getParams()
 
-    @abstractmethod
-    def computeOutShape(self):
-        pass
+        return param_string
+
+    def generateAct(self):
+        if self.activation!='':
+            if self.activation=='softmax':
+                act_string = 'data = ' + self.activation +\
+                 '(data, ' + self.output_shape + ' );\n'
+            else:
+                act_string = 'data = ' + self.activation + '(data);\n'
+        else:
+            return ''
 
     @abstractmethod
     def generateInit(): #For derived classes
@@ -38,6 +48,14 @@ class Layer(ABC):
 
     @abstractmethod
     def generateFwd(): #For derived classes
+        pass
+
+    @abstractmethod
+    def isInput(self): #Defualt behavior is not input
+        return False
+
+    @abstractmethod
+    def computeOutShape(self):
         pass
 
     def __hash__(self): #Hashes on the identifier
@@ -61,15 +79,14 @@ class Conv1D(Layer):
 
     def generateInit(self):
         init_string = self.identifier + ' = buildConv1D(&' +\
-                    self.w.identifier + '[0], ' +\
-                    self.b.identifier + ', ' +\
+                    self.param['w'].identifier + '[0], ' +\
+                    self.params['b'].identifier + ', ' +\
                     str(self.kernel_size[0]) + ', ' +\
                     str(self.strides[0]) + ', ' +\
                     str(self.input_shape[0]) + ', ' +\
                     str(self.input_shape[1]) + ', ' +\
                     str(self.filters) + ', ' +\
                     self.activation + ');\n'
-                    #Need to add padding, data_format, and dilation_rate
 
         return init_string
 
@@ -78,7 +95,6 @@ class Conv1D(Layer):
 
         return fwd_string
 
-    # (int)(layer.input_shape[0] - layer.kernel_shape[0] + 1)
     def computeOutShape(self, input_shape = None):
         self.input_shape = input_shape
         output_shape = [0.0]*2
@@ -101,8 +117,8 @@ class Conv2D(Layer):
 
     def generateInit(self):
         init_string = self.identifier + ' = buildConv2D(&' +\
-                    self.w.identifier + '[0], ' +\
-                    self.b.identifier + ', ' +\
+                    self.params['w'].identifier + '[0], ' +\
+                    self.params['b'].identifier + ', ' +\
                     str(self.kernel_size[0]) + ', ' +\
                     str(self.kernel_size[1]) + ', ' +\
                     str(self.filters) + ', ' +\
@@ -112,7 +128,6 @@ class Conv2D(Layer):
                     str(self.input_shape[1]) + ', ' +\
                     str(self.input_shape[2]) + ', ' +\
                     self.activation + ');\n'
-                    #Need to add padding, data_format, and dilation_rate
 
     def generateFwd(self):
         fwd_string = 'data = fwdConv2D(' + self.identifier + ', data);\n'
@@ -137,8 +152,8 @@ class Dense(Layer):
 
     def generateInit(self):
         init_string = self.identifier + ' = buildDense(&' +\
-                    self.w.identifier + '[0], ' +\
-                    self.b.identifier + ', ' +\
+                    self.params['w'].identifier + '[0], ' +\
+                    self.params['b'].identifier + ', ' +\
                     str(self.input_shape[0]) + ', ' +\
                     str(self.output_shape[0]) + ', ' +\
                     self.activation + ');\n'
@@ -152,7 +167,7 @@ class Dense(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.b.values.shape[0]]
+        self.output_shape = [self.params['b'].values.shape[0]]
 
         return self.output_shape
 
@@ -212,6 +227,7 @@ class MaxPooling2D(Layer):
 
 ################################################################################
 #TODO: Check on all fwd and init generators, they arent finished in nn4mc std
+#TODO: Check on all parameters
 
 class SimpleRNN(Layer):
     units = 0
@@ -224,9 +240,9 @@ class SimpleRNN(Layer):
 
     def generateInit():
         init_string = self.identifier + ' = buildSimpleRNN(&' +\
-                    self.w.identifier + '[0], ' +\
-                    self.w_rec.identifier + '[0], ' +\
-                    self.b.identifier + ',' +\
+                    self.params['w'].identifier + '[0], ' +\
+                    self.params['w_rec'].identifier + '[0], ' +\
+                    self.params['b'].identifier + ',' +\
                     str(self.input_shape[0]) + ',' +\
                     str(self.input_shape[1]) + ',' +\
                     str(self.output_shape[0]) + ',' +\
@@ -242,14 +258,12 @@ class SimpleRNN(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.b.values.shape[0]]
+        self.output_shape = [self.params['b'].values.shape[0]]
 
         return self.output_shape
 
 class GRU(Layer):
     units = 0
-    dropout = 0.0
-    recurrent_dropout = 0.0
     activation = ''
     recurrent_activation = ''
     use_bias = True
@@ -260,9 +274,9 @@ class GRU(Layer):
 
     def generateInit():
         init_string = self.identifier + ' = buildGRU(&' +\
-                    self.w.identifier + '[0], ' +\
-                    self.w_rec.identifier + '[0], ' +\
-                    self.b.identifier + ',' +\
+                    self.params['w'].identifier + '[0], ' +\
+                    self.params['w_rec'].identifier + '[0], ' +\
+                    self.params['b'].identifier + ',' +\
                     str(self.input_shape[0]) + ',' +\
                     str(self.input_shape[1]) + ',' +\
                     str(self.output_shape[0]) + ',' +\
@@ -281,7 +295,7 @@ class GRU(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.b.values.shape[0]]
+        self.output_shape = [self.params['b'].values.shape[0]]
 
         return self.output_shape
 
@@ -299,9 +313,9 @@ class LSTM(Layer):
 
     def generateInit():
         init_string = self.identifier + ' = buildGRU(&' +\
-                    self.w.identifier + '[0], ' +\
-                    self.w_rec.identifier + '[0], ' +\
-                    self.b.identifier + ',' +\
+                    self.params['w'].identifier + '[0], ' +\
+                    self.params['w_rec'].identifier + '[0], ' +\
+                    self.params['b'].identifier + ',' +\
                     str(self.input_shape[0]) + ',' +\
                     str(self.input_shape[1]) + ',' +\
                     str(self.output_shape[0]) + ',' +\
@@ -320,14 +334,25 @@ class LSTM(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.b.values.shape[0]]
+        self.output_shape = [self.params['b'].values.shape[0]]
 
         return self.output_shape
 
 ################################################################################
-# NOTE: Not sure about these
-# I think some stuff needs to be changed, at least in the templates, but they
-# are implemented just uncertain about some stuff.
+#TODO: Check the implementation of this in code generator
+class Activation(Layer):
+    activation = ''
+
+    def generateInit():
+        pass
+
+    def generateFwd():
+        pass
+
+    def computeOutShape(self, input_shape):
+        pass
+
+#NOTE: No template or anything for this as everything is already flattened
 class Flatten(Layer):
     def generateInit():
         return ''
@@ -343,18 +368,6 @@ class Flatten(Layer):
         self.output_shape = temp
         return temp
 
-class Activation(Layer):
-    activation = ''
-
-    def generateInit():
-        pass
-
-    def generateFwd():
-        pass
-
-    def computeOutShape(self, input_shape):
-        pass
-
 class Dropout(Layer):
     def generateInit():
         return ''
@@ -367,6 +380,7 @@ class Dropout(Layer):
         self.output_shape = input_shape
         return self.output_shape
 
+#NOTE: This is really just useful in the graph to find starting point
 class Input(Layer):
     size = 0
 

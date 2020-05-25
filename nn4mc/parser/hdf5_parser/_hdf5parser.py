@@ -78,7 +78,6 @@ class HDF5Parser(Parser):
     #Parses all of the weights
     #NOTE:
     def parseWeights(self, h5file):
-        # with h5py.File(self.file_name,'r') as h5file: #Open file
         weightGroup = h5file['model_weights'] #Open weight group
 
         input_shape = self.nn_input_size
@@ -107,8 +106,6 @@ class HDF5Parser(Parser):
             print('Computing shape for ', id)
             input_shape = layer.computeOutShape(input_shape)
 
-################################################################################
-#Helper functions
     #Parses model for input size
     def parse_nn_input(self, model_config : dict):
         """
@@ -120,7 +117,8 @@ class HDF5Parser(Parser):
         if model_config['layers'][0].get('config','batch_input_shape'):
             self.nn_input_size = model_config['layers'][0]['config']['batch_input_shape'][1:]
 
-
+################################################################################
+#Helper functions
     #Converts byte array to JSON for scraping
     def bytesToJSON(self, byte_array):
         string = byte_array.decode('utf8')
