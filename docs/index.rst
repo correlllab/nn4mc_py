@@ -11,6 +11,6 @@ nn4mc_py...
 .. toctree::
     :hidden:
 
-   installation
-   usage
-   dev
+    installation
+    usage
+    dev
