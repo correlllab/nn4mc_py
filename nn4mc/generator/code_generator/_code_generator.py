@@ -173,8 +173,8 @@ class Generator():
         for node in self.nn.iterate():
             if node.layer.layer_type != 'input' and node.layer.layer_type != 'flatten':
                 param_string = node.layer.getParameters()
-                init_string = node.layer.generateString(init_strings[node.layer.layer_type])
-                fwd_string = node.layer.generateString(fwd_strings[node.layer.layer_type])
+                init_string = node.layer.generateCall(init_strings[node.layer.layer_type])
+                fwd_string = node.layer.generateCall(fwd_strings[node.layer.layer_type])
                 act_string = node.layer.generateAct()
 
                 #Deal with weights and bias stuff

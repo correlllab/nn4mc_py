@@ -18,7 +18,7 @@ class Conv1DBuilder(LayerBuilder):
         new_layer = Conv1D(id, layer_type)
 
         new_layer.filters = json_obj['filters']
-        new_layer.kernel_size = copy.copy(json_obj['kernel_size'])
+        new_layer.kernel_shape = copy.copy(json_obj['kernel_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
         new_layer.padding = json_obj['padding']
         new_layer.data_format = json_obj['data_format']
@@ -33,7 +33,7 @@ class Conv2DBuilder(LayerBuilder):
         new_layer = Conv2D(id, layer_type)
 
         new_layer.filters = json_obj['filters']
-        new_layer.kernel_size = copy.copy(json_obj['kernel_size'])
+        new_layer.kernel_shape = copy.copy(json_obj['kernel_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
         new_layer.padding = json_obj['padding']
         new_layer.data_format = json_obj['data_format']
@@ -57,7 +57,7 @@ class MaxPooling1DBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = MaxPooling1D(id, layer_type)
 
-        new_layer.pool_size = copy.copy(json_obj['pool_size'])
+        new_layer.pool_shape = copy.copy(json_obj['pool_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
         new_layer.padding = json_obj['padding']
         new_layer.data_format = json_obj['data_format']
@@ -68,7 +68,7 @@ class MaxPooling2DBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = MaxPooling2D(id, layer_type)
 
-        new_layer.pool_size = copy.copy(json_obj['pool_size'])
+        new_layer.pool_shape = copy.copy(json_obj['pool_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
         new_layer.padding = json_obj['padding']
         new_layer.data_format = json_obj['data_format']

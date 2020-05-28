@@ -15,10 +15,11 @@ class Weight:
     def getParams(self):
         if self.identifier==None;
             return ''
-            
+
         flat = self.values.flatten()
         size = flat.shape[0]
 
+        #This is where you would account for datatypes
         param_string = 'float ' + self.identifier +\
                         '[' + str(size) + '] = {'
 

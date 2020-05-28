@@ -17,7 +17,7 @@
 #define min(a, b) (((a)<(b) ? (a) : (b)))
 
 
-struct Dense buildDense(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DELIMITER>* b, <%INDEX_DATATYPE_DELIMITER> input_size, <%INDEX_DATATYPE_DELIMITER> output_size, <%ACTIVATION_DATATYPE_DELIMITER> activation)
+struct Dense buildDense(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DELIMITER>* b, <%INDEX_DATATYPE_DELIMITER> input_size, <%INDEX_DATATYPE_DELIMITER> output_shape, <%ACTIVATION_DATATYPE_DELIMITER> activation)
 {
 	struct Dense layer;
 
@@ -25,9 +25,9 @@ struct Dense buildDense(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DELIM
 	layer.biases = b;
 
 	layer.input_shape[0] = input_size;
-	layer.output_shape[0] = output_size;
+	layer.output_shape[0] = output_shape;
     layer.weight_shape[0] = input_size;
-    layer.weight_shape[1] = output_size;
+    layer.weight_shape[1] = output_shape;
     layer.activation = activation;
 	return layer;
 }
@@ -61,9 +61,9 @@ struct Dense buildDense(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYPE_DELIM
 
 
 <%BEGIN_INITIALIZE_TEMPLATE>
-        <%LAYER_NAME> = buildDense(&<%WEIGHT_NAME>[0], <%BIAS_NAME>, <%INPUT_SHAPE_0>, <%OUTPUT_SIZE>, <%ACTIVATION>);
+        <%LAYER_NAME> = buildDense(&<%WEIGHT_NAME>[0], <%BIAS_NAME>, <%INPUT_SHAPE_0>, <%OUTPUT_SHAPE>, <%ACTIVATION>);
 <%END_INITIALIZE_TEMPLATE>
 
 <%BEGIN_CALL_TEMPLATE>
-        data = fwdDense(<%LAYER_NAME>, <%INPUT>);
+        data = fwdDense(<%LAYER_NAME>, data);
 <%END_CALL_TEMPLATE>
