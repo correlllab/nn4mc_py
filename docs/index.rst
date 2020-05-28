@@ -10,6 +10,7 @@ nn4mc_py...
 
 .. toctree::
    :maxdepth: 2
+   :caption: Test
 
    installation
    usage
