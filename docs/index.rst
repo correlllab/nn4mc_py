@@ -7,10 +7,3 @@ nn4mc_py
 ========
 
 nn4mc_py...
-
-.. toctree::
-    :hidden:
-
-    installation
-    usage
-    dev
