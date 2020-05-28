@@ -3,14 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Python: nn4mc_py
-====================================
+nn4mc_py
+========
 
 nn4mc_py...
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Test
 
    installation
    usage
