@@ -35,4 +35,5 @@ class G():
     'RECURRENT_DROPOUT':'str(self.recurrent_dropout)',
     'GO_BACKWARDS':'self.go_backwards',
     'POOL_SHAPE_0':'str(self.pool_shape[0])',
-    'POOL_SHAPE_1':'str(self.pool_shape[1])'}
+    'POOL_SHAPE_1':'str(self.pool_shape[1])',
+    'ACTIVATION':'self.activation'}

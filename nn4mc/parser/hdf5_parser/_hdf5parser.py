@@ -103,7 +103,6 @@ class HDF5Parser(Parser):
 
             except Exception as e: pass#print(e)
 
-            print('Computing shape for ', id)
             input_shape = layer.computeOutShape(input_shape)
 
     #Parses model for input size

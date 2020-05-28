@@ -16,7 +16,7 @@
 
 void buildLayers(){
 
-    <%BUILD_FUNCTION>
+  <%BUILD_FUNCTION>
 
 }
 
@@ -24,9 +24,9 @@ void buildLayers(){
 <%LAYER_DATATYPE_DELIMITER> * fwdNN(<%LAYER_DATATYPE_DELIMITER>* data)
 {
 
-    <%FWD_FUNCTION>
+  <%FWD_FUNCTION>
 
-    return data;
+  return data;
 }
 
 }

@@ -27,7 +27,7 @@ class Layer(ABC):
 
     def getParameters(self):
         param_string = ''
-        for weight in self.params:
+        for weight in self.params.values():
             if weight.identifier!=None:
                 param_string = param_string + weight.getParams()
 
@@ -40,6 +40,8 @@ class Layer(ABC):
                  '(data, ' + self.output_shape + ' );\n'
             else:
                 act_string = 'data = ' + self.activation + '(data);\n'
+
+            return act_string
         else:
             return ''
 
@@ -47,10 +49,10 @@ class Layer(ABC):
         start = temp_string.find(G.start_delim)
         end = temp_string.find(G.end_delim)
         while(start != -1):
-            meta = temp_string[start+len(start_delim):end]
+            meta = temp_string[start+len(G.start_delim):end]
             val = eval(G.delim_map[meta])
 
-            temp_string = temp_string.replace(temp_string[start:end+len(end_delim)],
+            temp_string = temp_string.replace(temp_string[start:end+len(G.end_delim)],
             val)
 
             start = temp_string.find(G.start_delim)
@@ -58,7 +60,6 @@ class Layer(ABC):
 
         return temp_string
 
-    @abstractmethod
     def isInput(self): #Defualt behavior is not input
         return False
 

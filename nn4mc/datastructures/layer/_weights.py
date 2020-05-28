@@ -13,7 +13,7 @@ class Weight:
     #for code generation
     #NOTE: Not accounting for different datatypes
     def getParams(self):
-        if self.identifier==None;
+        if self.identifier==None:
             return ''
 
         flat = self.values.flatten()
