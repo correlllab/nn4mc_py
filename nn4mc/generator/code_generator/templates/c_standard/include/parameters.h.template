@@ -1,4 +1,3 @@
-<%BEGIN_DEFINITION_TEMPLATE>
 /********************
     parameters.h
 
@@ -15,11 +14,13 @@ extern "C" {
 #endif
 
 
-<%WEIGHT>
+<%BEGIN_TEMPLATE>
+const <%WEIGHT_DATATYPE> <%WEIGHT_NAME><%WEIGHT_INDEX> = <%DATA>;
+
+<%END_TEMPLATE>
 
 #ifdef __cplusplus
-}
+//}
 
 #endif
 #endif
-<%END_DEFINITION_TEMPLATE

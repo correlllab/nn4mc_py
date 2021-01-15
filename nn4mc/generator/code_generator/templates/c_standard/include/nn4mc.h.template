@@ -14,7 +14,7 @@
 #ifdef __cplusplus
 extern "C" {
 
-#include "paramaters.h"
+#include "parameters.h"
 <%INCLUDE>
 
 <%STRUCTS>

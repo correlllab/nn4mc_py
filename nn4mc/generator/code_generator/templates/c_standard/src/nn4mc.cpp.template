@@ -9,14 +9,14 @@
 */
 
 #ifdef __cplusplus
-#extern "C" {
+extern "C" {
 
-#include "neural_network.h"
+#include "nn4mc.h"
 #include <stdlib.h>
 
 void buildLayers(){
 
-  <%BUILD_FUNCTION>
+    <%BUILD_FUNCTION>
 
 }
 
@@ -24,9 +24,9 @@ void buildLayers(){
 <%LAYER_DATATYPE_DELIMITER> * fwdNN(<%LAYER_DATATYPE_DELIMITER>* data)
 {
 
-  <%FWD_FUNCTION>
+    <%FWD_FUNCTION>
 
-  return data;
+    return data;
 }
 
 }

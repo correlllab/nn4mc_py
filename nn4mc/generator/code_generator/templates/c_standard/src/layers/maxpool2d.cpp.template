@@ -15,21 +15,21 @@
 #define max(a, b) (((a)>(b) ? (a) : (b)))
 #define min(a, b) (((a)<(b) ? (a) : (b)))
 
-struct MaxPooling2D buildMaxPooling2D(<%INDEX_DATATYPE_DELIMITER> pool_shape_0, <%INDEX_DATATYPE_DELIMITER> pool_shape_1, <%INDEX_DATATYPE_DELIMITER> strides_0, <%INDEX_DATATYPE_DELIMITER> strides_1, <%INDEX_DATATYPE_DELIMITER> input_shape_0, <%INDEX_DATATYPE_DELIMITER> input_shape_1, <%INDEX_DATATYPE_DELIMITER> input_shape_2)
+struct MaxPooling2D buildMaxPooling2D(<%INDEX_DATATYPE_DELIMITER> pool_size_0, <%INDEX_DATATYPE_DELIMITER> pool_size_1, <%INDEX_DATATYPE_DELIMITER> strides_0, <%INDEX_DATATYPE_DELIMITER> strides_1, <%INDEX_DATATYPE_DELIMITER> input_shape_0, <%INDEX_DATATYPE_DELIMITER> input_shape_1, <%INDEX_DATATYPE_DELIMITER> input_shape_2)
 {
 	MaxPooling2D layer;
 
 	layer.strides[0] = strides_0;
     layer.strides[1] = strides_1;
 
-    layer.pool_size[0] = pool_shape_0;
-    layer.pool_size[1] = pool_shape_1;
+    layer.pool_size[0] = pool_size_0;
+    layer.pool_size[1] = pool_size_1;
     layer.input_shape[0] = input_shape_0;
     layer.input_shape[1] = input_shape_1;
     layer.input_shape[2] = input_shape_2;
 
-	layer.output_shape[0] = pool_shape_0;
-	layer.output_shape[1] = pool_shape_1;
+	layer.output_shape[0] = pool_size_0;
+	layer.output_shape[1] = pool_size_1;
     layer.output_shape[2] = input_shape_2;
 
 	return layer;
@@ -67,9 +67,9 @@ struct MaxPooling2D buildMaxPooling2D(<%INDEX_DATATYPE_DELIMITER> pool_shape_0, 
 
 
 <%BEGIN_INITIALIZE_TEMPLATE>
-        <%LAYER_NAME> = buildMaxPooling2D(<%POOL_SHAPE_0>,<%POOL_SHAPE_1>, <%STRIDES_0>,<%STRIDES_1>, <%INPUT_SHAPE_0>,  <%INPUT_SHAPE_1>, <%INPUT_SHAPE_2>);
+        <%LAYER_NAME> = buildMaxPooling2D(<%POOL_SHAPE_0>,<%POOL_SHAPE_1>, <%STRIDE_SHAPE_0>,<%STRIDE_SHAPE_1>, <%INPUT_SHAPE_0>,  <%INPUT_SHAPE_1>, <%INPUT_SHAPE_2>);
 <%END_INITIALIZE_TEMPLATE>
 
 <%BEGIN_CALL_TEMPLATE>
-        data = fwdMaxPooling2D(<%LAYER_NAME>, data);
+        data = fwdMaxPooling2D(<%LAYER_NAME>, <%INPUT>);
 <%END_CALL_TEMPLATE>

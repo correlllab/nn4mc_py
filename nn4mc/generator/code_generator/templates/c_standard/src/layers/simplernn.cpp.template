@@ -7,13 +7,14 @@
     This file implements a simple recurret layer.
 
     Implementation of Elman Network:
-        Elman, Jeffrey L. (1990). Finding Structure in Time. Cognitive Science.
+        Elman, Jeffrey L. (1990). Finding Structure in Time. Cognitive Science. 
             14 (2): 179–211.
 
 */
 
 #include "simplernn.h"
 #include "activations.h"
+#include "functions.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -30,46 +31,36 @@ struct SimpleRNN buildSimpleRNN(<%WEIGHT_DATATYPE_DELIMITER> * W, <%WEIGHT_DATAT
     layer.w_rec = Wrec;
     layer.input_shape[0] = input_sh0;
     layer.input_shape[1] = input_sh1;
-
+    
     layer.activation = activation;
 
     layer.window_size= output_sh;
     layer.output_shape = output_sh;
-    layer.go_backwards = go_backwards;
-
-    layer.prev_h = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.output_shape * sizeof(<%LAYER_DATATYPE_DELIMITER>));
+    layer.go_backwards = go_backwards; 
+    
+    layer.prev_h = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.output_shape * sizeof(<%LAYER_DATATYPE_DELIMITER>)); 
     for (int i=0; i<L.output_shape; i++) L.prev_h[i] = 0.0;
 
 	return layer;
 }
 
-void reverseInput(<%LAYER_DATATYPE_DELIMITER> * x, int start, int end){
-    while(start < end){
-        <%LAYER_DATATYPE_DELIMITER> temp = x[start];
-        x[start] = x[end];
-        x[end] = temp;
-        start++;
-        end--;
-    }
-}
-
 <%LAYER_DATATYPE_DELIMITER> * fwdSimpleRNN(struct SimpleRNN L, <%LAYER_DATATYPE_DELIMITER>* input)
 {
     if (layer.go_backwards){
-        reverseInput(x, 0, L.input_shape[0]*L.input_shape[1] - 1);
-    }
+        reverse(input, L.input_shape);    
+    }  
 
-    <%LAYER_DATATYPE_DELIMITER> * h = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.output_shape * sizeof(<%LAYER_DATATYPE_DELIMITER>));
-    <%LAYER_DATATYPE_DELIMITER> * y = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.output_shape * sizeof(<%LAYER_DATATYPE_DELIMITER>));
-
+    <%LAYER_DATATYPE_DELIMITER> * h = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.output_shape * sizeof(<%LAYER_DATATYPE_DELIMITER>)); 
+    <%LAYER_DATATYPE_DELIMITER> * y = (<%LAYER_DATATYPE_DELIMITER>*)malloc(L.output_shape * sizeof(<%LAYER_DATATYPE_DELIMITER>)); 
+       
         for (int j = 0 ; j < L.output_shape; j++){
-
+    
         h[j] = L.biases[j];
-
+        
         for (int i = 0; i < L.input_shape[0]*L.input_shape[1]; i++){
-            h[j] += *(L.weights + i*L.output_shape + j) * input[i];
+            h[j] += *(L.weights + i*L.output_shape + j) * input[i];          
         }
-
+        
         for (int i = 0; i < L.output_shape; i++){
             h[j] += *(L.w_rec + i * L.output_shape + j) * L.prev_h[j];
         }
@@ -81,16 +72,16 @@ void reverseInput(<%LAYER_DATATYPE_DELIMITER> * x, int start, int end){
         for (int i = 0 ; i < L.output_shape ; i++){ // Actualizing previous hidden
             L.prev_h[i] =  h[i];
         }
-
+   
         for (int j = 0; j < L.output_shape; j++){
             y[j] = L.biases[j];
 
             for (int i = 0; i < L.output_shape; i++){
-                y[j] += *(L.weights + i*L.output_shape + j) * h[j];
+                y[j] += *(L.weights + i*L.output_shape + j) * h[j];   
             }
 
             if (L.activation != 0xB)
-                y[j] = activate(y[j], L.output_shape, L.activation);
+                y[j] = activate(y[j], L.output_shape, L.activation);  
         }
 
     free(h);
@@ -100,9 +91,9 @@ void reverseInput(<%LAYER_DATATYPE_DELIMITER> * x, int start, int end){
 <%END_DEFINITION_TEMPLATE>
 
 <%BEGIN_INITIALIZE_TEMPLATE>
-        <%LAYER_NAME> = buildSimpleRNN(&<%WEIGHT_NAME>[0],&<%RECURRENT_WEIGHT_NAME>[0],<%BIAS_NAME>,<%INPUT_SHAPE_0>, <%INPUT_SHAPE_1>, <%OUTPUT_SHAPE>, <%ACTIVATION>, <%GO_BACKWARDS>);
+        <%LAYER_NAME> = buildSimpleRNN(&<%WEIGHT_NAME>[0],&<%RECURRENT_WEIGHT_NAME>[0],<%BIAS_NAME>,<%INPUT_SHAPE_0>, <%INPUT_SHAPE_1>, <%OUTPUT_SIZE>, <%ACTIVATION>, <%GO_BACKWARDS>);
 <%END_INITIALIZE_TEMPLATE>
 
 <%BEGIN_CALL_TEMPLATE>
-        data = fwdSimpleRNN(<%LAYER_NAME>, data);
+        data = fwdSimpleRNN(<%LAYER_NAME>, <%INPUT>);
 <%END_CALL_TEMPLATE>
