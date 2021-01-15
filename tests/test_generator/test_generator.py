@@ -14,7 +14,6 @@ class TestGenerator(unittest.TestCase):
         generator = nnGn.Generator(nn)
 
         self.assertIsInstance(nnDs.NeuralNetwork, generator.nn)
-        #Other assertions here maybe?
 
     def test_replace_delimiters(self):
         pass
