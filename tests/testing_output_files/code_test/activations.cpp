@@ -15,79 +15,105 @@
 #define max(a, b) (((a)>(b) ? (a) : (b)))
 #define min(a, b) (((a)<(b) ? (a) : (b)))
 
-float sigmoid(float input)
+float * sigmoid(float * input, int m)
 {
-  input = exp(input)/(exp(input) + 1);
+    for (int i = m - 1; i>= 0; i--){
+        if (input[i] >= 0.0){
+            input[i] = 1./(exponential(-input[i]) + 1.);
+        } else{
+            input[i] = exponential(input[i]) / (1. + exponential(input[i]));
+        }
 
+       if (isnan(input[i])){
+            input[i] = 1.;
+       }
+   }
   return input;
 }
 
-float softplus(float input)
+float * softplus(float * input, int m)
 {
-  input = log(exp(input) + 1);
+  for (int i = m - 1; i>= 0; i--){
+      float x = input[i];
+      input[i] = log(exponential(input[i]) + 1.);
 
+      if (isinf(input[i])){
+        input[i] = x;
+      }
+    }
   return input;
 }
 
-float softsign(float input)
+float* softsign(float *input, int m)
 {
-  input = input / (abs(input) + 1);
-
+   for (int i = m-1; i>=0; i--){
+        input[i] = input[i] / (abs(input[i]) + 1);
+    }
   return input;
 }
 
-float hard_sigmoid(float input)
+float * hard_sigmoid(float * input, int m)
 {
-  if (input < -2.5){
-      input = 0.0;
-  } else if (input > 2.5){
-      input = 1.0;
-  } else{
-      input = 0.2*input + 0.5;
-  }
+    for (int i = m - 1; i >= 0; i--){
+         input[i] = input[i] * 0.2 + 0.5;
+          if (input[i] < 0){
+              input[i] = 0.0;
+          } else if (input[i] > 1.0){
+              input[i] = 1.0;
+          }
+      }
 
   return input;
 }
 
 float exponential(float input)
 {
+// not an activation function
   input = (float)expf((float)input);
-
   return input;
 }
 
-float relu(float input)
+float * relu(float * input, int m)
 {
-  input = max(input, 0.0);
-
+  for (int i = m - 1; i>=0; i--){
+        input[i] = max(input[i], 0.0);
+  }
   return input;
 }
 
-float hyper_tan(float input)
+float * exp_activation(float * input, int m)
 {
-  input = tanh(input);
-
+  for (int i = m - 1; i>=0; i--){
+        input[i] = exponential(input[i]);
+  }
   return input;
 }
 
-float softmax(float input, int output_shape)
+
+float * hyper_tan(float* input, int m)
+{
+  for (int i = m - 1; i>= 0; i--){
+        input[i] = tanh(input[i]);
+  }
+  return input;
+}
+
+float * softmax(float * input, int m)
 {
   float sum_exp = 0.0;
-  for (int i=0; i<output_shape; i++){
-      sum_exp+= expf(input);
+  for (int i=0; i<m; i++){
+      sum_exp+= exponential(input[i]);
   }
-  for (int i=0; i<output_shape;i++){
-      float calc = expf(input) / sum_exp;
+  for (int i=0; i<m;i++){
+      float calc = exponential(input[i]) / sum_exp;
       if (isnan(calc)){
-          input = 1.0;
-      } else input = (float)(expf(input) / sum_exp);
+          input[i] = 1.0;
+      } else input[i] = (float)(exponential(input[i]) / sum_exp);
   }
-
   return input;
 }
 
-//NOTE: This is deprecated and need to be changed to be more streamlined
-float activate(float input, int output_shape, char type)
+float* activate(float * input, int output_shape, char type)
 {
   if (type == 0x00)
     return softmax(input, output_shape);
@@ -99,28 +125,25 @@ float activate(float input, int output_shape, char type)
     return selu(); */
 
   else if (type == 0x04)
-    return softplus(input);
+    return softplus(input, output_shape);
 
   else if (type == 0x05)
-    return softsign(input);
+    return softsign(input, output_shape);
 
   else if (type == 0x06)
-    return relu(input);
+    return relu(input, output_shape);
 
   else if (type == 0x07)
-    return hyper_tan(input);
+    return hyper_tan(input, output_shape);
 
   else if (type == 0x08)
-    return sigmoid(input);
+    return sigmoid(input, output_shape);
 
   else if (type == 0x09)
-    return hard_sigmoid(input);
+    return hard_sigmoid(input, output_shape);
 
   else if (type == 0xA)
-    return exponential(input);
-
-  /* else if (type == 0xC)
-    return custom(input); */
+    return exp_activation(input, output_shape);
 
   return input;
 }

@@ -2658,8 +2658,9 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 /* -------- TYPES TABLE (BEGIN) -------- */
 
 #define SWIGTYPE_p_char swig_types[0]
-static swig_type_info *swig_types[2];
-static swig_module_info swig_module = {swig_types, 1, 0, 0, 0, 0};
+#define SWIGTYPE_p_float swig_types[1]
+static swig_type_info *swig_types[3];
+static swig_module_info swig_module = {swig_types, 2, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2763,53 +2764,17 @@ namespace swig {
 }
 
 
-#include <float.h>
+    #define SWIG_FILE_WITH_INIT
+    #include "../../code_test/activations.h"
 
 
-#include <math.h>
-
-
-/* Getting isfinite working pre C99 across multiple platforms is non-trivial. Users can provide SWIG_isfinite on older platforms. */
-#ifndef SWIG_isfinite
-/* isfinite() is a macro for C99 */
-# if defined(isfinite)
-#  define SWIG_isfinite(X) (isfinite(X))
-# elif defined(__cplusplus) && __cplusplus >= 201103L
-/* Use a template so that this works whether isfinite() is std::isfinite() or
- * in the global namespace.  The reality seems to vary between compiler
- * versions.
- *
- * Make sure namespace std exists to avoid compiler warnings.
- *
- * extern "C++" is required as this fragment can end up inside an extern "C" { } block
- */
-namespace std { }
-extern "C++" template<typename T>
-inline int SWIG_isfinite_func(T x) {
-  using namespace std;
-  return isfinite(x);
-}
-#  define SWIG_isfinite(X) (SWIG_isfinite_func(X))
-# elif defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
-#  define SWIG_isfinite(X) (__builtin_isfinite(X))
-# elif defined(__clang__) && defined(__has_builtin)
-#  if __has_builtin(__builtin_isfinite)
-#   define SWIG_isfinite(X) (__builtin_isfinite(X))
-#  endif
-# elif defined(_MSC_VER)
-#  define SWIG_isfinite(X) (_finite(X))
-# elif defined(__sun) && defined(__SVR4)
-#  include <ieeefp.h>
-#  define SWIG_isfinite(X) (finite(X))
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
 # endif
-#endif
-
-
-/* Accept infinite as a valid float value unless we are unable to check if a value is finite */
-#ifdef SWIG_isfinite
-# define SWIG_Float_Overflow_Check(X) ((X < -FLT_MAX || X > FLT_MAX) && SWIG_isfinite(X))
-#else
-# define SWIG_Float_Overflow_Check(X) ((X < -FLT_MAX || X > FLT_MAX))
 #endif
 
 
@@ -2859,40 +2824,10 @@ SWIG_AsVal_double (PyObject *obj, double *val)
 }
 
 
-SWIGINTERN int
-SWIG_AsVal_float (PyObject * obj, float *val)
-{
-  double v;
-  int res = SWIG_AsVal_double (obj, &v);
-  if (SWIG_IsOK(res)) {
-    if (SWIG_Float_Overflow_Check(v)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = static_cast< float >(v);
-    }
-  }  
-  return res;
-}
+#include <float.h>
 
 
-  #define SWIG_From_double   PyFloat_FromDouble 
-
-
-SWIGINTERNINLINE PyObject *
-SWIG_From_float  (float value)
-{    
-  return SWIG_From_double  (value);
-}
-
-
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
+#include <math.h>
 
 
 SWIGINTERNINLINE int
@@ -3148,45 +3083,162 @@ SWIG_AsVal_char (PyObject * obj, char *val)
 }
 
 
- extern float activate(float input, int output_shape, char type);
+/* Getting isfinite working pre C99 across multiple platforms is non-trivial. Users can provide SWIG_isfinite on older platforms. */
+#ifndef SWIG_isfinite
+/* isfinite() is a macro for C99 */
+# if defined(isfinite)
+#  define SWIG_isfinite(X) (isfinite(X))
+# elif defined(__cplusplus) && __cplusplus >= 201103L
+/* Use a template so that this works whether isfinite() is std::isfinite() or
+ * in the global namespace.  The reality seems to vary between compiler
+ * versions.
+ *
+ * Make sure namespace std exists to avoid compiler warnings.
+ *
+ * extern "C++" is required as this fragment can end up inside an extern "C" { } block
+ */
+namespace std { }
+extern "C++" template<typename T>
+inline int SWIG_isfinite_func(T x) {
+  using namespace std;
+  return isfinite(x);
+}
+#  define SWIG_isfinite(X) (SWIG_isfinite_func(X))
+# elif defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#  define SWIG_isfinite(X) (__builtin_isfinite(X))
+# elif defined(__clang__) && defined(__has_builtin)
+#  if __has_builtin(__builtin_isfinite)
+#   define SWIG_isfinite(X) (__builtin_isfinite(X))
+#  endif
+# elif defined(_MSC_VER)
+#  define SWIG_isfinite(X) (_finite(X))
+# elif defined(__sun) && defined(__SVR4)
+#  include <ieeefp.h>
+#  define SWIG_isfinite(X) (finite(X))
+# endif
+#endif
+
+
+/* Accept infinite as a valid float value unless we are unable to check if a value is finite */
+#ifdef SWIG_isfinite
+# define SWIG_Float_Overflow_Check(X) ((X < -FLT_MAX || X > FLT_MAX) && SWIG_isfinite(X))
+#else
+# define SWIG_Float_Overflow_Check(X) ((X < -FLT_MAX || X > FLT_MAX))
+#endif
+
+
+SWIGINTERN int
+SWIG_AsVal_float (PyObject * obj, float *val)
+{
+  double v;
+  int res = SWIG_AsVal_double (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if (SWIG_Float_Overflow_Check(v)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< float >(v);
+    }
+  }  
+  return res;
+}
+
+
+  #define SWIG_From_double   PyFloat_FromDouble 
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_float  (float value)
+{    
+  return SWIG_From_double  (value);
+}
+
+
+ extern float * activate(float* input, int output_shape, char type);
  
- extern float sigmoid(float input);
+ extern float * sigmoid(float * input, int m);
+
+ extern float * exp_activation(float * input, int m);
+
+ extern float * softplus(float * input, int m);
  
- extern float softplus(float input);
+ extern float * softsign(float * input, int m);
  
- extern float softsign(float input);
+ extern float * hard_sigmoid(float * input, int m);
  
- extern float hard_sigmoid(float input);
+ extern float  exponential(float input);
  
- extern float exponential(float input);
+ extern float * relu(float *input, int m);
  
- extern float relu(float input);
+ extern float * hyper_tan(float * input, int m);
  
- extern float hyper_tan(float input);
- 
- extern float softmax(float input, int output_shape);
+ extern float * softmax(float * input, int m);
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+SWIGINTERN PyObject *_wrap_activate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  float *arg1 = (float *) 0 ;
+  int arg2 ;
+  char arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  char val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  float *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "activate", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "activate" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "activate" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_char(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "activate" "', argument " "3"" of type '" "char""'");
+  } 
+  arg3 = static_cast< char >(val3);
+  result = (float *)activate(arg1,arg2,arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_sigmoid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float arg1 ;
-  float val1 ;
-  int ecode1 = 0 ;
-  PyObject *swig_obj[1] ;
-  float result;
+  float *arg1 = (float *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  float *result = 0 ;
   
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  ecode1 = SWIG_AsVal_float(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "sigmoid" "', argument " "1"" of type '" "float""'");
+  if (!SWIG_Python_UnpackTuple(args, "sigmoid", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "sigmoid" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "sigmoid" "', argument " "2"" of type '" "int""'");
   } 
-  arg1 = static_cast< float >(val1);
-  result = (float)sigmoid(arg1);
-  resultobj = SWIG_From_float(static_cast< float >(result));
+  arg2 = static_cast< int >(val2);
+  result = (float *)sigmoid(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3195,21 +3247,28 @@ fail:
 
 SWIGINTERN PyObject *_wrap_softplus(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float arg1 ;
-  float val1 ;
-  int ecode1 = 0 ;
-  PyObject *swig_obj[1] ;
-  float result;
+  float *arg1 = (float *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  float *result = 0 ;
   
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  ecode1 = SWIG_AsVal_float(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "softplus" "', argument " "1"" of type '" "float""'");
+  if (!SWIG_Python_UnpackTuple(args, "softplus", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "softplus" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "softplus" "', argument " "2"" of type '" "int""'");
   } 
-  arg1 = static_cast< float >(val1);
-  result = (float)softplus(arg1);
-  resultobj = SWIG_From_float(static_cast< float >(result));
+  arg2 = static_cast< int >(val2);
+  result = (float *)softplus(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3218,21 +3277,28 @@ fail:
 
 SWIGINTERN PyObject *_wrap_softsign(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float arg1 ;
-  float val1 ;
-  int ecode1 = 0 ;
-  PyObject *swig_obj[1] ;
-  float result;
+  float *arg1 = (float *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  float *result = 0 ;
   
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  ecode1 = SWIG_AsVal_float(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "softsign" "', argument " "1"" of type '" "float""'");
+  if (!SWIG_Python_UnpackTuple(args, "softsign", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "softsign" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "softsign" "', argument " "2"" of type '" "int""'");
   } 
-  arg1 = static_cast< float >(val1);
-  result = (float)softsign(arg1);
-  resultobj = SWIG_From_float(static_cast< float >(result));
+  arg2 = static_cast< int >(val2);
+  result = (float *)softsign(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3241,21 +3307,58 @@ fail:
 
 SWIGINTERN PyObject *_wrap_hard_sigmoid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float arg1 ;
-  float val1 ;
-  int ecode1 = 0 ;
-  PyObject *swig_obj[1] ;
-  float result;
+  float *arg1 = (float *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  float *result = 0 ;
   
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  ecode1 = SWIG_AsVal_float(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "hard_sigmoid" "', argument " "1"" of type '" "float""'");
+  if (!SWIG_Python_UnpackTuple(args, "hard_sigmoid", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "hard_sigmoid" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "hard_sigmoid" "', argument " "2"" of type '" "int""'");
   } 
-  arg1 = static_cast< float >(val1);
-  result = (float)hard_sigmoid(arg1);
-  resultobj = SWIG_From_float(static_cast< float >(result));
+  arg2 = static_cast< int >(val2);
+  result = (float *)hard_sigmoid(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_exp_activation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  float *arg1 = (float *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  float *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "exp_activation", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "exp_activation" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "exp_activation" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (float *)exp_activation(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3287,21 +3390,28 @@ fail:
 
 SWIGINTERN PyObject *_wrap_relu(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float arg1 ;
-  float val1 ;
-  int ecode1 = 0 ;
-  PyObject *swig_obj[1] ;
-  float result;
+  float *arg1 = (float *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  float *result = 0 ;
   
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  ecode1 = SWIG_AsVal_float(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "relu" "', argument " "1"" of type '" "float""'");
+  if (!SWIG_Python_UnpackTuple(args, "relu", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "relu" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "relu" "', argument " "2"" of type '" "int""'");
   } 
-  arg1 = static_cast< float >(val1);
-  result = (float)relu(arg1);
-  resultobj = SWIG_From_float(static_cast< float >(result));
+  arg2 = static_cast< int >(val2);
+  result = (float *)relu(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3310,21 +3420,28 @@ fail:
 
 SWIGINTERN PyObject *_wrap_hyper_tan(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float arg1 ;
-  float val1 ;
-  int ecode1 = 0 ;
-  PyObject *swig_obj[1] ;
-  float result;
+  float *arg1 = (float *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  float *result = 0 ;
   
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  ecode1 = SWIG_AsVal_float(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "hyper_tan" "', argument " "1"" of type '" "float""'");
+  if (!SWIG_Python_UnpackTuple(args, "hyper_tan", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "hyper_tan" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "hyper_tan" "', argument " "2"" of type '" "int""'");
   } 
-  arg1 = static_cast< float >(val1);
-  result = (float)hyper_tan(arg1);
-  resultobj = SWIG_From_float(static_cast< float >(result));
+  arg2 = static_cast< int >(val2);
+  result = (float *)hyper_tan(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3333,66 +3450,28 @@ fail:
 
 SWIGINTERN PyObject *_wrap_softmax(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  float arg1 ;
+  float *arg1 = (float *) 0 ;
   int arg2 ;
-  float val1 ;
-  int ecode1 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   int val2 ;
   int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
-  float result;
+  float *result = 0 ;
   
   if (!SWIG_Python_UnpackTuple(args, "softmax", 2, 2, swig_obj)) SWIG_fail;
-  ecode1 = SWIG_AsVal_float(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "softmax" "', argument " "1"" of type '" "float""'");
-  } 
-  arg1 = static_cast< float >(val1);
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "softmax" "', argument " "1"" of type '" "float *""'"); 
+  }
+  arg1 = reinterpret_cast< float * >(argp1);
   ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "softmax" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
-  result = (float)softmax(arg1,arg2);
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_activate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  float arg1 ;
-  int arg2 ;
-  char arg3 ;
-  float val1 ;
-  int ecode1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  char val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  float result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "activate", 3, 3, swig_obj)) SWIG_fail;
-  ecode1 = SWIG_AsVal_float(swig_obj[0], &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "activate" "', argument " "1"" of type '" "float""'");
-  } 
-  arg1 = static_cast< float >(val1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "activate" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_char(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "activate" "', argument " "3"" of type '" "char""'");
-  } 
-  arg3 = static_cast< char >(val3);
-  result = (float)activate(arg1,arg2,arg3);
-  resultobj = SWIG_From_float(static_cast< float >(result));
+  result = (float *)softmax(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3401,15 +3480,16 @@ fail:
 
 static PyMethodDef SwigMethods[] = {
 	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
-	 { "sigmoid", _wrap_sigmoid, METH_O, NULL},
-	 { "softplus", _wrap_softplus, METH_O, NULL},
-	 { "softsign", _wrap_softsign, METH_O, NULL},
-	 { "hard_sigmoid", _wrap_hard_sigmoid, METH_O, NULL},
-	 { "exponential", _wrap_exponential, METH_O, NULL},
-	 { "relu", _wrap_relu, METH_O, NULL},
-	 { "hyper_tan", _wrap_hyper_tan, METH_O, NULL},
-	 { "softmax", _wrap_softmax, METH_VARARGS, NULL},
 	 { "activate", _wrap_activate, METH_VARARGS, NULL},
+	 { "sigmoid", _wrap_sigmoid, METH_VARARGS, NULL},
+	 { "softplus", _wrap_softplus, METH_VARARGS, NULL},
+	 { "softsign", _wrap_softsign, METH_VARARGS, NULL},
+	 { "hard_sigmoid", _wrap_hard_sigmoid, METH_VARARGS, NULL},
+	 { "exp_activation", _wrap_exp_activation, METH_VARARGS, NULL},
+	 { "exponential", _wrap_exponential, METH_O, NULL},
+	 { "relu", _wrap_relu, METH_VARARGS, NULL},
+	 { "hyper_tan", _wrap_hyper_tan, METH_VARARGS, NULL},
+	 { "softmax", _wrap_softmax, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -3421,15 +3501,19 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_float = {"_p_float", "float *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_char,
+  &_swigt__p_float,
 };
 
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_float, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_char,
+  _swigc__p_float,
 };
 
 

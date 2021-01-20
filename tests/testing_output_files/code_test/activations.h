@@ -11,22 +11,24 @@
 #ifndef __ACTIVATION_H__
 #define __ACTIVATION_H__
 
-float activate(float, int, char);
+float* activate(float*, int, char);
 
-float sigmoid(float);
+float* sigmoid(float*, int);
 
-float softplus(float);
+float* softplus(float *, int);
 
-float softsign(float input);
+float* softsign(float *, int);
 
-float hard_sigmoid(float input);
+float* hard_sigmoid(float *, int);
 
-float exponential(float input);
+float* exp_activation(float *, int);
 
-float relu(float input);
+float exponential(float);
 
-float hyper_tan(float input);
+float* relu(float*, int);
 
-float softmax(float input, int output_shape);
+float* hyper_tan(float *, int);
+
+float* softmax(float *, int );
 
 #endif

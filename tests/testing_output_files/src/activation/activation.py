@@ -62,31 +62,34 @@ class _SwigNonDynamicMeta(type):
 
 
 
-def sigmoid(input):
-    return _activation.sigmoid(input)
+def activate(arg1, arg2, arg3):
+    return _activation.activate(arg1, arg2, arg3)
 
-def softplus(input):
-    return _activation.softplus(input)
+def sigmoid(arg1, arg2):
+    return _activation.sigmoid(arg1, arg2)
 
-def softsign(input):
-    return _activation.softsign(input)
+def softplus(arg1, arg2):
+    return _activation.softplus(arg1, arg2)
 
-def hard_sigmoid(input):
-    return _activation.hard_sigmoid(input)
+def softsign(arg1, arg2):
+    return _activation.softsign(arg1, arg2)
 
-def exponential(input):
-    return _activation.exponential(input)
+def hard_sigmoid(arg1, arg2):
+    return _activation.hard_sigmoid(arg1, arg2)
 
-def relu(input):
-    return _activation.relu(input)
+def exp_activation(arg1, arg2):
+    return _activation.exp_activation(arg1, arg2)
 
-def hyper_tan(input):
-    return _activation.hyper_tan(input)
+def exponential(arg1):
+    return _activation.exponential(arg1)
 
-def softmax(input, output_shape):
-    return _activation.softmax(input, output_shape)
+def relu(arg1, arg2):
+    return _activation.relu(arg1, arg2)
 
-def activate(input, output_shape, type):
-    return _activation.activate(input, output_shape, type)
+def hyper_tan(arg1, arg2):
+    return _activation.hyper_tan(arg1, arg2)
+
+def softmax(arg1, arg2):
+    return _activation.softmax(arg1, arg2)
 
 
