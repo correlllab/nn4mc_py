@@ -1,6 +1,6 @@
 from nn4mc.parser._parser import Parser
-from nn4mc.datastructures import NeuralNetwork
-from ._layerbuilder import *
+from nn4mc.datastructures import NetworkGraph
+from ._layer_builder import *
 import h5py
 import numpy as np
 import json
@@ -27,7 +27,7 @@ class HDF5Parser(Parser):
     #If file object it needs to be binary I/O i.e 'rb'
     def __init__(self, file):
         self.file = file #HDF5 model file
-        self.nn = NeuralNetwork() #NeuralNetwork to be filled
+        self.nn = NetworkGraph() #NeuralNetwork to be filled
         self.nn_input_size = None
 
     #Parses the model and creates a NeuralNetwork

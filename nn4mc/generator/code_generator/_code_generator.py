@@ -1,4 +1,4 @@
-from nn4mc.datastructures import NeuralNetwork
+from nn4mc.datastructures import NetworkGraph
 from ._globals import G
 import numpy as np
 import os, json

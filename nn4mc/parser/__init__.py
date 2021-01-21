@@ -1,2 +1,2 @@
-from .hdf5_parser._hdf5parser import HDF5Parser
-from .pytorch_parser._pytorch_parser import PYTorchParser
+from .hdf5_parser._hdf5_parser import HDF5Parser
+from .onnx_parser._onnx_parser import ONNXParser

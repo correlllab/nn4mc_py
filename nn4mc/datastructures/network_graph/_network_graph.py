@@ -23,7 +23,7 @@ class LayerNode:
 #Graph datastructure to represent neural network connection structure.
 #Creates common representation to be iterated on by code generator downstream.
 #NOTE:
-class NeuralNetwork:
+class NetworkGraph:
     def __init__(self):
         self.layers = {} #Dictionary of LayerNodes and list of edges
         self.input = [] #List of input LayerNodes
