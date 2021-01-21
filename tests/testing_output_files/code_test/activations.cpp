@@ -106,14 +106,14 @@ float * softmax(float * input, int m)
   float sum_e = 0.0;
 
   // finding max
-  for (int i = m-1; i> 0; i--){
+  for (int i = m-1; i > 0; i--){
     if (input[i] > max){
         max = input[i];
     }
   }
   // finding e
   for (int i = m-1; i>= 0; i--){
-      e[i] = exponential(input[i] - max);
+      e[i] = exp(input[i] - max);
       sum_e += e[i];
   }
   if (sum_e > 0){
