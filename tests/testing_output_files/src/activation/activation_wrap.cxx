@@ -3301,6 +3301,7 @@ SWIGINTERN input *input_frompointer(float *t){
     return static_cast< input * >(t);
   }
 
+
  extern float * activate(float* input, int output_shape, char type);
  
  extern float * sigmoid(float * input, int m);

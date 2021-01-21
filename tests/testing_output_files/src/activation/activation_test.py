@@ -113,14 +113,15 @@ class ActivationTest(unittest.TestCase):
             m = np.max(values)
             e = np.exp(values - m)
             return e / np.sum(e)
-        rtol = 1e-5
+        rtol = 1e-3
         size = 10
         for _ in range(1000):
             x = np.random.uniform(low = -1000., high = 1000., size = size).flatten()
-            y_numpy = _ref_softmax(x)
+            y_numpy = np.round(_ref_softmax(x), decimals = 5)
             test_buffer = list_2_swig_float_pointer(x, size)
             y_nn4mc = activation.softmax(test_buffer.cast(), size)
             y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            y_nn4mc = np.round(y_nn4mc, decimals = 5)
             assert np.allclose(y_nn4mc, y_numpy, rtol=rtol)
         print("softmax passed")
 

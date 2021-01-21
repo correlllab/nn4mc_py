@@ -100,16 +100,32 @@ float * hyper_tan(float* input, int m)
 
 float * softmax(float * input, int m)
 {
-  float sum_exp = 0.0;
-  for (int i=0; i<m; i++){
-      sum_exp+= exponential(input[i]);
+  float e[m];
+  float sum = 0.0;
+  float max = input[0];
+  float sum_e = 0.0;
+
+  // finding max
+  for (int i = m-1; i> 0; i--){
+    if (input[i] > max){
+        max = input[i];
+    }
   }
-  for (int i=0; i<m;i++){
-      float calc = exponential(input[i]) / sum_exp;
-      if (isnan(calc)){
-          input[i] = 1.0;
-      } else input[i] = (float)(exponential(input[i]) / sum_exp);
+  // finding e
+  for (int i = m-1; i>= 0; i--){
+      e[i] = exponential(input[i] - max);
+      sum_e += e[i];
   }
+  if (sum_e > 0){
+      for (int i = m-1; i>= 0; i--){
+            input[i] = e[i] / sum_e;
+      }
+  } else{
+   for (int i = m-1; i>= 0; i--){
+            input[i] = e[i] / max;
+      }
+  }
+
   return input;
 }
 
