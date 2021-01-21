@@ -13,10 +13,15 @@
 
 %include "../../code_test/activations.h"
 %include "../../code_test/activations.cpp"
-%include "typemaps.i"
+%include "stdint.i"
+%include "carrays.i"
 
 %module activation
+
+%array_class(float, input);
+
 %{
+
  extern float * activate(float* input, int output_shape, char type);
  
  extern float * sigmoid(float * input, int m);

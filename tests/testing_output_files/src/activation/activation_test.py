@@ -3,7 +3,32 @@ import numpy as np
 import unittest
 import tensorflow as tf
 import ctypes
+from typing import List
 
+def swig_py_object_2_list(object, size : int) -> List[float]:
+    """
+    Converts SwigPyObject to List[float]
+    :param object:
+    :param size:
+    :return:
+    """
+    y = (ctypes.c_float * size).from_address(int(object))
+    new_object = []
+    for i in range(size):
+        new_object += [y[i]]
+    return new_object
+
+def list_2_swig_float_pointer(list : List[float], size : int):
+    """
+    Converts from list of floats to swig float* object
+    :param list:
+    :param size:
+    :return:
+    """
+    test_buffer = activation.input(size)
+    for i in range(size):
+        test_buffer[i] = list[i]
+    return test_buffer
 
 class ActivationTest(unittest.TestCase):
     def test_sigmoid(self):
@@ -11,59 +36,71 @@ class ActivationTest(unittest.TestCase):
         size = 10
         for _ in range(1000):
             x = np.random.uniform(low=-1000., high=1000., size = size).flatten()
-            y_numpy = float(tf.keras.activations.sigmoid(x))
-            y_nn4mc = activation.sigmoid(x, size)
-            self.assertTrue(np.isclose(y_nn4mc, y_numpy, rtol))
+            test_buffer = list_2_swig_float_pointer(x.tolist(), size)
+            y_numpy = np.array(tf.keras.activations.sigmoid(x)).tolist()
+            y_nn4mc = activation.sigmoid(test_buffer.cast(), size)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol)
         print("sigmoid passed!")
 
     def test_softplus(self):
         rtol = 1e-5
         size = 10
         for _ in range(1000):
-            x = np.random.uniform(low = -1000., high = 1000., size = size)
-            y_numpy = float(tf.keras.activations.softplus(x))
-            y_nn4mc = activation.softplus(x, size)
-            self.assertTrue(np.isclose(y_nn4mc, y_numpy, rtol))
+            x = np.random.uniform(low = -1000., high = 1000., size = size).tolist()
+            test_buffer = list_2_swig_float_pointer(x, size)
+            y_numpy = np.array(tf.keras.activations.softplus(tf.constant(x, dtype = tf.float32))).tolist()
+            y_nn4mc = activation.softplus(test_buffer.cast(), size)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol)
         print("softplus passed")
 
     def test_softsign(self):
         rtol = 1e-5
         size = 10
         for _ in range(1000):
-            x = np.random.uniform(low = -1000., high = 1000., size = size)
-            y_numpy = float(tf.keras.activations.softsign(x))
-            y_nn4mc = activation.softsign(x, size)
-            self.assertTrue(np.isclose(y_nn4mc, y_numpy, rtol))
+            x = np.random.uniform(low = -1000., high = 1000., size = size).tolist()
+            test_buffer = list_2_swig_float_pointer(x, size)
+            y_numpy = np.array(tf.keras.activations.softsign(tf.constant(x, dtype = tf.float32))).tolist()
+            y_nn4mc = activation.softsign(test_buffer.cast(), size)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol)
         print("softsign passed")
 
     def test_hard_sigmoid(self):
         rtol = 1e-5
         size = 10
         for _ in range(1000):
-            x = np.random.uniform(low = -1000., high = 1000., size = size)
-            y_numpy = np.clip(0.2*x + 0.5, 0., 1.)
-            y_nn4mc = activation.hard_sigmoid(x, size)
-            self.assertTrue(np.isclose(y_nn4mc, y_numpy, rtol))
+            x = np.random.uniform(low = -1000., high = 1000., size = size).tolist()
+            test_buffer = list_2_swig_float_pointer(x, size)
+            y_numpy = np.clip(0.2*np.array(x) + 0.5, 0., 1.)
+            y_nn4mc = activation.hard_sigmoid(test_buffer.cast(), size)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol = rtol)
         print("hard sigmoid passed")
 
     def test_relu(self):
         rtol = 1e-5
         size = 10
         for _ in range(1000):
-            x = np.random.uniform(low = -1000., high = 1000., size = size).astype(dtype = np.float32)
-            y_numpy = float(tf.keras.activations.relu(x))
-            y_nn4mc = activation.relu(x, size)
-            self.assertTrue(np.isclose(y_nn4mc, y_numpy, rtol))
+            x = np.random.uniform(low = -1000., high = 1000., size = size).tolist()
+            test_buffer = list_2_swig_float_pointer(x, size)
+            y_numpy = np.array(tf.keras.activations.relu(tf.constant(x, dtype = tf.float32))).tolist()
+            y_nn4mc = activation.relu(test_buffer.cast(), size)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol=rtol)
         print("relu passed")
 
     def test_hyper_tan(self):
         rtol = 1e-5
         size = 10
         for _ in range(1000):
-            x = np.array(np.random.uniform(low = -1000., high = 1000., size = size).tolist(), dtype = np.float).tolist()
+            x = np.random.uniform(low = -1000., high = 1000., size = size).tolist()
             y_numpy = np.tanh(x)
-            y_nn4mc = activation.hyper_tan(x, size)
-            self.assertTrue(np.isclose(y_nn4mc, y_numpy, rtol))
+            test_buffer = list_2_swig_float_pointer(x, size)
+            y_nn4mc = activation.hyper_tan(test_buffer.cast(), size)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol=rtol)
         print("tanh passed")
 
 
@@ -77,13 +114,14 @@ class ActivationTest(unittest.TestCase):
             e = np.exp(values - m)
             return e / np.sum(e)
         rtol = 1e-5
-        output_shape = 10
+        size = 10
         for _ in range(1000):
-            x = np.random.uniform(low = -1000., high = 1000., size =  output_shape).flatten()
+            x = np.random.uniform(low = -1000., high = 1000., size = size).flatten()
             y_numpy = _ref_softmax(x)
-            y_nn4mc = activation.softmax(x, output_shape)
-            print(x, y_numpy, y_nn4mc)
-            self.assertTrue(np.isclose(y_nn4mc, y_numpy, rtol))
+            test_buffer = list_2_swig_float_pointer(x, size)
+            y_nn4mc = activation.softmax(test_buffer.cast(), size)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol=rtol)
         print("softmax passed")
 
 if __name__ == '__main__':

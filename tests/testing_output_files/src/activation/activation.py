@@ -91,5 +91,32 @@ def hyper_tan(arg1, arg2):
 
 def softmax(arg1, arg2):
     return _activation.softmax(arg1, arg2)
+class input(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self, nelements):
+        _activation.input_swiginit(self, _activation.new_input(nelements))
+    __swig_destroy__ = _activation.delete_input
+
+    def __getitem__(self, index):
+        return _activation.input___getitem__(self, index)
+
+    def __setitem__(self, index, value):
+        return _activation.input___setitem__(self, index, value)
+
+    def cast(self):
+        return _activation.input_cast(self)
+
+    @staticmethod
+    def frompointer(t):
+        return _activation.input_frompointer(t)
+
+# Register input in _activation:
+_activation.input_swigregister(input)
+
+def input_frompointer(t):
+    return _activation.input_frompointer(t)
+
 
 
