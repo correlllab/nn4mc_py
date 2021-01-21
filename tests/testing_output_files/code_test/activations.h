@@ -27,6 +27,10 @@ float exponential(float);
 
 float* relu(float*, int);
 
+float* elu(float*, int, float);
+
+float* selu(float*, int);
+
 float* hyper_tan(float *, int);
 
 float* softmax(float *, int );

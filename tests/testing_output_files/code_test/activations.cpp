@@ -81,6 +81,31 @@ float * relu(float * input, int m)
   return input;
 }
 
+float * elu(float * input, int m, float a)
+{
+  for (int i = m - 1; i>=0; i--){
+        if (input[i] < 0)
+            input[i] = a*(exp(input[i]) - 1);
+  }
+  return input;
+}
+
+float * selu(float * input, int m)
+{
+  float scale = 1.05070098;
+  float * input1;
+  input1 = elu(input, m, 1.67326324);
+
+  for (int i = m - 1; i>=0; i--){
+        if (input[i] > 0){
+            input[i] *= scale;
+        } else{
+            input[i] = scale * input1[i];
+        }
+  }
+  return input;
+}
+
 float * exp_activation(float * input, int m)
 {
   for (int i = m - 1; i>=0; i--){
@@ -134,11 +159,11 @@ float* activate(float * input, int output_shape, char type)
   if (type == 0x00)
     return softmax(input, output_shape);
 
-  /* else if (type == 0x02)
-    return elu(); */
+  else if (type == 0x02)
+    return elu(input, output_shape, 1.0);
 
-  /* else if (type == 0x03)
-    return selu(); */
+  else if (type == 0x03)
+    return selu(input, output_shape);
 
   else if (type == 0x04)
     return softplus(input, output_shape);

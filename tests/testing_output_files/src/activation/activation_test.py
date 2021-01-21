@@ -91,6 +91,30 @@ class ActivationTest(unittest.TestCase):
             assert np.allclose(y_nn4mc, y_numpy, rtol=rtol)
         print("relu passed")
 
+    def test_elu(self):
+        rtol = 1e-5
+        size = 10
+        for _ in range(1000):
+            x = np.random.uniform(low = -1000., high = 1000., size = size).tolist()
+            test_buffer = list_2_swig_float_pointer(x, size)
+            y_numpy = np.array(tf.keras.activations.elu(tf.constant(x, dtype = tf.float32))).tolist()
+            y_nn4mc = activation.elu(test_buffer.cast(), size, 1.)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol=rtol)
+        print("elu passed")
+
+    def test_selu(self):
+        rtol = 1e-5
+        size = 10
+        for _ in range(1000):
+            x = np.random.uniform(low = -1000., high = 1000., size = size).tolist()
+            test_buffer = list_2_swig_float_pointer(x, size)
+            y_numpy = np.array(tf.keras.activations.selu(tf.constant(x, dtype = tf.float32))).tolist()
+            y_nn4mc = activation.selu(test_buffer.cast(), size)
+            y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
+            assert np.allclose(y_nn4mc, y_numpy, rtol=rtol)
+        print("selu passed")
+
     def test_hyper_tan(self):
         rtol = 1e-5
         size = 10
@@ -117,11 +141,12 @@ class ActivationTest(unittest.TestCase):
         size = 10
         for _ in range(1000):
             x = np.random.uniform(low = -1000., high = 1000., size = size).flatten()
-            y_numpy = np.round(_ref_softmax(x), decimals = 5)
+            y_numpy = _ref_softmax(x)
             test_buffer = list_2_swig_float_pointer(x, size)
             y_nn4mc = activation.softmax(test_buffer.cast(), size)
             y_nn4mc = swig_py_object_2_list(y_nn4mc, size)
             y_nn4mc = np.round(y_nn4mc, decimals = 5)
+            y_numpy = np.round(y_numpy, decimals = 5)
             assert np.allclose(y_nn4mc, y_numpy, rtol=rtol)
         print("softmax passed")
 

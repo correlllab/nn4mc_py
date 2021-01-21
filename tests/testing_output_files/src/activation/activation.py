@@ -86,6 +86,12 @@ def exponential(arg1):
 def relu(arg1, arg2):
     return _activation.relu(arg1, arg2)
 
+def elu(arg1, arg2, arg3):
+    return _activation.elu(arg1, arg2, arg3)
+
+def selu(arg1, arg2):
+    return _activation.selu(arg1, arg2)
+
 def hyper_tan(arg1, arg2):
     return _activation.hyper_tan(arg1, arg2)
 
