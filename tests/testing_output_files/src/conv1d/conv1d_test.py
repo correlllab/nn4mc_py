@@ -2,6 +2,27 @@ import conv1d
 import tensorflow as tf
 import numpy as np
 import unittest
+from typing import List
+import ctypes
+
+def swig_py_object_2_list(object, size : int) -> List[float]:
+    """
+        Converts SwigPyObject to List[float]
+    """
+    y = (ctypes.c_float * size).from_address(int(object))
+    new_object = []
+    for i in range(size):
+        new_object += [y[i]]
+    return new_object
+
+def list_2_swig_float_pointer(list : List[float], size : int):
+    """
+        Converts from list of floats to swig float* object
+    """
+    test_buffer = conv1d.input(size)
+    for i in range(size):
+        test_buffer[i] = list[i]
+    return test_buffer
 
 class Conv1DTest(unittest.TestCase):
     """
@@ -36,14 +57,22 @@ class Conv1DTest(unittest.TestCase):
                     )
 
     def __c_fwd(self, build_dict : dict, input_, weight, bias):
-        layer = self.layer.buildConv1D(weight[0], bias[0],
+        input_list = input_.flatten().tolist()
+        weight_ptr = conv1d.input(1);
+        bias_ptr = conv1d.input(1)
+        weight_ptr[0] = weight[0]
+        bias_ptr[0] = bias[0]
+        iinput = conv1d.input(len(input_list))
+        for i in range(len(input_list)):
+            iinput[i] = input_[i]
+        layer = self.layer.buildConv1D(weight_ptr.cast(), bias_ptr.cast(),
                         build_dict['kernel_size'], build_dict['strides'],
                         input_.shape[1], input_.shape[2], build_dict['filters'],
                         self.activation_dictionary[build_dict['activation']],
                         self.padding_dictionary[build_dict['padding']],
                         self.dataformat_dictionary[build_dict['data_format']],
                         build_dict['dilation_rate'])
-        return self.layer.fwdConv1D(layer, input_.flatten().tolist())
+        return self.layer.fwd_conv1d(layer, iinput.cast())
 
     def __keras_fwd(self, config_dict : dict, input_, weight, bias):
         layer = self.__keras_build(config_dict)
@@ -52,8 +81,11 @@ class Conv1DTest(unittest.TestCase):
         return layer(input_)
 
     def test_fwd(self) -> bool:
+        weight_ptr = conv1d.input(1);
+        bias_ptr = conv1d.input(1)
+
         batch_size = 1
-        N = 100
+        N = 1000
         for _ in range(N):
             build_dict = {'filters': 32, 'kernel_size' : 3, 'strides' : 1, 'padding' : 'valid',
                     'data_format' : 'channels_last', 'dilation_rate' : 1, 'activation' : 'linear',
@@ -69,8 +101,12 @@ class Conv1DTest(unittest.TestCase):
 
             input_ = self.generate_sample(input_dims)
 
-            self.assertEqual(self.__c_fwd(build_dict, input_, weight.flatten().tolist(),
-                        bias.flatten().tolist()), self.__keras_fwd(build_dict, input_, weight, bias))
+            weight_ptr[0] = weight[0]
+
+            bias_ptr[0] = bias[0]
+
+            self.assertEqual(self.__c_fwd(build_dict, input_, weight_ptr.cast(),
+                        bias_ptr.cast()), self.__keras_fwd(build_dict, input_, weight, bias))
 
     def passes(self) -> bool:
         # returns (test_sigmoid and test_hard_sigmoid and ...)
