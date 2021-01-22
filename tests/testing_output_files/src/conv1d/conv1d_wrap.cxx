@@ -3611,6 +3611,26 @@ extern float * fwd_conv1d(struct Conv1D, float *);
 
 extern int padding_conv1(struct Conv1D, float *);
 
+extern float * activate(float* input, int output_shape, char type);
+
+extern float * sigmoid(float * input, int m);
+
+extern float * exp_activation(float * input, int m);
+
+extern float * softplus(float * input, int m);
+
+extern float * softsign(float * input, int m);
+
+extern float * hard_sigmoid(float * input, int m);
+
+extern float  exponential(float input);
+
+extern float * relu(float *input, int m);
+
+extern float * hyper_tan(float * input, int m);
+
+extern float * softmax(float * input, int m);
+
 
 #ifdef __cplusplus
 extern "C" {
