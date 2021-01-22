@@ -85,7 +85,7 @@ int padding_conv1(struct Conv1D L, float * input){
 }
 
 
-float * fwdConv1D(struct Conv1D L, float* input)
+float * fwd_conv1d(struct Conv1D L, float* input)
 {
 
     int input_size = L.input_shape[0] * L.input_shape[1];
@@ -102,7 +102,7 @@ float * fwdConv1D(struct Conv1D L, float* input)
         } 
     }
 
-     float * h = (float*)malloc(L.output_shape[0]*L.output_shape[1] * sizeof(float));
+    float * h = (float*)malloc(L.output_shape[0]*L.output_shape[1] * sizeof(float));
 
 	for(int i = 0; i < L.output_shape[0]; i++)
 	{
@@ -120,8 +120,7 @@ float * fwdConv1D(struct Conv1D L, float* input)
 				}
 			}
 
-			if(L.activation != 0xB)
-				h[i] = activate(h[i],L.output_shape[0],L.activation);
+		    h = activate(h,L.output_shape[0],L.activation);
 		}
 	}
 

@@ -1,13 +1,9 @@
-import sys, os
-sys.path.append(os.path.join(os.environ['HOME'], 'nn4mc'))
-
-import testing_output_files.src.conv1d as layer
-from testing_output_files.template_test import TemplateTest
+import conv1d as layer
 import tensorflow as tf
 import numpy as np
 import unittest
 
-class Conv1DTest(TemplateTest, unittest.TestCase):
+class Conv1DTest(unittest.TestCase):
     """
         Conv1D
     """
