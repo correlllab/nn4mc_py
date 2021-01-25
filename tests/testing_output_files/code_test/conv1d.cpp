@@ -15,7 +15,7 @@
 #define max(a, b) (((a)>(b) ? (a) : (b)))
 #define min(a, b) (((a)<(b) ? (a) : (b)))
 
-struct Conv1D buildConv1D(const float* W, const float* b, int kernel_size, int strides, int input_sh0, int input_sh1, int filters, char activation, char padding, char data_format, int dilation_rate)
+struct Conv1D build_layer_conv1d(const float* W, const float* b, int kernel_size, int strides, int input_sh0, int input_sh1, int filters, char activation, char padding, char data_format, int dilation_rate)
 {
 	struct Conv1D layer;
 

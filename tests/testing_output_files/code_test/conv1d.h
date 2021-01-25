@@ -31,7 +31,7 @@ struct Conv1D {
 	int output_shape[2];	// (OUTPUT_SIZE x NUM_OUTPUT_CHANNELS)
 };
 
-struct Conv1D buildConv1D(const float*, const float*, int, int, int, int, int, char, char, char, int);
+struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
 
 float * fwd_conv1d(struct Conv1D, float*);
 

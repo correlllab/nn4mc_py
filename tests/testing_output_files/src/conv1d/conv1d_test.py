@@ -24,23 +24,22 @@ def list_2_swig_float_pointer(list : List[float], size : int):
         test_buffer[i] = list[i]
     return test_buffer
 
+
+activation_dictionary = {'softmax': 0x00,
+                         'elu': 0x02, 'selu': 0x03,
+                         'softplus': 0x04, 'softsign': 0x05,
+                         'relu': 0x06, 'tanh': 0x07, 'sigmoid': 0x08,
+                         'hard_sigmoid': 0x09, 'exponential': 0xA, 'linear': 0xB,
+                         'custom': 0xC}
+
+padding_dictionary = {'valid': 0x00, 'causal': 0x02, 'same': 0x03}
+
+dataformat_dictionary = {'channels_last': 0x00, 'channels_first': 0x02}
+
 class Conv1DTest(unittest.TestCase):
     """
         Conv1D
     """
-    def __init__(self, layer):
-        self.layer = layer
-        self.activation_dictionary = {'softmax' : 0x00,
-                'elu' : 0x02, 'selu' : 0x03,
-                'softplus' : 0x04, 'softsign' : 0x05,
-                'relu' : 0x06, 'tanh' : 0x07, 'sigmoid' : 0x08,
-                'hard_sigmoid' : 0x09, 'exponential' : 0xA, 'linear' : 0xB,
-                'custom' : 0xC}
-
-        self.padding_dictionary = {'valid' : 0x00, 'causal' : 0x02, 'same' : 0x03}
-
-        self.dataformat_dictionary = {'channels_last' : 0x00, 'channels_first' : 0x02}
-
     def generate_sample(self, input_dims):
         return np.random.normal(0.0, 20, size = input_dims)
 
@@ -58,21 +57,22 @@ class Conv1DTest(unittest.TestCase):
 
     def __c_fwd(self, build_dict : dict, input_, weight, bias):
         input_list = input_.flatten().tolist()
-        weight_ptr = conv1d.input(1);
-        bias_ptr = conv1d.input(1)
-        weight_ptr[0] = weight[0]
-        bias_ptr[0] = bias[0]
-        iinput = conv1d.input(len(input_list))
+
+        weight_ptr = (ctypes.c_float).from_address(int(weight))
+        bias_ptr = (ctypes.c_float).from_address(int(bias))
+
+        iinput = []
         for i in range(len(input_list)):
-            iinput[i] = input_[i]
-        layer = self.layer.buildConv1D(weight_ptr.cast(), bias_ptr.cast(),
+            iinput += [input_list[i]]
+
+        layer = conv1d.build_layer_conv1d(weight_ptr, bias_ptr,
                         build_dict['kernel_size'], build_dict['strides'],
                         input_.shape[1], input_.shape[2], build_dict['filters'],
-                        self.activation_dictionary[build_dict['activation']],
-                        self.padding_dictionary[build_dict['padding']],
-                        self.dataformat_dictionary[build_dict['data_format']],
+                        activation_dictionary[build_dict['activation']],
+                        padding_dictionary[build_dict['padding']],
+                        dataformat_dictionary[build_dict['data_format']],
                         build_dict['dilation_rate'])
-        return self.layer.fwd_conv1d(layer, iinput.cast())
+        return conv1d.fwd_conv1d(layer, iinput.cast())
 
     def __keras_fwd(self, config_dict : dict, input_, weight, bias):
         layer = self.__keras_build(config_dict)
@@ -81,9 +81,6 @@ class Conv1DTest(unittest.TestCase):
         return layer(input_)
 
     def test_fwd(self) -> bool:
-        weight_ptr = conv1d.input(1);
-        bias_ptr = conv1d.input(1)
-
         batch_size = 1
         N = 1000
         for _ in range(N):
@@ -101,17 +98,15 @@ class Conv1DTest(unittest.TestCase):
 
             input_ = self.generate_sample(input_dims)
 
-            weight_ptr[0] = weight[0]
+            weight_ptr = (ctypes.c_float).from_address(int(weight[0][0][0]))
+            bias_ptr = (ctypes.c_float).from_address(int(bias[0]))
 
-            bias_ptr[0] = bias[0]
-
-            self.assertEqual(self.__c_fwd(build_dict, input_, weight_ptr.cast(),
-                        bias_ptr.cast()), self.__keras_fwd(build_dict, input_, weight, bias))
+            self.assertEqual(self.__c_fwd(build_dict, input_, weight_ptr,
+                        bias_ptr), self.__keras_fwd(build_dict, input_, weight, bias))
 
     def passes(self) -> bool:
         # returns (test_sigmoid and test_hard_sigmoid and ...)
         pass
 
 if __name__=='__main__':
-    c1d = Conv1DTest(conv1d)
-    print(c1d.test_fwd())
+    unittest.main()

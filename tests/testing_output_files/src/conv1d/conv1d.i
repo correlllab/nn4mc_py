@@ -26,7 +26,7 @@
 %array_class(float, input);
 
 %{
-extern struct Conv1D buildConv1D(const float*, const float*, int, int, int, int, int, char, char, char, int);
+extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
 
 extern float * fwd_conv1d(struct Conv1D, float *);
 
@@ -54,7 +54,7 @@ extern float * softmax(float * input, int m);
 
 %}
 
-extern struct Conv1D buildConv1D(const float*, const float*, int, int, int, int, int, char, char, char, int);
+extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
 
 extern float * fwd_conv1d(struct Conv1D, float *);
 
