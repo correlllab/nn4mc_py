@@ -54,6 +54,27 @@ class Conv1DTest(unittest.TestCase):
                     activation = build_dict['activation'],
                     use_bias = build_dict['use_bias']
                     )
+    def __test_padding(self, input_):
+        build_dict = {'filters': 32, 'kernel_size': 3, 'strides': 1, 'padding': 'valid',
+                      'data_format': 'channels_last', 'dilation_rate': 1, 'activation': 'linear',
+                      'use_bias': True}
+        weight = [0]
+        bias = [0]
+        padding = [0x00, 0x02, 0x03]
+        weight_ptr = (ctypes.c_float).from_address(int(weight))
+        bias_ptr = (ctypes.c_float).from_address(int(bias))
+        input = list_2_swig_float_pointer(input_.flatten().tolist())
+        for pad in padding:
+            layer = conv1d.build_layer_conv1d(weight_ptr, bias_ptr,
+                                              build_dict['kernel_size'], build_dict['strides'],
+                                              input_.shape[1], input_.shape[2], build_dict['filters'],
+                                              activation_dictionary[build_dict['activation']],
+                                              pad,
+                                              dataformat_dictionary[build_dict['data_format']],
+                                              build_dict['dilation_rate'])
+            padding_result = conv1d.padding_conv1(layer, input)
+
+
 
     def __c_fwd(self, build_dict : dict, input_, weight, bias):
         input_list = input_.flatten().tolist()

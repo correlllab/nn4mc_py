@@ -2663,14 +2663,16 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 #define SWIGTYPE_p_input swig_types[3]
 #define SWIGTYPE_p_int swig_types[4]
 #define SWIGTYPE_p_long_long swig_types[5]
-#define SWIGTYPE_p_short swig_types[6]
-#define SWIGTYPE_p_signed_char swig_types[7]
-#define SWIGTYPE_p_unsigned_char swig_types[8]
-#define SWIGTYPE_p_unsigned_int swig_types[9]
-#define SWIGTYPE_p_unsigned_long_long swig_types[10]
-#define SWIGTYPE_p_unsigned_short swig_types[11]
-static swig_type_info *swig_types[13];
-static swig_module_info swig_module = {swig_types, 12, 0, 0, 0, 0};
+#define SWIGTYPE_p_p_float swig_types[6]
+#define SWIGTYPE_p_p_input swig_types[7]
+#define SWIGTYPE_p_short swig_types[8]
+#define SWIGTYPE_p_signed_char swig_types[9]
+#define SWIGTYPE_p_unsigned_char swig_types[10]
+#define SWIGTYPE_p_unsigned_int swig_types[11]
+#define SWIGTYPE_p_unsigned_long_long swig_types[12]
+#define SWIGTYPE_p_unsigned_short swig_types[13]
+static swig_type_info *swig_types[15];
+static swig_module_info swig_module = {swig_types, 14, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3347,7 +3349,7 @@ extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, in
 
 extern float * fwd_conv1d(struct Conv1D, float *);
 
-extern int padding_conv1(struct Conv1D, float *);
+extern int padding_1d(struct Conv1D, float ** );
 
 extern float * activate(float* input, int output_shape, char type);
 
@@ -3475,10 +3477,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_padding_conv1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_padding_1d(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Conv1D arg1 ;
-  float *arg2 = (float *) 0 ;
+  float **arg2 = (float **) 0 ;
   void *argp1 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -3486,26 +3488,26 @@ SWIGINTERN PyObject *_wrap_padding_conv1(PyObject *SWIGUNUSEDPARM(self), PyObjec
   PyObject *swig_obj[2] ;
   int result;
   
-  if (!SWIG_Python_UnpackTuple(args, "padding_conv1", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "padding_1d", 2, 2, swig_obj)) SWIG_fail;
   {
     res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_Conv1D,  0  | 0);
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "padding_conv1" "', argument " "1"" of type '" "Conv1D""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "padding_1d" "', argument " "1"" of type '" "Conv1D""'"); 
     }  
     if (!argp1) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "padding_conv1" "', argument " "1"" of type '" "Conv1D""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "padding_1d" "', argument " "1"" of type '" "Conv1D""'");
     } else {
       Conv1D * temp = reinterpret_cast< Conv1D * >(argp1);
       arg1 = *temp;
       if (SWIG_IsNewObj(res1)) delete temp;
     }
   }
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_float, 0 |  0 );
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "padding_conv1" "', argument " "2"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "padding_1d" "', argument " "2"" of type '" "float **""'"); 
   }
-  arg2 = reinterpret_cast< float * >(argp2);
-  result = (int)padding_conv1(arg1,arg2);
+  arg2 = reinterpret_cast< float ** >(argp2);
+  result = (int)padding_1d(arg1,arg2);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -5070,7 +5072,7 @@ SWIGINTERN PyObject *input_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *ar
 static PyMethodDef SwigMethods[] = {
 	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { "build_layer_conv1d", _wrap_build_layer_conv1d, METH_VARARGS, NULL},
-	 { "padding_conv1", _wrap_padding_conv1, METH_VARARGS, NULL},
+	 { "padding_1d", _wrap_padding_1d, METH_VARARGS, NULL},
 	 { "fwd_conv1d", _wrap_fwd_conv1d, METH_VARARGS, NULL},
 	 { "Conv1D_weights_set", _wrap_Conv1D_weights_set, METH_VARARGS, NULL},
 	 { "Conv1D_weights_get", _wrap_Conv1D_weights_get, METH_O, NULL},
@@ -5130,6 +5132,9 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
+static void *_p_p_inputTo_p_p_float(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((float **)  ((input **) x));
+}
 static void *_p_inputTo_p_float(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((float *)  ((input *) x));
 }
@@ -5139,6 +5144,8 @@ static swig_type_info _swigt__p_float = {"_p_float", "float *", 0, 0, (void*)0, 
 static swig_type_info _swigt__p_input = {"_p_input", "input *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int = {"_p_int", "intptr_t *|int *|int_least32_t *|int_fast32_t *|int32_t *|int_fast16_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_long_long = {"_p_long_long", "int_least64_t *|int_fast64_t *|int64_t *|long long *|intmax_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_p_float = {"_p_p_float", "float **", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_p_input = {"_p_p_input", 0, 0, 0, 0, 0};
 static swig_type_info _swigt__p_short = {"_p_short", "short *|int_least16_t *|int16_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_signed_char = {"_p_signed_char", "signed char *|int_least8_t *|int_fast8_t *|int8_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_char = {"_p_unsigned_char", "unsigned char *|uint_least8_t *|uint_fast8_t *|uint8_t *", 0, 0, (void*)0, 0};
@@ -5153,6 +5160,8 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_input,
   &_swigt__p_int,
   &_swigt__p_long_long,
+  &_swigt__p_p_float,
+  &_swigt__p_p_input,
   &_swigt__p_short,
   &_swigt__p_signed_char,
   &_swigt__p_unsigned_char,
@@ -5167,6 +5176,8 @@ static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_input, _p_inputTo_p_flo
 static swig_cast_info _swigc__p_input[] = {  {&_swigt__p_input, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_long_long[] = {  {&_swigt__p_long_long, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_p_input[] = {{&_swigt__p_p_input, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_p_float[] = {  {&_swigt__p_p_input, _p_p_inputTo_p_p_float, 0, 0},  {&_swigt__p_p_float, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_short[] = {  {&_swigt__p_short, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_signed_char[] = {  {&_swigt__p_signed_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_char[] = {  {&_swigt__p_unsigned_char, 0, 0, 0},{0, 0, 0, 0}};
@@ -5181,6 +5192,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_input,
   _swigc__p_int,
   _swigc__p_long_long,
+  _swigc__p_p_float,
+  _swigc__p_p_input,
   _swigc__p_short,
   _swigc__p_signed_char,
   _swigc__p_unsigned_char,

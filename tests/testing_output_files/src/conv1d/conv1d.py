@@ -65,8 +65,8 @@ class _SwigNonDynamicMeta(type):
 def build_layer_conv1d(W, b, kernel_size, strides, input_sh0, input_sh1, filters, activation, padding, data_format, dilation_rate):
     return _conv1d.build_layer_conv1d(W, b, kernel_size, strides, input_sh0, input_sh1, filters, activation, padding, data_format, dilation_rate)
 
-def padding_conv1(L, input):
-    return _conv1d.padding_conv1(L, input)
+def padding_1d(L, input):
+    return _conv1d.padding_1d(L, input)
 
 def fwd_conv1d(L, input):
     return _conv1d.fwd_conv1d(L, input)
