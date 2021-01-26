@@ -46,7 +46,7 @@ struct Conv1D build_layer_conv1d(const float* W, const float* b, int kernel_size
 	return layer;
 }
 
-int padding_1d(struct Conv1D L, float ** input){
+int padding_1d(struct Conv1D L, float * input){
     int input_size = L.input_shape[0] * L.input_shape[1];
 
     if (L.padding == 0x02){ // padding is causal
@@ -55,15 +55,15 @@ int padding_1d(struct Conv1D L, float ** input){
         float* new_input = (float*)malloc(input_size*sizeof(float));
 
         for (int i = 0; i < input_size; i++) new_input[i] = 0.0;
-
+        // *(L.weights + x*L.weight_shape[1]*L.weight_shape[2] + y*L.weight_shape[2] +  j)
         for (int i = 0; i < L.input_shape[0] ; i++){
             for (int j = 0; j < (L.input_shape[1] - left_pad); j++){
-                new_input[i + L.input_shape[0] * (j + left_pad)] = *input[i + L.input_shape[0] * j];
+                new_input[i + L.input_shape[0] * (j + left_pad)] = *(input + i + L.input_shape[0] * j);
             }
         }
 
         float* input = (float*)malloc(input_size*sizeof(float));
-        for (int i =0; i<input_size ; i++ ) input[i] = new_input[i];
+        for (int i =0; i<input_size ; i++ ) *(input + i) = new_input[i];
         free(new_input);
         L.input_shape[0] = input_size;  
         L.output_shape[0] = (int)((L.input_shape[0] - L.kernel_shape[0])/L.strides + 1);
@@ -78,7 +78,7 @@ int padding_1d(struct Conv1D L, float ** input){
         float* new_input = (float*)malloc(input_size*sizeof(float));
         for (int i = 0; i< input_size; i++) new_input[i] = 0.0;
 
-        for (int i=0; i< input_size - pad; i++) new_input[i+pad] = *input[i];
+        for (int i=0; i< input_size - pad; i++) new_input[i+pad] = *(input + i);
         float* input = (float*)malloc(input_size*sizeof(float));
         for (int i =0; i < input_size ; i++) input[i] = new_input[i];
         free(new_input);
@@ -89,12 +89,12 @@ int padding_1d(struct Conv1D L, float ** input){
 }
 
 
-float * fwd_conv1d(struct Conv1D L, float* input)
+float * fwd_conv1d(struct Conv1D L, float * input)
 {
 
     int input_size = L.input_shape[0] * L.input_shape[1];
 
-    input_size = padding_1d(L, &input);
+    input_size = padding_1d(L, &input[0]);
 
     if (L.data_format == 0x02){
         for (int i = 0; i<L.input_shape[0]; i++){
