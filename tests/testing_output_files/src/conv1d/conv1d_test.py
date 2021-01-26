@@ -85,7 +85,9 @@ class Conv1DTest(unittest.TestCase):
                                               build_dict['dilation_rate'])
             padding_result = conv1d.padding_1d(layer, input)
 
-            padding_result = swig_py_object_2_list(padding_result)
+            padding_result = swig_py_object_2_list(input, padding_result)
+
+            print(padding_result, input)
             print(padding_result)
 
 
