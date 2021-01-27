@@ -85,16 +85,19 @@ class Conv1DTest(unittest.TestCase):
                                               pad,
                                               dataformat_dictionary[build_dict['data_format']],
                                               build_dict['dilation_rate'])
-            left_pad = build_dict['dilation_rate'] * (build_dict['kernel_size'] - 1)
-            print("left_pad: ", left_pad)
+            if (pad == 0x00):
+                new_size =  len(input_.flatten().tolist())
+            if (pad == 0x02):
+                left_pad = build_dict['dilation_rate'] * (build_dict['kernel_size'] - 1)
+                new_size = len(input_.flatten().tolist()) + input_dims[1]*left_pad
+            if (pad == 0x03):
+                left_pad = build_dict['filters'] // 2
+                new_size = len(input_.flatten().tolist()) + input_dims[1]*left_pad
+
             padding_result = conv1d.padding_1d(layer, input.cast())
-            size_diff = input_dims[1] * input_dims[1] + left_pad * input_dims[2]
 
-            padding_result = swig_py_object_2_list(padding_result, size_diff)
+            padding_result = swig_py_object_2_list(padding_result, new_size)
 
-
-
-            print(padding_result)
 
 
     #def __c_fwd(self, build_dict : dict, input_, weight, bias):
