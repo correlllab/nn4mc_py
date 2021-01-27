@@ -72,7 +72,8 @@ class Conv1DTest(unittest.TestCase):
         bias : Final = conv1d.input(shape[1])
 
         padding = [0x00, 0x02, 0x03]
-        print(input_.flatten().tolist())
+        #print(input_.flatten().tolist())
+        print(input_)
         input_all = list_2_swig_float_pointer(input_.flatten().tolist(), input_dims[1]*input_dims[2])
 
         for pad in padding:
@@ -80,7 +81,7 @@ class Conv1DTest(unittest.TestCase):
             print("padding: ", pad)
             layer = conv1d.build_layer_conv1d(weight.cast(), bias.cast(),
                                               build_dict['kernel_size'], build_dict['strides'],
-                                              input_.shape[1], input_.shape[2], build_dict['filters'],
+                                              input_dims[1], input_dims[2], build_dict['filters'],
                                               activation_dictionary[build_dict['activation']],
                                               pad,
                                               dataformat_dictionary[build_dict['data_format']],
@@ -95,9 +96,9 @@ class Conv1DTest(unittest.TestCase):
                 new_size = len(input_.flatten().tolist()) + input_dims[1]*left_pad
 
             padding_result = conv1d.padding_1d(layer, input.cast())
-
             padding_result = swig_py_object_2_list(padding_result, new_size)
 
+            print(padding_result)
 
 
     #def __c_fwd(self, build_dict : dict, input_, weight, bias):
