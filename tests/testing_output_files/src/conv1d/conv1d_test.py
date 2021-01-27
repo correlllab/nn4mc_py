@@ -4,6 +4,7 @@ import numpy as np
 import unittest
 from typing import List, Final
 import ctypes
+import copy
 
 def swig_py_object_2_list(object, size : int) -> List[float]:
     """
@@ -59,23 +60,24 @@ class Conv1DTest(unittest.TestCase):
 
     def test_padding(self):
         print("__test_padding")
-        shape = np.random.randint(100, size=2).tolist()
-        input_dims = (1, shape[0], shape[1])
+        shape = np.random.randint(3, size=2).tolist()
+        input_dims = (1, shape[0] + 1, shape[1] + 1)
+        print(input_dims)
         input_ = self.__generate_sample(input_dims)
         build_dict = {'filters': 32, 'kernel_size': 3, 'strides': 1, 'padding': 'valid',
                       'data_format': 'channels_last', 'dilation_rate': 1, 'activation': 'linear',
                       'use_bias': True}
 
         weight : Final = conv1d.input(shape[0]*shape[1])
-
         bias : Final = conv1d.input(shape[1])
 
         padding = [0x00, 0x02, 0x03]
-
-        input = list_2_swig_float_pointer(input_.flatten().tolist(), len(input_.flatten().tolist()))
-
+        print(input_.flatten().tolist())
+        input_all = list_2_swig_float_pointer(input_.flatten().tolist(), input_dims[1]*input_dims[2])
 
         for pad in padding:
+            input = copy.copy(input_all)
+            print("padding: ", pad)
             layer = conv1d.build_layer_conv1d(weight.cast(), bias.cast(),
                                               build_dict['kernel_size'], build_dict['strides'],
                                               input_.shape[1], input_.shape[2], build_dict['filters'],
@@ -83,11 +85,15 @@ class Conv1DTest(unittest.TestCase):
                                               pad,
                                               dataformat_dictionary[build_dict['data_format']],
                                               build_dict['dilation_rate'])
-            padding_result = conv1d.padding_1d(layer, input)
+            left_pad = build_dict['dilation_rate'] * (build_dict['kernel_size'] - 1)
+            print("left_pad: ", left_pad)
+            padding_result = conv1d.padding_1d(layer, input.cast())
 
-            padding_result = swig_py_object_2_list(input, padding_result)
 
-            print(padding_result, input)
+            padding_result = swig_py_object_2_list(input.cast(), padding_result)
+
+            size_diff = input_dims[1] * input_dims[2]
+
             print(padding_result)
 
 
