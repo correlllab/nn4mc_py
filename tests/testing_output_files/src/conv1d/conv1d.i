@@ -33,7 +33,7 @@ extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, in
 
 extern float * fwd_conv1d(struct Conv1D, float *);
 
-extern int padding_1d(struct Conv1D, float * );
+extern float * padding_1d(struct Conv1D, float * );
 
 extern float * activate(float* input, int output_shape, char type);
 
@@ -61,7 +61,7 @@ extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, in
 
 extern float * fwd_conv1d(struct Conv1D, float *);
 
-extern int padding_1d(struct Conv1D, float * );
+extern float * padding_1d(struct Conv1D, float * );
 
 extern float * activate(float* input, int output_shape, char type);
 

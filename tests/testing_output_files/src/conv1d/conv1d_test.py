@@ -88,11 +88,11 @@ class Conv1DTest(unittest.TestCase):
             left_pad = build_dict['dilation_rate'] * (build_dict['kernel_size'] - 1)
             print("left_pad: ", left_pad)
             padding_result = conv1d.padding_1d(layer, input.cast())
+            size_diff = input_dims[1] * input_dims[1] + left_pad * input_dims[2]
+
+            padding_result = swig_py_object_2_list(padding_result, size_diff)
 
 
-            padding_result = swig_py_object_2_list(input.cast(), padding_result)
-
-            size_diff = input_dims[1] * input_dims[2]
 
             print(padding_result)
 

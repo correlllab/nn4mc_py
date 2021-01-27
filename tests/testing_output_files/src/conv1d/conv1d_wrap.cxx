@@ -3348,7 +3348,7 @@ extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, in
 
 extern float * fwd_conv1d(struct Conv1D, float *);
 
-extern int padding_1d(struct Conv1D, float * );
+extern float * padding_1d(struct Conv1D, float * );
 
 extern float * activate(float* input, int output_shape, char type);
 
@@ -3485,7 +3485,7 @@ SWIGINTERN PyObject *_wrap_padding_1d(PyObject *SWIGUNUSEDPARM(self), PyObject *
   void *argp2 = 0 ;
   int res2 = 0 ;
   PyObject *swig_obj[2] ;
-  int result;
+  float *result = 0 ;
   
   if (!SWIG_Python_UnpackTuple(args, "padding_1d", 2, 2, swig_obj)) SWIG_fail;
   {
@@ -3506,8 +3506,8 @@ SWIGINTERN PyObject *_wrap_padding_1d(PyObject *SWIGUNUSEDPARM(self), PyObject *
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "padding_1d" "', argument " "2"" of type '" "float *""'"); 
   }
   arg2 = reinterpret_cast< float * >(argp2);
-  result = (int)padding_1d(arg1,arg2);
-  resultobj = SWIG_From_int(static_cast< int >(result));
+  result = (float *)padding_1d(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
