@@ -49,43 +49,34 @@ struct Conv1D build_layer_conv1d(const float* W, const float* b, int kernel_size
 float * padding_1d(struct Conv1D L, float * input){
         if (L.padding == 0x02){ // padding is causal
                int input_size = (int)(L.input_shape[0] * L.input_shape[1]);
-
                int left_pad = (int)(L.dilation_rate * (L.kernel_shape[0] - 1));
-
                input_size += (int)(left_pad * L.input_shape[0]);
-
                float new_input[input_size];
-
                for (int i = 0; i < input_size; i++) new_input[i] = 0.0;
-
                for (int i = 0; i < L.input_shape[0]; i++){
                    for (int j = 0; j < L.input_shape[1]; j++){
                        new_input[i * (L.input_shape[1] + left_pad) + j + left_pad] = input[j + L.input_shape[1] * i];
                    }
                }
-
                input = (float*)realloc(input, input_size * sizeof(float));
                for (int i = 0; i < input_size; i++) input[i] = new_input[i];
         }
 
-        if (L.padding == 0x03){ // padding is same
-            int input_size = L.input_shape[0] * L.input_shape[1];
-            int pad = (int)(L.filters / 2);
-
-            input_size += (int)(L.input_shape[0] * pad);
-            /*
-            float new_input[input_size];
-            for (int i = 0; i < input_size; i++) new_input[i] = 0.0;
-
-            int left_pad = (int)floor(pad / 2);
-
-            for (int i = 0; i < L.input_shape[0]; ++i){
-                for (int j = 0; j < L.input_shape[1]; ++j){
-                    new_input[(j+left_pad) * L.input_shape[1] + i] = input[j * L.input_shape[1] + i];
-                }
-            }
-            input = (float*)realloc(input, input_size * sizeof(float));
-            for (int i = 0; i < input_size; i++) input[i] = new_input[i];*/
+        if (L.padding == 0x03) { // padding is same
+              int input_size = (int)(L.input_shape[0] * L.input_shape[1]);
+              int pad = (int)(L.filters / 2);
+              input_size += (int)(L.input_shape[0] * pad);
+              float new_input[input_size];
+              int left_pad = floor(pad/2);
+              int right_pad = pad - left_pad;
+              for (int i = 0; i < input_size; i++) new_input[i] = 0.0;
+              for (int i = 0; i < L.input_shape[0]; i++){
+                  for (int j = 0; j < L.input_shape[1]; j++){
+                      new_input[i * (L.input_shape[1] + left_pad) + i * right_pad + j + left_pad] = input[j + L.input_shape[1] * i];
+                  }
+              }
+              input = (float*)realloc(input, input_size * sizeof(float));
+              for (int i = 0; i < input_size; i++) input[i] = new_input[i];
         }
 
     return input;

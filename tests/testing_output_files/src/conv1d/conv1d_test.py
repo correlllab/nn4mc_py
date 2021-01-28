@@ -83,7 +83,7 @@ class Conv1DTest(unittest.TestCase):
                                               build_dict['kernel_size'], build_dict['strides'],
                                               input_dims[1], input_dims[2], build_dict['filters'],
                                               activation_dictionary[build_dict['activation']],
-                                              pad,
+                                              chr(pad),
                                               dataformat_dictionary[build_dict['data_format']],
                                               build_dict['dilation_rate'])
             if (pad == 0x00):
