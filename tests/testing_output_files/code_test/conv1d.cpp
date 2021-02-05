@@ -38,16 +38,16 @@ struct Conv1D build_layer_conv1d(const float* W, const float* b, int kernel_size
     layer.padding = padding;
     layer.data_format = data_format;
     
-    layer.filters= filters;
+    layer.filters = filters;
 
-	layer.output_shape[0] = (int)((layer.input_shape[0] - layer.kernel_shape[0])/layer.strides + 1);
-	layer.output_shape[1] = layer.filters;
+	layer.output_shape[0] = (int)((layer.input_shape[0] - layer.kernel_shape[0]) / layer.strides + 1);
+	layer.output_shape[1] = (int)layer.filters;
 
 	return layer;
 }
 
 float * padding_1d(struct Conv1D L, float * input){
-        if (L.padding == 0x02){ // padding is causal
+        if (L.padding == 0x02){ // padding is causal (tested)
                int input_size = (int)(L.input_shape[0] * L.input_shape[1]);
                int left_pad = (int)(L.dilation_rate * (L.kernel_shape[0] - 1));
                input_size += (int)(left_pad * L.input_shape[0]);
@@ -67,14 +67,15 @@ float * padding_1d(struct Conv1D L, float * input){
               int pad = (int)(L.filters / 2);
               input_size += (int)(L.input_shape[0] * pad);
               float new_input[input_size];
-              int left_pad = floor(pad/2);
-              int right_pad = pad - left_pad;
+              int left_pad = floor(pad / 2);
+              int right_pad = abs(pad - left_pad);
               for (int i = 0; i < input_size; i++) new_input[i] = 0.0;
               for (int i = 0; i < L.input_shape[0]; i++){
                   for (int j = 0; j < L.input_shape[1]; j++){
-                      new_input[i * (L.input_shape[1] + left_pad) + i * right_pad + j + left_pad] = input[j + L.input_shape[1] * i];
+                      new_input[(L.input_shape[1]) * i + j] = input[L.input_shape[1] * i + j];
                   }
               }
+
               input = (float*)realloc(input, input_size * sizeof(float));
               for (int i = 0; i < input_size; i++) input[i] = new_input[i];
         }
@@ -85,10 +86,9 @@ float * padding_1d(struct Conv1D L, float * input){
 
 float * fwd_conv1d(struct Conv1D L, float * input)
 {
-
-    int input_size = L.input_shape[0] * L.input_shape[1];
-
     input = padding_1d(L, input);
+
+    int input_size = (int)(sizeof(input) / sizeof(input[0]));
 
     if (L.data_format == 0x02){
         for (int i = 0; i < L.input_shape[0]; i++){
@@ -100,7 +100,13 @@ float * fwd_conv1d(struct Conv1D L, float * input)
         } 
     }
 
-    float * h = (float*)malloc(L.output_shape[0]*L.output_shape[1] * sizeof(float));
+    float old_input[input_size];
+    for (int i = 0; i < input_size; i++) old_input[i] = input[i];
+    //int output_size =(int)(L.output_shape[0]*L.output_shape[1]);
+    int output_size = (int)(input_size);
+
+    input = (float*)realloc(input, output_size * sizeof(float));
+    for (int i=0; i < output_size; i++) input[i] = 0.0;
 
 	for(int i = 0; i < L.output_shape[0]; i++)
 	{
@@ -108,22 +114,20 @@ float * fwd_conv1d(struct Conv1D L, float * input)
 		{
             int idx = i*L.output_shape[1] + j;
 
-			h[idx] = L.biases[j];
+			input[idx] = L.biases[j];
 
 			for(int x = 0; x < L.kernel_shape[0]; x++)
 			{
 				for(int y = 0; y < L.weight_shape[1]; y++)
 				{
-                    h[idx] += *(L.weights + x*L.weight_shape[1]*L.weight_shape[2] + y*L.weight_shape[2] +  j) * input[(i+x)*L.input_shape[1] +  y];
+                    input[idx] += *(L.weights + x*L.weight_shape[1]*L.weight_shape[2] + y*L.weight_shape[2] +  j) * old_input[(i+x)*L.input_shape[1] +  y];
 				}
 			}
 
-		    h = activate(h,L.output_shape[0],L.activation);
+		    input = activate(input,input_size+1,L.activation);
 		}
 	}
 
-    free(input);
-    input = NULL;
-    return h;
+    return input;
 }
 

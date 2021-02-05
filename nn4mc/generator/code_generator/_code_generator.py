@@ -185,7 +185,8 @@ class Generator():
                 #HEADER: Add the structs
                 pos = nn_header.find(G.NN_STRUCT_DELIMITER)
                 nn_header = nn_header.replace(G.NN_STRUCT_DELIMITER,
-                    'struct ' + node.layer.layer_type + ' ' + node.layer.identifier +\
+                    #'struct ' + node.layer.layer_type + ' ' + node.layer.identifier +\
+                    node.layer.layer_type + ' ' + node.layer.identifier + \
                     ';\n' + G.NN_STRUCT_DELIMITER)
 
                 #SOURCE: Add the init and fwd calls
