@@ -16,6 +16,16 @@ def swig_py_object_2_list(object, size : int) -> List[float]:
         new_object += [float(y[i])]
     return new_object
 
+def swig_py_object_2_list_int(object, size : int) -> List[int]:
+    """
+        Converts SwigPyObject to List[float]
+    """
+    y = (ctypes.c_float * size).from_address(int(object))
+    new_object = []
+    for i in range(size):
+        new_object += [int(y[i])]
+    return new_object
+
 def list_2_swig_float_pointer(list : List[float], size : int):
     """
         Converts from list of floats to swig float* object
@@ -104,6 +114,7 @@ class Conv1DTest(unittest.TestCase):
 
         output_dims = build_dict['filters'] * ((input_dims[1] - \
                       build_dict['kernel_size']) // build_dict['strides'] + 1)
+        print(output_dims)
 
         layer = conv1d.build_layer_conv1d(weight.cast(), bias.cast(),
                                               build_dict['kernel_size'], build_dict['strides'],
@@ -133,10 +144,10 @@ class Conv1DTest(unittest.TestCase):
                     'data_format' : 'channels_last', 'dilation_rate' : 1, 'activation' : 'linear',
                     'use_bias' : True}
 
-            shape = np.random.randint(build_dict['kernel_size'], 10, size = 2).tolist()
+            shape = np.random.randint(build_dict['kernel_size'], 5, size = 2).tolist()
             input_dims = (1, shape[0] + 1, shape[1] + 1)
             input_ = self.__generate_sample(input_dims)
-
+            original_input = input_.copy()
             weight = np.random.normal(0.0, 20., size = (build_dict['kernel_size'],
                                             input_dims[-1], build_dict['filters'])).astype(np.float32)
             bias = np.random.normal(0.0, 20, size = (build_dict['filters'])).astype(np.float32)
@@ -148,7 +159,13 @@ class Conv1DTest(unittest.TestCase):
             c_output, output_dims = self.__c_fwd(build_dict, input_,
                                                     weight_ptr, bias_ptr, weight.size,
                                                     bias.size, input_dims)
-            print(c_output)
+
+            c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
+            c1_keras = c_keras.numpy()
+            print("keras:")
+            print(c1_keras)
+            print("nn4mc:")
+            print(np.array(c_output).reshape(c1_keras.shape))
             #self.assertEqual(c_output, self.__keras_fwd(build_dict, input_, weight, bias))
 
 if __name__=='__main__':

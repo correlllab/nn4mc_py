@@ -39,10 +39,6 @@ struct Conv1D build_layer_conv1d(const float* W, const float* b, int kernel_size
     layer.data_format = data_format;
     
     layer.filters = filters;
-
-	layer.output_shape[0] = (int)((layer.input_shape[0] - layer.kernel_shape[0]) / layer.strides + 1);
-	layer.output_shape[1] = (int)layer.filters;
-
 	return layer;
 }
 
@@ -86,6 +82,10 @@ float * padding_1d(struct Conv1D L, float * input){
 
 float * fwd_conv1d(struct Conv1D L, float * input)
 {
+
+	L.output_shape[0] = (int)((L.input_shape[0] - L.kernel_shape[0]) / L.strides + 1);
+	L.output_shape[1] = (int)L.filters;
+
     input = padding_1d(L, input);
 
     int input_size = (int)(sizeof(input) / sizeof(input[0]));
@@ -100,13 +100,9 @@ float * fwd_conv1d(struct Conv1D L, float * input)
         } 
     }
 
-    float old_input[input_size];
-    for (int i = 0; i < input_size; i++) old_input[i] = input[i];
-    //int output_size =(int)(L.output_shape[0]*L.output_shape[1]);
-    int output_size = (int)(input_size);
+    int output_size = (int)(L.output_shape[0]*L.output_shape[1]);
 
-    input = (float*)realloc(input, output_size * sizeof(float));
-    for (int i=0; i < output_size; i++) input[i] = 0.0;
+    float * h = (float*)malloc(output_size * sizeof(float));
 
 	for(int i = 0; i < L.output_shape[0]; i++)
 	{
@@ -114,20 +110,20 @@ float * fwd_conv1d(struct Conv1D L, float * input)
 		{
             int idx = i*L.output_shape[1] + j;
 
-			input[idx] = L.biases[j];
+			h[idx] = L.biases[j];
 
 			for(int x = 0; x < L.kernel_shape[0]; x++)
 			{
 				for(int y = 0; y < L.weight_shape[1]; y++)
 				{
-                    input[idx] += *(L.weights + x*L.weight_shape[1]*L.weight_shape[2] + y*L.weight_shape[2] +  j) * old_input[(i+x)*L.input_shape[1] +  y];
+                    h[idx] += *(L.weights + x*L.weight_shape[1]*L.weight_shape[2] + y*L.weight_shape[2] +  j) * input[(i+x)*L.input_shape[1] +  y];
 				}
 			}
-
-		    input = activate(input,input_size+1,L.activation);
 		}
 	}
+    h = activate(h,output_size,L.activation);
 
-    return input;
+    return h;
+    free(input);
 }
 

@@ -33,7 +33,7 @@ struct Conv1D {
 
 struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
 
-float * fwd_conv1d(struct Conv1D, float*);
+float * fwd_conv1d(struct Conv1D , float*);
 
 float * padding_1d(struct Conv1D, float *);
 
