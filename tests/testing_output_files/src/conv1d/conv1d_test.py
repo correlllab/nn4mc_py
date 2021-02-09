@@ -142,7 +142,7 @@ class Conv1DTest(unittest.TestCase):
         for _ in range(N):
             print(_)
             build_dict = {'filters': 32, 'kernel_size' : 3, 'strides' : 1, 'padding' : 'valid',
-                    'data_format' : 'channels_last', 'dilation_rate' : 1, 'activation' : 'linear',
+                    'data_format' : 'channels_last', 'dilation_rate' : 1, 'activation' : 'relu',
                     'use_bias' : True}
 
             shape = np.random.randint(build_dict['kernel_size'], 5, size = 2).tolist()

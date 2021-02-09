@@ -112,7 +112,7 @@ float * fwd_conv1d(struct Conv1D L, float * input)
 			}
 		}
 	}
-	//free(input);
+	free(input);
     h = activate(h, output_size, L.activation);
     return h;
 }
