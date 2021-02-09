@@ -92,7 +92,7 @@ class Conv1DTest(unittest.TestCase):
         assert_result = True
         for _ in range(N):
             units = np.random.randint(1, 10, size=1).tolist()[0]
-            build_dict = {'activation' : 'relu', 'units' : units}
+            build_dict = {'activation' : 'linear', 'units' : units}
 
             shape = np.random.randint(1, 5, size = 1).tolist()[0]
             input_dims = (1, shape)
@@ -110,9 +110,10 @@ class Conv1DTest(unittest.TestCase):
                                                  weight_ptr, bias_ptr, weight.size,
                                                  bias.size, input_dims)
 
-            c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
-            c_output = np.array(c_output).reshape(c_keras.shape)
-            assert_result = np.testing.assert_allclose(c_output, c_keras, rtol = 5e-5)
+            c_keras = np.array(self.__keras_fwd(build_dict, original_input, weight, bias))
+            c_output = np.array(c_output).reshape(c_keras.shape).astype(np.float32)
+            assert_result = np.testing.assert_allclose(c_output.flatten(), c_keras.flatten(), rtol = 5e-5)
+            print(assert_result)
         print("forward passed!")
 
 if __name__=='__main__':

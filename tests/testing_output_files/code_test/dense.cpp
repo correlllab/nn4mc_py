@@ -9,9 +9,7 @@
 */
 
 #include "dense.h"
-#include "activations.h"
-#include <math.h>
-#include <stdlib.h>
+
 
 struct Dense build_layer_dense(const float* W, const float* b, int input_size, int output_size, char activation)
 {

@@ -10,7 +10,9 @@
 
 #ifndef __DENSE_H__
 #define __DENSE_H__
-
+#include "activations.h"
+#include <math.h>
+#include <stdlib.h>
 
 struct Dense {
 
