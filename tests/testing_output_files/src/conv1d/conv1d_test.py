@@ -112,7 +112,6 @@ class Conv1DTest(unittest.TestCase):
         bias = list_2_swig_float_pointer(bias, bias_size)
         input_length = input_.size
 
-        print(input_.shape)
 
         input_ = input_.flatten().tolist()
         input_all = list_2_swig_float_pointer(input_, len(input_))
@@ -133,16 +132,15 @@ class Conv1DTest(unittest.TestCase):
         return output, output_dims
 
     def __keras_fwd(self, config_dict : dict, input_, weight, bias):
-        print("__keras_fwd")
         model = self.__keras_build(config_dict)
         model.set_weights([weight, bias])
         return model.predict(input_)
 
-    def test_fwd(self) -> bool:
-        print("test_fwd")
-        batch_size = 1
-        N = 1
+    def test_fwd(self):
+        N = 1000
+        assert_result = True
         for _ in range(N):
+            print(_)
             build_dict = {'filters': 32, 'kernel_size' : 3, 'strides' : 1, 'padding' : 'valid',
                     'data_format' : 'channels_last', 'dilation_rate' : 1, 'activation' : 'linear',
                     'use_bias' : True}
@@ -165,13 +163,8 @@ class Conv1DTest(unittest.TestCase):
                                                  bias.size, input_dims)
 
             c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
-            print("keras output shape: ", c_keras.shape)
             c_output = np.array(c_output).reshape(c_keras.shape)
-            print("keras:")
-            print(c_keras)
-            print("nn4mc:")
-            print(c_output)
-            return np.testing.assert_allclose(c_output, c_keras, 1e-5)
-
+            assert_result = assert_result or np.testing.assert_allclose(c_output, c_keras, rtol = 5e-5)
+        return assert_result
 if __name__=='__main__':
     unittest.main()

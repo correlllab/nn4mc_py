@@ -12,7 +12,12 @@
     #include "../../code_test/conv1d.h"
     #include "../../code_test/parameters.h"
 %}
-
+%include "../../code_test/conv1d.cpp"
+%include "../../code_test/conv1d.h"
+%include "../../code_test/parameters.h"
+%include "../../code_test/activations.h"
+%include "../../code_test/activations.cpp"
+%include "stdint.i"
 %include "carrays.i"
 
 %module conv1d
