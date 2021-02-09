@@ -16,16 +16,7 @@ extern "C" {
 
 #include "parameters.h"
 #include "conv1d.h"
-#include "conv1d.h"
 #include "dense.h"
-#include "dense.h"
-#include "dense.h"
-#include "dense.h"
-#include "dense.h"
-#include "dense.h"
-#include "dense.h"
-#include "dense.h"
-
 
 struct Conv1D conv1d_1;
 struct Conv1D conv1d_2;

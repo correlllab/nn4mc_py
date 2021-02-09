@@ -6,7 +6,6 @@
     This file implements a 1 dimensional convolution layer.
 
 */
-
 #include "conv1d.h"
 #include "activations.h"
 #include <math.h>
@@ -37,7 +36,10 @@ struct Conv1D build_layer_conv1d(const float* W, const float* b, int kernel_size
     layer.activation = activation;
     layer.padding = padding;
     layer.data_format = data_format;
-    
+
+    layer.output_shape[0] = (int)((input_sh0 - kernel_size) / strides) + 1;
+	layer.output_shape[1] = (int)filters;
+
     layer.filters = filters;
 	return layer;
 }
@@ -79,51 +81,39 @@ float * padding_1d(struct Conv1D L, float * input){
     return input;
 }
 
-
 float * fwd_conv1d(struct Conv1D L, float * input)
 {
-
-	L.output_shape[0] = (int)((L.input_shape[0] - L.kernel_shape[0]) / L.strides + 1);
-	L.output_shape[1] = (int)L.filters;
-
     input = padding_1d(L, input);
-
-    int input_size = (int)(sizeof(input) / sizeof(input[0]));
-
     if (L.data_format == 0x02){
         for (int i = 0; i < L.input_shape[0]; i++){
-            for (int j =0 ; j<L.input_shape[1]; j++){
-                float temp = input[i + L.input_shape[1] * j];
-                input[i + L.input_shape[1] * j] = input[j+L.input_shape[1]*i];
-                input[j + L.input_shape[1] * i] = temp;
+            for (int j = 0 ; j < L.input_shape[1]; j++){
+                float temp = input[i * L.input_shape[1] + j];
+                input[i * L.input_shape[1] + j] = input[j * L.input_shape[1] + i];
+                input[j * L.input_shape[1] + i] = temp;
             }
         } 
     }
-
-    int output_size = (int)(L.output_shape[0]*L.output_shape[1]);
-
+    int output_size = L.output_shape[0] * L.output_shape[1];
     float * h = (float*)malloc(output_size * sizeof(float));
 
-	for(int i = 0; i < L.output_shape[0]; i++)
-	{
-		for(int j = 0; j < L.output_shape[1]; j++)
-		{
-            int idx = i*L.output_shape[1] + j;
+    for (int j = 0; j < L.output_shape[1]; j++)
+    {
+        for (int i = 0; i < L.output_shape[0]; i++)
+        {
+            int idx = i * L.output_shape[1] + j;
+			h[idx] = (float)L.biases[j];
 
-			h[idx] = L.biases[j];
-
-			for(int x = 0; x < L.kernel_shape[0]; x++)
+			for (int x = 0; x < L.weight_shape[0]; x++)
 			{
-				for(int y = 0; y < L.weight_shape[1]; y++)
+				for (int y = 0; y < L.weight_shape[1]; y++)
 				{
-                    h[idx] += *(L.weights + x*L.weight_shape[1]*L.weight_shape[2] + y*L.weight_shape[2] +  j) * input[(i+x)*L.input_shape[1] +  y];
+                    h[idx] += *(L.weights + L.weight_shape[2] * (x * L.weight_shape[1] + y) + j) * input[(i + x) * L.input_shape[1] + y];
 				}
 			}
 		}
 	}
-    h = activate(h,output_size,L.activation);
-
+	//free(input);
+    h = activate(h, output_size, L.activation);
     return h;
-    free(input);
 }
 

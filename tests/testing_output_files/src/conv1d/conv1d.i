@@ -13,48 +13,38 @@
     #include "../../code_test/parameters.h"
 %}
 
-%include "../../code_test/conv1d.cpp"
-%include "../../code_test/conv1d.h"
-%include "../../code_test/parameters.h"
-%include "../../code_test/activations.h"
-%include "../../code_test/activations.cpp"
-%include "stdint.i"
 %include "carrays.i"
-%include "typemaps.i"
 
 %module conv1d
 
 %array_class(float, input);
-%apply float& INOUT {float& a};
 
 %{
+    extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
 
-extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
+    extern float * fwd_conv1d(struct Conv1D, float *);
 
-extern float * fwd_conv1d(struct Conv1D, float *);
+    extern float * padding_1d(struct Conv1D, float * );
 
-extern float * padding_1d(struct Conv1D, float * );
+    extern float * activate(float* input, int output_shape, char type);
 
-extern float * activate(float* input, int output_shape, char type);
+    extern float * sigmoid(float * input, int m);
 
-extern float * sigmoid(float * input, int m);
+    extern float * exp_activation(float * input, int m);
 
-extern float * exp_activation(float * input, int m);
+    extern float * softplus(float * input, int m);
 
-extern float * softplus(float * input, int m);
+    extern float * softsign(float * input, int m);
 
-extern float * softsign(float * input, int m);
+    extern float * hard_sigmoid(float * input, int m);
 
-extern float * hard_sigmoid(float * input, int m);
+    extern float  exponential(float input);
 
-extern float  exponential(float input);
+    extern float * relu(float *input, int m);
 
-extern float * relu(float *input, int m);
+    extern float * hyper_tan(float * input, int m);
 
-extern float * hyper_tan(float * input, int m);
-
-extern float * softmax(float * input, int m);
-
+    extern float * softmax(float * input, int m);
 %}
 
 extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);

@@ -1,5 +1,6 @@
 import conv1d
-import tensorflow as tf
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Conv1D
 import numpy as np
 import unittest
 from typing import List, Final
@@ -55,7 +56,9 @@ class Conv1DTest(unittest.TestCase):
         return np.random.normal(0.0, 20, size = input_dims)
 
     def __keras_build(self, build_dict : dict):
-        return tf.keras.layers.Conv1D(
+        model = Sequential()
+        model.add(Conv1D(
+                    input_shape = build_dict['input_shape'],
                     filters = build_dict['filters'],
                     kernel_size = build_dict['kernel_size'],
                     strides = build_dict['strides'],
@@ -64,7 +67,9 @@ class Conv1DTest(unittest.TestCase):
                     dilation_rate =  build_dict['dilation_rate'],
                     activation = build_dict['activation'],
                     use_bias = build_dict['use_bias']
-                    )
+                    ))
+        model.trainable = False
+        return model
 
     def test_padding(self):
         shape = np.random.randint(3, size=2).tolist()
@@ -73,9 +78,9 @@ class Conv1DTest(unittest.TestCase):
 
         build_dict = {'filters': 32, 'kernel_size': 3, 'strides': 1, 'padding': 'valid',
                       'data_format': 'channels_last', 'dilation_rate': 1, 'activation': 'linear',
-                      'use_bias': True}
+                      'use_bias': True, 'input_shape' : input_dims}
 
-        weight = conv1d.input(input_dims[1]*input_dims[2])
+        weight = conv1d.input(input_dims[1] * input_dims[2])
         bias = conv1d.input(input_dims[2])
 
         padding = [0x00, 0x02, 0x03]
@@ -107,14 +112,13 @@ class Conv1DTest(unittest.TestCase):
         bias = list_2_swig_float_pointer(bias, bias_size)
         input_length = input_.size
 
-        print(input_)
+        print(input_.shape)
 
         input_ = input_.flatten().tolist()
         input_all = list_2_swig_float_pointer(input_, len(input_))
 
         output_dims = build_dict['filters'] * ((input_dims[1] - \
                       build_dict['kernel_size']) // build_dict['strides'] + 1)
-        print(output_dims)
 
         layer = conv1d.build_layer_conv1d(weight.cast(), bias.cast(),
                                               build_dict['kernel_size'], build_dict['strides'],
@@ -130,10 +134,9 @@ class Conv1DTest(unittest.TestCase):
 
     def __keras_fwd(self, config_dict : dict, input_, weight, bias):
         print("__keras_fwd")
-        layer = self.__keras_build(config_dict)
-        layer.w = tf.Variable(weight)
-        layer.b = tf.Variable(bias)
-        return layer(input_)
+        model = self.__keras_build(config_dict)
+        model.set_weights([weight, bias])
+        return model.predict(input_)
 
     def test_fwd(self) -> bool:
         print("test_fwd")
@@ -147,26 +150,28 @@ class Conv1DTest(unittest.TestCase):
             shape = np.random.randint(build_dict['kernel_size'], 5, size = 2).tolist()
             input_dims = (1, shape[0] + 1, shape[1] + 1)
             input_ = self.__generate_sample(input_dims)
+            build_dict['input_shape'] = input_dims
             original_input = input_.copy()
-            weight = np.random.normal(0.0, 20., size = (build_dict['kernel_size'],
-                                            input_dims[-1], build_dict['filters'])).astype(np.float32)
-            bias = np.random.normal(0.0, 20, size = (build_dict['filters'])).astype(np.float32)
 
+            weight = np.random.normal(-10., 10., size = (build_dict['kernel_size'],
+                                            input_dims[-1], build_dict['filters'])).astype(np.float32)
+            bias = np.random.normal(-10., 10., size = (build_dict['filters'])).astype(np.float32)
 
             weight_ptr = list_2_swig_float_pointer(weight.flatten().tolist(), weight.size)
             bias_ptr = list_2_swig_float_pointer(bias.flatten().tolist(), bias.size)
 
             c_output, output_dims = self.__c_fwd(build_dict, input_,
-                                                    weight_ptr, bias_ptr, weight.size,
-                                                    bias.size, input_dims)
+                                                 weight_ptr, bias_ptr, weight.size,
+                                                 bias.size, input_dims)
 
             c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
-            c1_keras = c_keras.numpy()
+            print("keras output shape: ", c_keras.shape)
+            c_output = np.array(c_output).reshape(c_keras.shape)
             print("keras:")
-            print(c1_keras)
+            print(c_keras)
             print("nn4mc:")
-            print(np.array(c_output).reshape(c1_keras.shape))
-            #self.assertEqual(c_output, self.__keras_fwd(build_dict, input_, weight, bias))
+            print(c_output)
+            return np.testing.assert_allclose(c_output, c_keras, 1e-5)
 
 if __name__=='__main__':
     unittest.main()
