@@ -1,6 +1,7 @@
 import dense
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
+from tensorflow.keras.backend import clear_session
 import numpy as np
 import unittest
 from typing import List, Final
@@ -56,6 +57,7 @@ class Conv1DTest(unittest.TestCase):
         model.add(Dense(
                     input_shape = build_dict['input_shape'],
                     units = build_dict['units'],
+                    activation = build_dict['activation']
                     ))
         model.trainable = False
         return model
@@ -69,7 +71,6 @@ class Conv1DTest(unittest.TestCase):
         input_all = list_2_swig_float_pointer(input_, len(input_))
 
         output_dims = units
-
         layer = dense.build_layer_dense(weight.cast(), bias.cast(),
                                               len(input_), output_dims,
                                               activation_dictionary[build_dict['activation']])
@@ -81,14 +82,17 @@ class Conv1DTest(unittest.TestCase):
     def __keras_fwd(self, config_dict : dict, input_, weight, bias):
         model = self.__keras_build(config_dict)
         model.set_weights([weight, bias])
-        return model.predict(input_)
+        prediction = model.predict(input_)
+        del model
+        clear_session()
+        return prediction
 
     def test_fwd(self):
         N = 1000
         assert_result = True
         for _ in range(N):
             units = np.random.randint(1, 10, size=1).tolist()[0]
-            build_dict = {'activation' : 'linear', 'units' : units}
+            build_dict = {'activation' : 'relu', 'units' : units}
 
             shape = np.random.randint(1, 5, size = 1).tolist()[0]
             input_dims = (1, shape)
@@ -109,6 +113,7 @@ class Conv1DTest(unittest.TestCase):
             c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
             c_output = np.array(c_output).reshape(c_keras.shape)
             assert_result = np.testing.assert_allclose(c_output, c_keras, rtol = 5e-5)
-        return assert_result
+        print("forward passed!")
+
 if __name__=='__main__':
     unittest.main()
