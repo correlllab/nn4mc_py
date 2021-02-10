@@ -62,18 +62,20 @@ class HDF5Parser(Parser):
 
         #NOTE: Could check to see if its sequential here
         for model_layer in configJSON['config']['layers']:
-            type = model_layer['class_name']
+            type_ = model_layer['class_name']
             name = model_layer['config']['name']
-            builder = eval(self.builder_map[type])
 
-            #Build a layer object from metadata
-            layer = builder.build_layer(model_layer['config'], name.lower(), type.lower())
+            if type_ in self.builder_map.keys():
+                builder = eval(self.builder_map[type_])
 
-            self.nn.addLayer(layer) #Add Layer to neural network
-            self.nn.addEdge(last_layer, layer)
+                #Build a layer object from metadata
+                layer = builder.build_layer(model_layer['config'], name.lower(), type_.lower())
+
+                self.nn.addLayer(layer) #Add Layer to neural network
+                self.nn.addEdge(last_layer, layer)
 
 
-            last_layer = layer
+                last_layer = layer
 
     #Parses all of the weights
     #NOTE:

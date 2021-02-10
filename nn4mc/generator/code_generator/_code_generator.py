@@ -58,13 +58,12 @@ class Generator():
         for node in self.nn.iterate():
             type = node.layer.layer_type
             if type != 'input' and type != 'flatten':
-                activation = node.layer.activation
-
+                if hasattr('node.layer', 'activation'):
+                    activation = node.layer.activation
+                    if activation != '' and activation not in activations and activation != 'linear':
+                        activations.append(activation)
                 if type not in layers:
                     layers.append(type)
-                if activation != '' and activation not in activations and activation != 'linear':
-                    activations.append(activation)
-
         #For each layer type scrape file and replace delimiters
         for layer_type in layers:
             #Replace delimiters and add to layer_templates

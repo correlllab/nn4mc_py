@@ -10,6 +10,9 @@
 
 #ifndef __CONV1D_H__
 #define __CONV1D_H__
+#include "activations.h"
+#include <math.h>
+#include <stdlib.h>
 
 struct Conv1D {
 	

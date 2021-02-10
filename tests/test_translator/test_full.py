@@ -10,7 +10,7 @@ class TestTranslator(unittest.TestCase):
         pass
 
     def test_file(self):
-        p = nnPr.HDF5Parser('../data/test_1.hdf5')
+        p = nnPr.HDF5Parser('../data/Conv1d_pooling.hdf5')
 
         p.parse()
 

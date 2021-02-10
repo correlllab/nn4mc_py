@@ -50,10 +50,11 @@ class Layer(ABC):
         end = temp_string.find(G.end_delim)
         while(start != -1):
             meta = temp_string[start+len(G.start_delim):end]
-            val = eval(G.delim_map[meta])
+            if meta in G.delim_map.keys():
+                val = eval(G.delim_map[meta])
 
-            temp_string = temp_string.replace(temp_string[start:end+len(G.end_delim)],
-            val)
+                temp_string = temp_string.replace(temp_string[start:end+len(G.end_delim)],
+                val)
 
             start = temp_string.find(G.start_delim)
             end = temp_string.find(G.end_delim)
