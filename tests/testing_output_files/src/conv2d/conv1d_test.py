@@ -166,6 +166,5 @@ class Conv1DTest(unittest.TestCase):
             c_output = np.array(c_output).reshape(c_keras.shape)
             assert_result = assert_result or np.testing.assert_allclose(c_output, c_keras, rtol = 5e-5)
         return assert_result
-
 if __name__=='__main__':
     unittest.main()
