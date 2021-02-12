@@ -3347,7 +3347,7 @@ SWIGINTERN input *input_frompointer(float *t){
    
     extern float* fwd_conv2d(struct Conv2D, float*);
 
-    extern float * padding_2d(struct Conv2D, float *);
+    extern float * padding_2d(struct Conv2D, float *, int*, int*);
 
     extern float * activate(float* input, int output_shape, char type);
 
@@ -3510,14 +3510,20 @@ SWIGINTERN PyObject *_wrap_padding_2d(PyObject *SWIGUNUSEDPARM(self), PyObject *
   PyObject *resultobj = 0;
   Conv2D arg1 ;
   float *arg2 = (float *) 0 ;
+  int *arg3 = (int *) 0 ;
+  int *arg4 = (int *) 0 ;
   void *argp1 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
-  PyObject *swig_obj[2] ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject *swig_obj[4] ;
   float *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "padding_2d", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "padding_2d", 4, 4, swig_obj)) SWIG_fail;
   {
     res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_Conv2D,  0  | 0);
     if (!SWIG_IsOK(res1)) {
@@ -3536,7 +3542,17 @@ SWIGINTERN PyObject *_wrap_padding_2d(PyObject *SWIGUNUSEDPARM(self), PyObject *
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "padding_2d" "', argument " "2"" of type '" "float *""'"); 
   }
   arg2 = reinterpret_cast< float * >(argp2);
-  result = (float *)padding_2d(arg1,arg2);
+  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "padding_2d" "', argument " "3"" of type '" "int *""'"); 
+  }
+  arg3 = reinterpret_cast< int * >(argp3);
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "padding_2d" "', argument " "4"" of type '" "int *""'"); 
+  }
+  arg4 = reinterpret_cast< int * >(argp4);
+  result = (float *)padding_2d(arg1,arg2,arg3,arg4);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:

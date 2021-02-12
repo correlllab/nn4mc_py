@@ -53,23 +53,30 @@ struct Conv2D build_layer_conv2d(const float* W, const float* b, int kernel_shap
 	return layer;
 }
 
-float * padding_2d(struct Conv2D L, float * input){
+float * padding_2d(struct Conv2D L, float * input, int * shape_0_change, int * shape_1_change){
         if (L.padding == 0x03) { // padding is same
             int input_size = (int)(L.input_shape[0] * L.input_shape[1] * L.input_shape[2]);
+
             int pad = (int)(L.filters / 2);
             int pad_0 = floor(pad / 2);
             int pad_1 = abs(pad - pad_0);
+
+            *shape_0_change = pad_0 + pad_1;
+            *shape_1_change = pad_0 + pad_1;
+
             input_size += (int)(2*pad_0 + 2*pad_1 + 2*pad_0*pad_1 + pad_0*pad_0 + pad_1*pad_1);
             float new_input[input_size];
+            for(int i = 0; i < input_size; i++) new_input[i] = 0.0;
 
             for (int i = 0; i < L.input_shape[0]; i++){
                 for (int j = 0; j < L.input_shape[1]; j++){
                     for (int k = 0; k < L.input_shape[2]; k++){
-                        new_input[(i * (L.input_shape[1] + pad_0) + pad_0*(L.input_shape[1] + pad_1) + j) * L.input_shape[2] + k] = input[(i * L.input_shape[1] + j) * L.input_shape[2] + k];
+                        new_input[((i + pad_0) * (L.input_shape[1] + pad_0 + pad_1) + (j + pad_0)) * L.input_shape[2] + k] = input[(i * L.input_shape[1] + j) * L.input_shape[2] + k];
                     }
                 }
             }
-            input = (float*)realloc(input, input_size * sizeof(float));
+            //free(input);
+            input = (float*)malloc(input_size * sizeof(float));
             for (int i = 0; i < input_size; i++) input[i] = new_input[i];
         }
     return input;
@@ -77,48 +84,40 @@ float * padding_2d(struct Conv2D L, float * input){
 
 float* fwd_conv2d(struct Conv2D L, float* input)
 {
-    input = padding_2d(L, input);
+    int shape_0_ch = 0 , shape_1_ch = 0;
 
-    int output_size = L.output_shape[0]*L.output_shape[1]*L.output_shape[2];
+    input = padding_2d(L, input, &shape_0_ch, &shape_1_ch);
+
+    int output_size = (L.output_shape[0] + shape_0_ch) * (L.output_shape[1] + shape_1_ch) * L.output_shape[2];
 
     float * h = (float*)malloc(output_size * sizeof(float));
 
-	for(int i = 0; i < L.output_shape[0]; i++)
-	{
-		for(int j = 0; j < L.output_shape[1]; j++)
-		{
-			for(int k = 0; k < L.output_shape[2]; k++)
-			{
-				int output_idx = i * L.output_shape[1] * L.output_shape[2] + j * L.output_shape[2] + k;
+    for (int k = 0; k < L.output_shape[2]; k++)
+    {
+        for (int i = 0; i < L.output_shape[0] + shape_0_ch; i++)
+        {
+            for (int j = 0; j < L.output_shape[1] + shape_1_ch; j++)
+            {
+				int idx = i * (L.output_shape[1] + shape_1_ch) * L.output_shape[2] + j * L.output_shape[2] + k;
 
-				h[output_idx] = L.bias[k];
+				h[idx] = L.bias[k];
 
-				for(int kernel_position_x = 0; kernel_position_x < L.kernel_shape[0]; kernel_position_x++)
+				for (int k_x = 0; k_x < L.kernel_shape[0]; k_x++)
 				{
-
-                    int mm = L.kernel_shape[0] - 1 - kernel_position_x;
-
-					for(int kernel_position_y = 0; kernel_position_y < L.kernel_shape[1]; kernel_position_y++)
+					for (int k_y = 0; k_y < L.kernel_shape[1]; k_y++)
 					{
-
                         for (int f=0; f<L.filters; f++){
-                        int nn = L.kernel_shape[1] - 1 - kernel_position_y;
-
-                        int ii = i + (L.kernel_shape[1]/2 - mm);
-                        int jj = j + (L.kernel_shape[0]/2 - nn);
-
-                        if (ii >= 0 && ii < i && jj >= 0 && jj < j){
-                            h[output_idx] += *(L.weights + L.weight_shape[3]*L.weight_shape[2]*L.weight_shape[1]*kernel_position_x + L.weight_shape[2]*L.weight_shape[1]* kernel_position_y + L.weight_shape[1]*f) * (input[L.input_shape[1]*L.input_shape[2]*ii + L.input_shape[2] * jj]);
-                       }
-                   }
+                            h[idx] += *(L.weights + L.weight_shape[3]*L.weight_shape[2]*L.weight_shape[1] + L.weight_shape[2]*L.weight_shape[1] + L.weight_shape[1]) * (input[((i+k_x) * (L.input_shape[1] + shape_1_ch) + j) * L.input_shape[2] + k]);
+                        }
+                    }
                 }
             }
+        }
+    }
 
-			}
-		}
-	}
 
 	h = activate(h, output_size, L.activation);
+
     //free(input);
     return h;
 }

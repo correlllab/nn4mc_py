@@ -30,6 +30,6 @@ struct Conv2D build_layer_conv2d(const float*, const float*, int, int, int, int,
 
 float* fwd_conv2d(struct Conv2D, float*);
 
-float * padding_2d(struct Conv2D, float *);
+float * padding_2d(struct Conv2D, float *, int*, int*);
 
 #endif

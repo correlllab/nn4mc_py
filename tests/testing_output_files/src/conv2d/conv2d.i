@@ -29,7 +29,7 @@
    
     extern float* fwd_conv2d(struct Conv2D, float*);
 
-    extern float * padding_2d(struct Conv2D, float *);
+    extern float * padding_2d(struct Conv2D, float *, int*, int*);
 
     extern float * activate(float* input, int output_shape, char type);
 
@@ -56,7 +56,7 @@ extern struct Conv2D build_layer_conv2d(const float*, const float*, int, int, in
 
 extern float* fwd_conv2d(struct Conv2D, float*);
 
-extern float * padding_2d(struct Conv2D, float *);
+extern float * padding_2d(struct Conv2D, float *, int*, int*);
 
 extern float * activate(float* input, int output_shape, char type);
 

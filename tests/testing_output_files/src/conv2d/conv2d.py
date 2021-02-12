@@ -65,8 +65,8 @@ class _SwigNonDynamicMeta(type):
 def build_layer_conv2d(W, b, kernel_shape_0, kernel_shape_1, filters, strides_0, strides_1, input_shape_0, input_shape_1, input_shape_2, activation, padding, data_format, dilation_rate_0, dilation_rate_1):
     return _conv2d.build_layer_conv2d(W, b, kernel_shape_0, kernel_shape_1, filters, strides_0, strides_1, input_shape_0, input_shape_1, input_shape_2, activation, padding, data_format, dilation_rate_0, dilation_rate_1)
 
-def padding_2d(L, input):
-    return _conv2d.padding_2d(L, input)
+def padding_2d(L, input, shape_0_change, shape_1_change):
+    return _conv2d.padding_2d(L, input, shape_0_change, shape_1_change)
 
 def fwd_conv2d(L, input):
     return _conv2d.fwd_conv2d(L, input)

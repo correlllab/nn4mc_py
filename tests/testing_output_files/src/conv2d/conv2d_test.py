@@ -111,17 +111,13 @@ class Conv1DTest(unittest.TestCase):
             padding_result = conv2d.padding_1d(layer, input.cast())
             padding_result = swig_py_object_2_list(padding_result, new_size)
 
-    def __c_fwd(self, build_dict : dict, input_, weight, bias, weight_size, bias_size, input_dims):
+    def __c_fwd(self, build_dict : dict, input_, weight, bias, weight_size, bias_size, input_dims, output_dims):
         weight = list_2_swig_float_pointer(weight, weight_size)
         bias = list_2_swig_float_pointer(bias, bias_size)
         input_length = input_.size
 
         input_ = input_.flatten().tolist()
         input_all = list_2_swig_float_pointer(input_, len(input_))
-
-        output_dims = build_dict['filters'] * ((input_dims[1] - \
-                      build_dict['kernel_size'][0]) // build_dict['strides'][0] + 1) * \
-                      ((input_dims[2] - build_dict['kernel_size'][1]) // build_dict['strides'][1] + 1)
 
         layer = conv2d.build_layer_conv2d(weight.cast(), bias.cast(),
                                           int(build_dict['kernel_size'][0]), int(build_dict['kernel_size'][1]),
@@ -168,15 +164,19 @@ class Conv1DTest(unittest.TestCase):
             weight_ptr = list_2_swig_float_pointer(weight.flatten().tolist(), weight.size)
             bias_ptr = list_2_swig_float_pointer(bias.flatten().tolist(), bias.size)
 
+            c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
+            print(c_keras.shape)
+            output_dims = c_keras.shape[0] * c_keras.shape[1] * c_keras.shape[2] * c_keras.shape[3]
             c_output, output_dims = self.__c_fwd(build_dict, input_,
                                                  weight_ptr, bias_ptr, weight.size,
-                                                 bias.size, input_dims)
+                                                 bias.size, input_dims, output_dims)
 
-            c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
+
             print(c_keras)
-            c_output = np.array(c_output).reshape(c_keras.shape)
             print(c_output)
-            assert_result = assert_result or np.testing.assert_allclose(c_output, c_keras, rtol = 5e-5)
+            c_output = np.array(c_output).reshape(c_keras.shape)
+            #print(c_output)
+            assert_result = assert_result or np.testing.assert_allclose(c_output, c_keras, rtol = 1e-5)
         return assert_result
 
 if __name__=='__main__':
