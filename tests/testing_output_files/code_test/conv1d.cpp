@@ -25,17 +25,25 @@ struct Conv1D build_layer_conv1d(const float* W, const float* b, int kernel_size
 
 	layer.strides = strides;
     layer.kernel_shape[0] = kernel_size;
-	
-    layer.input_shape[0] = input_sh0;
-	layer.input_shape[1] = input_sh1;
-    
+
+    if (data_format == 0x02) {
+            layer.input_shape[0] = input_sh1;
+            layer.input_shape[1] = input_sh0;
+    } else{
+        layer.input_shape[0] = input_sh0;
+        layer.input_shape[1] = input_sh1;
+    }
+
     layer.dilation_rate = dilation_rate;
 
     layer.activation = activation;
     layer.padding = padding;
     layer.data_format = data_format;
-
-    layer.output_shape[0] = (int)((input_sh0 - kernel_size) / strides) + 1;
+    if (data_format == 0x02){
+        layer.output_shape[0] = (int)((input_sh1 - kernel_size) / strides) + 1;
+    }else{
+        layer.output_shape[0] = (int)((input_sh0 - kernel_size) / strides) + 1;
+    }
 	layer.output_shape[1] = (int)filters;
 
     layer.filters = filters;
@@ -71,7 +79,6 @@ float * padding_1d(struct Conv1D L, float * input){
                       new_input[(L.input_shape[1]) * i + j] = input[L.input_shape[1] * i + j];
                   }
               }
-
               input = (float*)realloc(input, input_size * sizeof(float));
               for (int i = 0; i < input_size; i++) input[i] = new_input[i];
         }
@@ -82,15 +89,17 @@ float * padding_1d(struct Conv1D L, float * input){
 float * fwd_conv1d(struct Conv1D L, float * input)
 {
     input = padding_1d(L, input);
-    if (L.data_format == 0x02){
+
+    /* if (L.data_format == 0x02){
         for (int i = 0; i < L.input_shape[0]; i++){
             for (int j = 0 ; j < L.input_shape[1]; j++){
-                float temp = input[i * L.input_shape[1] + j];
+                float temp = input[i * L.input_shape[0] + j];
                 input[i * L.input_shape[1] + j] = input[j * L.input_shape[1] + i];
                 input[j * L.input_shape[1] + i] = temp;
             }
         } 
-    }
+    } */
+
     int output_size = L.output_shape[0] * L.output_shape[1];
     float * h = (float*)malloc(output_size * sizeof(float));
 
@@ -110,7 +119,7 @@ float * fwd_conv1d(struct Conv1D L, float * input)
 			}
 		}
 	}
-	free(input);
+	//free(input);
     h = activate(h, output_size, L.activation);
     return h;
 }

@@ -10,9 +10,9 @@ if _swig_python_version_info < (2, 7, 0):
 
 # Import the low-level C/C++ module
 if __package__ or "." in __name__:
-    from . import _conv1d
+    from . import _conv2d
 else:
-    import _conv1d
+    import _conv2d
 
 try:
     import builtins as __builtin__
@@ -62,100 +62,97 @@ class _SwigNonDynamicMeta(type):
 
 
 
-def buildConv2D(W, b, kernel_shape_0, kernel_shape_1, filters, strides_0, strides_1, input_shape_0, input_shape_1, input_shape_2, activation, padding, data_format, dilation_rate_0, dilation_rate_1):
-    return _conv1d.buildConv2D(W, b, kernel_shape_0, kernel_shape_1, filters, strides_0, strides_1, input_shape_0, input_shape_1, input_shape_2, activation, padding, data_format, dilation_rate_0, dilation_rate_1)
+def build_layer_conv2d(W, b, kernel_shape_0, kernel_shape_1, filters, strides_0, strides_1, input_shape_0, input_shape_1, input_shape_2, activation, padding, data_format, dilation_rate_0, dilation_rate_1):
+    return _conv2d.build_layer_conv2d(W, b, kernel_shape_0, kernel_shape_1, filters, strides_0, strides_1, input_shape_0, input_shape_1, input_shape_2, activation, padding, data_format, dilation_rate_0, dilation_rate_1)
 
 def padding_2d(L, input):
-    return _conv1d.padding_2d(L, input)
+    return _conv2d.padding_2d(L, input)
 
-def fwdConv2D(L, input):
-    return _conv1d.fwdConv2D(L, input)
+def fwd_conv2d(L, input):
+    return _conv2d.fwd_conv2d(L, input)
 class Conv2D(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
-    weights = property(_conv1d.Conv2D_weights_get, _conv1d.Conv2D_weights_set)
-    bias = property(_conv1d.Conv2D_bias_get, _conv1d.Conv2D_bias_set)
-    weight_shape = property(_conv1d.Conv2D_weight_shape_get, _conv1d.Conv2D_weight_shape_set)
-    strides = property(_conv1d.Conv2D_strides_get, _conv1d.Conv2D_strides_set)
-    filters = property(_conv1d.Conv2D_filters_get, _conv1d.Conv2D_filters_set)
-    dilation_rate = property(_conv1d.Conv2D_dilation_rate_get, _conv1d.Conv2D_dilation_rate_set)
-    activation = property(_conv1d.Conv2D_activation_get, _conv1d.Conv2D_activation_set)
-    padding = property(_conv1d.Conv2D_padding_get, _conv1d.Conv2D_padding_set)
-    data_format = property(_conv1d.Conv2D_data_format_get, _conv1d.Conv2D_data_format_set)
-    kernel_shape = property(_conv1d.Conv2D_kernel_shape_get, _conv1d.Conv2D_kernel_shape_set)
-    input_shape = property(_conv1d.Conv2D_input_shape_get, _conv1d.Conv2D_input_shape_set)
-    output_shape = property(_conv1d.Conv2D_output_shape_get, _conv1d.Conv2D_output_shape_set)
+    weights = property(_conv2d.Conv2D_weights_get, _conv2d.Conv2D_weights_set)
+    bias = property(_conv2d.Conv2D_bias_get, _conv2d.Conv2D_bias_set)
+    weight_shape = property(_conv2d.Conv2D_weight_shape_get, _conv2d.Conv2D_weight_shape_set)
+    strides = property(_conv2d.Conv2D_strides_get, _conv2d.Conv2D_strides_set)
+    filters = property(_conv2d.Conv2D_filters_get, _conv2d.Conv2D_filters_set)
+    dilation_rate = property(_conv2d.Conv2D_dilation_rate_get, _conv2d.Conv2D_dilation_rate_set)
+    activation = property(_conv2d.Conv2D_activation_get, _conv2d.Conv2D_activation_set)
+    padding = property(_conv2d.Conv2D_padding_get, _conv2d.Conv2D_padding_set)
+    data_format = property(_conv2d.Conv2D_data_format_get, _conv2d.Conv2D_data_format_set)
+    kernel_shape = property(_conv2d.Conv2D_kernel_shape_get, _conv2d.Conv2D_kernel_shape_set)
+    input_shape = property(_conv2d.Conv2D_input_shape_get, _conv2d.Conv2D_input_shape_set)
+    output_shape = property(_conv2d.Conv2D_output_shape_get, _conv2d.Conv2D_output_shape_set)
 
     def __init__(self):
-        _conv1d.Conv2D_swiginit(self, _conv1d.new_Conv2D())
-    __swig_destroy__ = _conv1d.delete_Conv2D
+        _conv2d.Conv2D_swiginit(self, _conv2d.new_Conv2D())
+    __swig_destroy__ = _conv2d.delete_Conv2D
 
-# Register Conv2D in _conv1d:
-_conv1d.Conv2D_swigregister(Conv2D)
+# Register Conv2D in _conv2d:
+_conv2d.Conv2D_swigregister(Conv2D)
 
-
-def padding_1d(arg1, arg2):
-    return _conv1d.padding_1d(arg1, arg2)
 
 def activate(arg1, arg2, arg3):
-    return _conv1d.activate(arg1, arg2, arg3)
+    return _conv2d.activate(arg1, arg2, arg3)
 
 def sigmoid(arg1, arg2):
-    return _conv1d.sigmoid(arg1, arg2)
+    return _conv2d.sigmoid(arg1, arg2)
 
 def softplus(arg1, arg2):
-    return _conv1d.softplus(arg1, arg2)
+    return _conv2d.softplus(arg1, arg2)
 
 def softsign(arg1, arg2):
-    return _conv1d.softsign(arg1, arg2)
+    return _conv2d.softsign(arg1, arg2)
 
 def hard_sigmoid(arg1, arg2):
-    return _conv1d.hard_sigmoid(arg1, arg2)
+    return _conv2d.hard_sigmoid(arg1, arg2)
 
 def exp_activation(arg1, arg2):
-    return _conv1d.exp_activation(arg1, arg2)
+    return _conv2d.exp_activation(arg1, arg2)
 
 def exponential(arg1):
-    return _conv1d.exponential(arg1)
+    return _conv2d.exponential(arg1)
 
 def relu(arg1, arg2):
-    return _conv1d.relu(arg1, arg2)
+    return _conv2d.relu(arg1, arg2)
 
 def elu(arg1, arg2, arg3):
-    return _conv1d.elu(arg1, arg2, arg3)
+    return _conv2d.elu(arg1, arg2, arg3)
 
 def selu(arg1, arg2):
-    return _conv1d.selu(arg1, arg2)
+    return _conv2d.selu(arg1, arg2)
 
 def hyper_tan(arg1, arg2):
-    return _conv1d.hyper_tan(arg1, arg2)
+    return _conv2d.hyper_tan(arg1, arg2)
 
 def softmax(arg1, arg2):
-    return _conv1d.softmax(arg1, arg2)
+    return _conv2d.softmax(arg1, arg2)
 class input(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, nelements):
-        _conv1d.input_swiginit(self, _conv1d.new_input(nelements))
-    __swig_destroy__ = _conv1d.delete_input
+        _conv2d.input_swiginit(self, _conv2d.new_input(nelements))
+    __swig_destroy__ = _conv2d.delete_input
 
     def __getitem__(self, index):
-        return _conv1d.input___getitem__(self, index)
+        return _conv2d.input___getitem__(self, index)
 
     def __setitem__(self, index, value):
-        return _conv1d.input___setitem__(self, index, value)
+        return _conv2d.input___setitem__(self, index, value)
 
     def cast(self):
-        return _conv1d.input_cast(self)
+        return _conv2d.input_cast(self)
 
     @staticmethod
     def frompointer(t):
-        return _conv1d.input_frompointer(t)
+        return _conv2d.input_frompointer(t)
 
-# Register input in _conv1d:
-_conv1d.input_swigregister(input)
-cvar = _conv1d.cvar
+# Register input in _conv2d:
+_conv2d.input_swigregister(input)
+cvar = _conv2d.cvar
 conv1d_1_W = cvar.conv1d_1_W
 conv1d_1_b = cvar.conv1d_1_b
 conv1d_2_W = cvar.conv1d_2_W
@@ -178,7 +175,7 @@ dense_8_W = cvar.dense_8_W
 dense_8_b = cvar.dense_8_b
 
 def input_frompointer(t):
-    return _conv1d.input_frompointer(t)
+    return _conv2d.input_frompointer(t)
 
 
 

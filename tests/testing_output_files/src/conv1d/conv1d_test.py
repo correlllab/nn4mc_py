@@ -1,6 +1,7 @@
 import conv1d
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Conv1D
+from tensorflow.keras.backend import clear_session
 import numpy as np
 import unittest
 from typing import List, Final
@@ -134,7 +135,10 @@ class Conv1DTest(unittest.TestCase):
     def __keras_fwd(self, config_dict : dict, input_, weight, bias):
         model = self.__keras_build(config_dict)
         model.set_weights([weight, bias])
-        return model.predict(input_)
+        prediction = model.predict(input_)
+        del model
+        clear_session()
+        return prediction
 
     def test_fwd(self):
         N = 1000

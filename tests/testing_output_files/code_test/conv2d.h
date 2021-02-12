@@ -12,33 +12,24 @@
 #define __CONV2D_H__
 
 struct Conv2D {
-	// Weights and biases defining the layer
-	const float* weights;			// Pointer to constant weight array
-	const float* bias;				// Pointer to constant bias
-
-	// Kernel information
-	int weight_shape[4];	// (NUM_INPUT_CHANNELS x KERNEL_WIDTH x KERNEL_HEIGHT x NUM_OUTPUT_CHANNELS)
-
-    int strides[2];			// (STRIDE_WIDTH x STRIDE_HEIGHT)
-
+	const float* weights;
+	const float* bias;
+	int weight_shape[4];
+    int strides[2];
     int filters;
-
     int dilation_rate[2];
-
     char activation;
     char padding;
     char data_format;
-
     int kernel_shape[2];
-
-	// Shape of the input and output
-	int input_shape[3];		// (INPUT_WIDTH x INPUT_HEIGHT x NUM_INPUT_CHANNELS)
-	int output_shape[3];	// (OUTPUT_WIDTH x OUTPUT_HEIGHT x NUM_OUTPUT_CHANNELS)
+	int input_shape[3];
+	int output_shape[3];
 };
 
-struct Conv2D buildConv2D(const float*, const float*, int, int, int, int, int, int, int, int,
-char,char,char, int , int);
+struct Conv2D build_layer_conv2d(const float*, const float*, int, int, int, int, int, int, int, int, char,char,char, int , int);
 
-float* fwdConv2D(struct Conv2D, float*);
+float* fwd_conv2d(struct Conv2D, float*);
+
+float * padding_2d(struct Conv2D, float *);
 
 #endif

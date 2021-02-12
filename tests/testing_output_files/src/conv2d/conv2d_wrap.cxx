@@ -2657,7 +2657,7 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_Conv1D swig_types[0]
+#define SWIGTYPE_p_Conv2D swig_types[0]
 #define SWIGTYPE_p_char swig_types[1]
 #define SWIGTYPE_p_float swig_types[2]
 #define SWIGTYPE_p_input swig_types[3]
@@ -2682,16 +2682,16 @@ static swig_module_info swig_module = {swig_types, 12, 0, 0, 0, 0};
 #define SWIG_TypeQuery SWIG_Python_TypeQuery
 
 /*-----------------------------------------------
-              @(target):= _conv1d.so
+              @(target):= _conv2d.so
   ------------------------------------------------*/
 #if PY_VERSION_HEX >= 0x03000000
-#  define SWIG_init    PyInit__conv1d
+#  define SWIG_init    PyInit__conv2d
 
 #else
-#  define SWIG_init    init_conv1d
+#  define SWIG_init    init_conv2d
 
 #endif
-#define SWIG_name    "_conv1d"
+#define SWIG_name    "_conv2d"
 
 #define SWIGVERSION 0x040001 
 #define SWIG_VERSION SWIGVERSION
@@ -2776,7 +2776,7 @@ namespace swig {
 
     #define SWIG_FILE_WITH_INIT
     #include "../../code_test/activations.h"
-    #include "../../code_test/conv1d.h"
+    #include "../../code_test/conv2d.h"
     #include "../../code_test/parameters.h"
 
 
@@ -3343,11 +3343,11 @@ SWIGINTERN input *input_frompointer(float *t){
     return static_cast< input * >(t);
   }
 
-    extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
+    extern struct Conv2D build_layer_conv2d(const float*, const float*, int, int, int, int, int, int, int, int, char,char,char, int , int);
+   
+    extern float* fwd_conv2d(struct Conv2D, float*);
 
-    extern float * fwd_conv1d(struct Conv1D, float *);
-
-    extern float * padding_1d(struct Conv1D, float * );
+    extern float * padding_2d(struct Conv2D, float *);
 
     extern float * activate(float* input, int output_shape, char type);
 
@@ -3372,7 +3372,7 @@ SWIGINTERN input *input_frompointer(float *t){
 #ifdef __cplusplus
 extern "C" {
 #endif
-SWIGINTERN PyObject *_wrap_build_layer_conv1d(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_build_layer_conv2d(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   float *arg1 = (float *) 0 ;
   float *arg2 = (float *) 0 ;
@@ -3381,10 +3381,14 @@ SWIGINTERN PyObject *_wrap_build_layer_conv1d(PyObject *SWIGUNUSEDPARM(self), Py
   int arg5 ;
   int arg6 ;
   int arg7 ;
-  char arg8 ;
-  char arg9 ;
-  char arg10 ;
-  int arg11 ;
+  int arg8 ;
+  int arg9 ;
+  int arg10 ;
+  char arg11 ;
+  char arg12 ;
+  char arg13 ;
+  int arg14 ;
+  int arg15 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -3399,84 +3403,112 @@ SWIGINTERN PyObject *_wrap_build_layer_conv1d(PyObject *SWIGUNUSEDPARM(self), Py
   int ecode6 = 0 ;
   int val7 ;
   int ecode7 = 0 ;
-  char val8 ;
+  int val8 ;
   int ecode8 = 0 ;
-  char val9 ;
+  int val9 ;
   int ecode9 = 0 ;
-  char val10 ;
+  int val10 ;
   int ecode10 = 0 ;
-  int val11 ;
+  char val11 ;
   int ecode11 = 0 ;
-  PyObject *swig_obj[11] ;
-  Conv1D result;
+  char val12 ;
+  int ecode12 = 0 ;
+  char val13 ;
+  int ecode13 = 0 ;
+  int val14 ;
+  int ecode14 = 0 ;
+  int val15 ;
+  int ecode15 = 0 ;
+  PyObject *swig_obj[15] ;
+  Conv2D result;
   
-  if (!SWIG_Python_UnpackTuple(args, "build_layer_conv1d", 11, 11, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "build_layer_conv2d", 15, 15, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_float, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "build_layer_conv1d" "', argument " "1"" of type '" "float const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "build_layer_conv2d" "', argument " "1"" of type '" "float const *""'"); 
   }
   arg1 = reinterpret_cast< float * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_float, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "build_layer_conv1d" "', argument " "2"" of type '" "float const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "build_layer_conv2d" "', argument " "2"" of type '" "float const *""'"); 
   }
   arg2 = reinterpret_cast< float * >(argp2);
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "build_layer_conv1d" "', argument " "3"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "build_layer_conv2d" "', argument " "3"" of type '" "int""'");
   } 
   arg3 = static_cast< int >(val3);
   ecode4 = SWIG_AsVal_int(swig_obj[3], &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "build_layer_conv1d" "', argument " "4"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "build_layer_conv2d" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
   ecode5 = SWIG_AsVal_int(swig_obj[4], &val5);
   if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "build_layer_conv1d" "', argument " "5"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "build_layer_conv2d" "', argument " "5"" of type '" "int""'");
   } 
   arg5 = static_cast< int >(val5);
   ecode6 = SWIG_AsVal_int(swig_obj[5], &val6);
   if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "build_layer_conv1d" "', argument " "6"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "build_layer_conv2d" "', argument " "6"" of type '" "int""'");
   } 
   arg6 = static_cast< int >(val6);
   ecode7 = SWIG_AsVal_int(swig_obj[6], &val7);
   if (!SWIG_IsOK(ecode7)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "build_layer_conv1d" "', argument " "7"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "build_layer_conv2d" "', argument " "7"" of type '" "int""'");
   } 
   arg7 = static_cast< int >(val7);
-  ecode8 = SWIG_AsVal_char(swig_obj[7], &val8);
+  ecode8 = SWIG_AsVal_int(swig_obj[7], &val8);
   if (!SWIG_IsOK(ecode8)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "build_layer_conv1d" "', argument " "8"" of type '" "char""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "build_layer_conv2d" "', argument " "8"" of type '" "int""'");
   } 
-  arg8 = static_cast< char >(val8);
-  ecode9 = SWIG_AsVal_char(swig_obj[8], &val9);
+  arg8 = static_cast< int >(val8);
+  ecode9 = SWIG_AsVal_int(swig_obj[8], &val9);
   if (!SWIG_IsOK(ecode9)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode9), "in method '" "build_layer_conv1d" "', argument " "9"" of type '" "char""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode9), "in method '" "build_layer_conv2d" "', argument " "9"" of type '" "int""'");
   } 
-  arg9 = static_cast< char >(val9);
-  ecode10 = SWIG_AsVal_char(swig_obj[9], &val10);
+  arg9 = static_cast< int >(val9);
+  ecode10 = SWIG_AsVal_int(swig_obj[9], &val10);
   if (!SWIG_IsOK(ecode10)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode10), "in method '" "build_layer_conv1d" "', argument " "10"" of type '" "char""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode10), "in method '" "build_layer_conv2d" "', argument " "10"" of type '" "int""'");
   } 
-  arg10 = static_cast< char >(val10);
-  ecode11 = SWIG_AsVal_int(swig_obj[10], &val11);
+  arg10 = static_cast< int >(val10);
+  ecode11 = SWIG_AsVal_char(swig_obj[10], &val11);
   if (!SWIG_IsOK(ecode11)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode11), "in method '" "build_layer_conv1d" "', argument " "11"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode11), "in method '" "build_layer_conv2d" "', argument " "11"" of type '" "char""'");
   } 
-  arg11 = static_cast< int >(val11);
-  result = build_layer_conv1d((float const *)arg1,(float const *)arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11);
-  resultobj = SWIG_NewPointerObj((new Conv1D(static_cast< const Conv1D& >(result))), SWIGTYPE_p_Conv1D, SWIG_POINTER_OWN |  0 );
+  arg11 = static_cast< char >(val11);
+  ecode12 = SWIG_AsVal_char(swig_obj[11], &val12);
+  if (!SWIG_IsOK(ecode12)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode12), "in method '" "build_layer_conv2d" "', argument " "12"" of type '" "char""'");
+  } 
+  arg12 = static_cast< char >(val12);
+  ecode13 = SWIG_AsVal_char(swig_obj[12], &val13);
+  if (!SWIG_IsOK(ecode13)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode13), "in method '" "build_layer_conv2d" "', argument " "13"" of type '" "char""'");
+  } 
+  arg13 = static_cast< char >(val13);
+  ecode14 = SWIG_AsVal_int(swig_obj[13], &val14);
+  if (!SWIG_IsOK(ecode14)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode14), "in method '" "build_layer_conv2d" "', argument " "14"" of type '" "int""'");
+  } 
+  arg14 = static_cast< int >(val14);
+  ecode15 = SWIG_AsVal_int(swig_obj[14], &val15);
+  if (!SWIG_IsOK(ecode15)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode15), "in method '" "build_layer_conv2d" "', argument " "15"" of type '" "int""'");
+  } 
+  arg15 = static_cast< int >(val15);
+  result = build_layer_conv2d((float const *)arg1,(float const *)arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15);
+  resultobj = SWIG_NewPointerObj((new Conv2D(static_cast< const Conv2D& >(result))), SWIGTYPE_p_Conv2D, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_padding_1d(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_padding_2d(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D arg1 ;
+  Conv2D arg1 ;
   float *arg2 = (float *) 0 ;
   void *argp1 ;
   int res1 = 0 ;
@@ -3485,26 +3517,26 @@ SWIGINTERN PyObject *_wrap_padding_1d(PyObject *SWIGUNUSEDPARM(self), PyObject *
   PyObject *swig_obj[2] ;
   float *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "padding_1d", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "padding_2d", 2, 2, swig_obj)) SWIG_fail;
   {
-    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_Conv1D,  0  | 0);
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_Conv2D,  0  | 0);
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "padding_1d" "', argument " "1"" of type '" "Conv1D""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "padding_2d" "', argument " "1"" of type '" "Conv2D""'"); 
     }  
     if (!argp1) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "padding_1d" "', argument " "1"" of type '" "Conv1D""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "padding_2d" "', argument " "1"" of type '" "Conv2D""'");
     } else {
-      Conv1D * temp = reinterpret_cast< Conv1D * >(argp1);
+      Conv2D * temp = reinterpret_cast< Conv2D * >(argp1);
       arg1 = *temp;
       if (SWIG_IsNewObj(res1)) delete temp;
     }
   }
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_float, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "padding_1d" "', argument " "2"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "padding_2d" "', argument " "2"" of type '" "float *""'"); 
   }
   arg2 = reinterpret_cast< float * >(argp2);
-  result = (float *)padding_1d(arg1,arg2);
+  result = (float *)padding_2d(arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
@@ -3512,9 +3544,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_fwd_conv1d(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_fwd_conv2d(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D arg1 ;
+  Conv2D arg1 ;
   float *arg2 = (float *) 0 ;
   void *argp1 ;
   int res1 = 0 ;
@@ -3523,26 +3555,26 @@ SWIGINTERN PyObject *_wrap_fwd_conv1d(PyObject *SWIGUNUSEDPARM(self), PyObject *
   PyObject *swig_obj[2] ;
   float *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "fwd_conv1d", 2, 2, swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "fwd_conv2d", 2, 2, swig_obj)) SWIG_fail;
   {
-    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_Conv1D,  0  | 0);
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_Conv2D,  0  | 0);
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fwd_conv1d" "', argument " "1"" of type '" "Conv1D""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "fwd_conv2d" "', argument " "1"" of type '" "Conv2D""'"); 
     }  
     if (!argp1) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "fwd_conv1d" "', argument " "1"" of type '" "Conv1D""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "fwd_conv2d" "', argument " "1"" of type '" "Conv2D""'");
     } else {
-      Conv1D * temp = reinterpret_cast< Conv1D * >(argp1);
+      Conv2D * temp = reinterpret_cast< Conv2D * >(argp1);
       arg1 = *temp;
       if (SWIG_IsNewObj(res1)) delete temp;
     }
   }
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_float, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "fwd_conv1d" "', argument " "2"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "fwd_conv2d" "', argument " "2"" of type '" "float *""'"); 
   }
   arg2 = reinterpret_cast< float * >(argp2);
-  result = (float *)fwd_conv1d(arg1,arg2);
+  result = (float *)fwd_conv2d(arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
@@ -3550,9 +3582,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_weights_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_weights_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   float *arg2 = (float *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3560,15 +3592,15 @@ SWIGINTERN PyObject *_wrap_Conv1D_weights_set(PyObject *SWIGUNUSEDPARM(self), Py
   int res2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_weights_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_weights_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_weights_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_weights_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_float, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv1D_weights_set" "', argument " "2"" of type '" "float const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv2D_weights_set" "', argument " "2"" of type '" "float const *""'"); 
   }
   arg2 = reinterpret_cast< float * >(argp2);
   if (arg1) (arg1)->weights = (float const *)arg2;
@@ -3579,9 +3611,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_weights_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_weights_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -3589,11 +3621,11 @@ SWIGINTERN PyObject *_wrap_Conv1D_weights_get(PyObject *SWIGUNUSEDPARM(self), Py
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_weights_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_weights_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   result = (float *) ((arg1)->weights);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
@@ -3602,9 +3634,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_biases_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_bias_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   float *arg2 = (float *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3612,18 +3644,18 @@ SWIGINTERN PyObject *_wrap_Conv1D_biases_set(PyObject *SWIGUNUSEDPARM(self), PyO
   int res2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_biases_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_bias_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_biases_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_bias_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_float, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv1D_biases_set" "', argument " "2"" of type '" "float const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv2D_bias_set" "', argument " "2"" of type '" "float const *""'"); 
   }
   arg2 = reinterpret_cast< float * >(argp2);
-  if (arg1) (arg1)->biases = (float const *)arg2;
+  if (arg1) (arg1)->bias = (float const *)arg2;
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -3631,9 +3663,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_biases_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_bias_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -3641,12 +3673,12 @@ SWIGINTERN PyObject *_wrap_Conv1D_biases_get(PyObject *SWIGUNUSEDPARM(self), PyO
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_biases_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_bias_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
-  result = (float *) ((arg1)->biases);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
+  result = (float *) ((arg1)->bias);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
@@ -3654,61 +3686,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_strides_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_weight_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_strides_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_strides_set" "', argument " "1"" of type '" "Conv1D *""'"); 
-  }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv1D_strides_set" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  if (arg1) (arg1)->strides = arg2;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_Conv1D_strides_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_strides_get" "', argument " "1"" of type '" "Conv1D *""'"); 
-  }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
-  result = (int) ((arg1)->strides);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_Conv1D_kernel_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   int *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3716,23 +3696,23 @@ SWIGINTERN PyObject *_wrap_Conv1D_kernel_shape_set(PyObject *SWIGUNUSEDPARM(self
   int res2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_kernel_shape_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_weight_shape_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_kernel_shape_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_weight_shape_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_int, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv1D_kernel_shape_set" "', argument " "2"" of type '" "int [1]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv2D_weight_shape_set" "', argument " "2"" of type '" "int [4]""'"); 
   } 
   arg2 = reinterpret_cast< int * >(argp2);
   {
     if (arg2) {
       size_t ii = 0;
-      for (; ii < (size_t)1; ++ii) *(int *)&arg1->kernel_shape[ii] = *((int *)arg2 + ii);
+      for (; ii < (size_t)4; ++ii) *(int *)&arg1->weight_shape[ii] = *((int *)arg2 + ii);
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""kernel_shape""' of type '""int [1]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""weight_shape""' of type '""int [4]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -3742,9 +3722,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_kernel_shape_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_weight_shape_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -3752,70 +3732,11 @@ SWIGINTERN PyObject *_wrap_Conv1D_kernel_shape_get(PyObject *SWIGUNUSEDPARM(self
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_kernel_shape_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_weight_shape_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
-  result = (int *)(int *) ((arg1)->kernel_shape);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_Conv1D_weight_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
-  int *arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_weight_shape_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_weight_shape_set" "', argument " "1"" of type '" "Conv1D *""'"); 
-  }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv1D_weight_shape_set" "', argument " "2"" of type '" "int [3]""'"); 
-  } 
-  arg2 = reinterpret_cast< int * >(argp2);
-  {
-    if (arg2) {
-      size_t ii = 0;
-      for (; ii < (size_t)3; ++ii) *(int *)&arg1->weight_shape[ii] = *((int *)arg2 + ii);
-    } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""weight_shape""' of type '""int [3]""'");
-    }
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_Conv1D_weight_shape_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int *result = 0 ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_weight_shape_get" "', argument " "1"" of type '" "Conv1D *""'"); 
-  }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   result = (int *)(int *) ((arg1)->weight_shape);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
   return resultobj;
@@ -3824,9 +3745,68 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_filters_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_strides_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
+  int *arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_strides_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_strides_set" "', argument " "1"" of type '" "Conv2D *""'"); 
+  }
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv2D_strides_set" "', argument " "2"" of type '" "int [2]""'"); 
+  } 
+  arg2 = reinterpret_cast< int * >(argp2);
+  {
+    if (arg2) {
+      size_t ii = 0;
+      for (; ii < (size_t)2; ++ii) *(int *)&arg1->strides[ii] = *((int *)arg2 + ii);
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""strides""' of type '""int [2]""'");
+    }
+  }
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Conv2D_strides_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Conv2D *arg1 = (Conv2D *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  int *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_strides_get" "', argument " "1"" of type '" "Conv2D *""'"); 
+  }
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
+  result = (int *)(int *) ((arg1)->strides);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Conv2D_filters_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   int arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3834,15 +3814,15 @@ SWIGINTERN PyObject *_wrap_Conv1D_filters_set(PyObject *SWIGUNUSEDPARM(self), Py
   int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_filters_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_filters_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_filters_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_filters_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv1D_filters_set" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv2D_filters_set" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
   if (arg1) (arg1)->filters = arg2;
@@ -3853,9 +3833,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_filters_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_filters_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -3863,11 +3843,11 @@ SWIGINTERN PyObject *_wrap_Conv1D_filters_get(PyObject *SWIGUNUSEDPARM(self), Py
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_filters_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_filters_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   result = (int) ((arg1)->filters);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
@@ -3876,28 +3856,35 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_dilation_rate_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_dilation_rate_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
-  int arg2 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
+  int *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_dilation_rate_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_dilation_rate_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_dilation_rate_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_dilation_rate_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv1D_dilation_rate_set" "', argument " "2"" of type '" "int""'");
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv2D_dilation_rate_set" "', argument " "2"" of type '" "int [2]""'"); 
   } 
-  arg2 = static_cast< int >(val2);
-  if (arg1) (arg1)->dilation_rate = arg2;
+  arg2 = reinterpret_cast< int * >(argp2);
+  {
+    if (arg2) {
+      size_t ii = 0;
+      for (; ii < (size_t)2; ++ii) *(int *)&arg1->dilation_rate[ii] = *((int *)arg2 + ii);
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""dilation_rate""' of type '""int [2]""'");
+    }
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -3905,32 +3892,32 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_dilation_rate_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_dilation_rate_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  int result;
+  int *result = 0 ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_dilation_rate_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_dilation_rate_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
-  result = (int) ((arg1)->dilation_rate);
-  resultobj = SWIG_From_int(static_cast< int >(result));
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
+  result = (int *)(int *) ((arg1)->dilation_rate);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_activation_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_activation_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   char arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3938,15 +3925,15 @@ SWIGINTERN PyObject *_wrap_Conv1D_activation_set(PyObject *SWIGUNUSEDPARM(self),
   int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_activation_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_activation_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_activation_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_activation_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   ecode2 = SWIG_AsVal_char(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv1D_activation_set" "', argument " "2"" of type '" "char""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv2D_activation_set" "', argument " "2"" of type '" "char""'");
   } 
   arg2 = static_cast< char >(val2);
   if (arg1) (arg1)->activation = arg2;
@@ -3957,9 +3944,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_activation_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_activation_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -3967,11 +3954,11 @@ SWIGINTERN PyObject *_wrap_Conv1D_activation_get(PyObject *SWIGUNUSEDPARM(self),
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_activation_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_activation_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   result = (char) ((arg1)->activation);
   resultobj = SWIG_From_char(static_cast< char >(result));
   return resultobj;
@@ -3980,9 +3967,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_padding_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_padding_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   char arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3990,15 +3977,15 @@ SWIGINTERN PyObject *_wrap_Conv1D_padding_set(PyObject *SWIGUNUSEDPARM(self), Py
   int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_padding_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_padding_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_padding_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_padding_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   ecode2 = SWIG_AsVal_char(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv1D_padding_set" "', argument " "2"" of type '" "char""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv2D_padding_set" "', argument " "2"" of type '" "char""'");
   } 
   arg2 = static_cast< char >(val2);
   if (arg1) (arg1)->padding = arg2;
@@ -4009,9 +3996,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_padding_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_padding_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -4019,11 +4006,11 @@ SWIGINTERN PyObject *_wrap_Conv1D_padding_get(PyObject *SWIGUNUSEDPARM(self), Py
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_padding_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_padding_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   result = (char) ((arg1)->padding);
   resultobj = SWIG_From_char(static_cast< char >(result));
   return resultobj;
@@ -4032,9 +4019,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_data_format_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_data_format_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   char arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -4042,15 +4029,15 @@ SWIGINTERN PyObject *_wrap_Conv1D_data_format_set(PyObject *SWIGUNUSEDPARM(self)
   int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_data_format_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_data_format_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_data_format_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_data_format_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   ecode2 = SWIG_AsVal_char(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv1D_data_format_set" "', argument " "2"" of type '" "char""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Conv2D_data_format_set" "', argument " "2"" of type '" "char""'");
   } 
   arg2 = static_cast< char >(val2);
   if (arg1) (arg1)->data_format = arg2;
@@ -4061,9 +4048,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_data_format_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_data_format_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -4071,11 +4058,11 @@ SWIGINTERN PyObject *_wrap_Conv1D_data_format_get(PyObject *SWIGUNUSEDPARM(self)
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_data_format_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_data_format_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   result = (char) ((arg1)->data_format);
   resultobj = SWIG_From_char(static_cast< char >(result));
   return resultobj;
@@ -4084,9 +4071,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_input_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_kernel_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   int *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -4094,23 +4081,23 @@ SWIGINTERN PyObject *_wrap_Conv1D_input_shape_set(PyObject *SWIGUNUSEDPARM(self)
   int res2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_input_shape_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_kernel_shape_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_input_shape_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_kernel_shape_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_int, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv1D_input_shape_set" "', argument " "2"" of type '" "int [2]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv2D_kernel_shape_set" "', argument " "2"" of type '" "int [2]""'"); 
   } 
   arg2 = reinterpret_cast< int * >(argp2);
   {
     if (arg2) {
       size_t ii = 0;
-      for (; ii < (size_t)2; ++ii) *(int *)&arg1->input_shape[ii] = *((int *)arg2 + ii);
+      for (; ii < (size_t)2; ++ii) *(int *)&arg1->kernel_shape[ii] = *((int *)arg2 + ii);
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""input_shape""' of type '""int [2]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""kernel_shape""' of type '""int [2]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -4120,9 +4107,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_input_shape_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_kernel_shape_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -4130,11 +4117,70 @@ SWIGINTERN PyObject *_wrap_Conv1D_input_shape_get(PyObject *SWIGUNUSEDPARM(self)
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_input_shape_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_kernel_shape_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
+  result = (int *)(int *) ((arg1)->kernel_shape);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Conv2D_input_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Conv2D *arg1 = (Conv2D *) 0 ;
+  int *arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_input_shape_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_input_shape_set" "', argument " "1"" of type '" "Conv2D *""'"); 
+  }
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv2D_input_shape_set" "', argument " "2"" of type '" "int [3]""'"); 
+  } 
+  arg2 = reinterpret_cast< int * >(argp2);
+  {
+    if (arg2) {
+      size_t ii = 0;
+      for (; ii < (size_t)3; ++ii) *(int *)&arg1->input_shape[ii] = *((int *)arg2 + ii);
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""input_shape""' of type '""int [3]""'");
+    }
+  }
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Conv2D_input_shape_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Conv2D *arg1 = (Conv2D *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  int *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_input_shape_get" "', argument " "1"" of type '" "Conv2D *""'"); 
+  }
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   result = (int *)(int *) ((arg1)->input_shape);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
   return resultobj;
@@ -4143,9 +4189,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_output_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_output_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   int *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -4153,23 +4199,23 @@ SWIGINTERN PyObject *_wrap_Conv1D_output_shape_set(PyObject *SWIGUNUSEDPARM(self
   int res2 = 0 ;
   PyObject *swig_obj[2] ;
   
-  if (!SWIG_Python_UnpackTuple(args, "Conv1D_output_shape_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "Conv2D_output_shape_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_output_shape_set" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_output_shape_set" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_int, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv1D_output_shape_set" "', argument " "2"" of type '" "int [2]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Conv2D_output_shape_set" "', argument " "2"" of type '" "int [3]""'"); 
   } 
   arg2 = reinterpret_cast< int * >(argp2);
   {
     if (arg2) {
       size_t ii = 0;
-      for (; ii < (size_t)2; ++ii) *(int *)&arg1->output_shape[ii] = *((int *)arg2 + ii);
+      for (; ii < (size_t)3; ++ii) *(int *)&arg1->output_shape[ii] = *((int *)arg2 + ii);
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""output_shape""' of type '""int [2]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""output_shape""' of type '""int [3]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -4179,9 +4225,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Conv1D_output_shape_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Conv2D_output_shape_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
@@ -4189,11 +4235,11 @@ SWIGINTERN PyObject *_wrap_Conv1D_output_shape_get(PyObject *SWIGUNUSEDPARM(self
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, 0 |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv1D_output_shape_get" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Conv2D_output_shape_get" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   result = (int *)(int *) ((arg1)->output_shape);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
   return resultobj;
@@ -4202,33 +4248,33 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_Conv1D(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_Conv2D(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *result = 0 ;
+  Conv2D *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args, "new_Conv1D", 0, 0, 0)) SWIG_fail;
-  result = (Conv1D *)new Conv1D();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Conv1D, SWIG_POINTER_NEW |  0 );
+  if (!SWIG_Python_UnpackTuple(args, "new_Conv2D", 0, 0, 0)) SWIG_fail;
+  result = (Conv2D *)new Conv2D();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Conv2D, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_Conv1D(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_Conv2D(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  Conv1D *arg1 = (Conv1D *) 0 ;
+  Conv2D *arg1 = (Conv2D *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv1D, SWIG_POINTER_DISOWN |  0 );
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Conv2D, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_Conv1D" "', argument " "1"" of type '" "Conv1D *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_Conv2D" "', argument " "1"" of type '" "Conv2D *""'"); 
   }
-  arg1 = reinterpret_cast< Conv1D * >(argp1);
+  arg1 = reinterpret_cast< Conv2D * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -4237,14 +4283,14 @@ fail:
 }
 
 
-SWIGINTERN PyObject *Conv1D_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *Conv2D_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_Conv1D, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_Conv2D, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *Conv1D_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *Conv2D_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   return SWIG_Python_InitShadowInstance(args);
 }
 
@@ -5068,37 +5114,37 @@ SWIGINTERN PyObject *input_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *ar
 
 static PyMethodDef SwigMethods[] = {
 	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
-	 { "build_layer_conv1d", _wrap_build_layer_conv1d, METH_VARARGS, NULL},
-	 { "padding_1d", _wrap_padding_1d, METH_VARARGS, NULL},
-	 { "fwd_conv1d", _wrap_fwd_conv1d, METH_VARARGS, NULL},
-	 { "Conv1D_weights_set", _wrap_Conv1D_weights_set, METH_VARARGS, NULL},
-	 { "Conv1D_weights_get", _wrap_Conv1D_weights_get, METH_O, NULL},
-	 { "Conv1D_biases_set", _wrap_Conv1D_biases_set, METH_VARARGS, NULL},
-	 { "Conv1D_biases_get", _wrap_Conv1D_biases_get, METH_O, NULL},
-	 { "Conv1D_strides_set", _wrap_Conv1D_strides_set, METH_VARARGS, NULL},
-	 { "Conv1D_strides_get", _wrap_Conv1D_strides_get, METH_O, NULL},
-	 { "Conv1D_kernel_shape_set", _wrap_Conv1D_kernel_shape_set, METH_VARARGS, NULL},
-	 { "Conv1D_kernel_shape_get", _wrap_Conv1D_kernel_shape_get, METH_O, NULL},
-	 { "Conv1D_weight_shape_set", _wrap_Conv1D_weight_shape_set, METH_VARARGS, NULL},
-	 { "Conv1D_weight_shape_get", _wrap_Conv1D_weight_shape_get, METH_O, NULL},
-	 { "Conv1D_filters_set", _wrap_Conv1D_filters_set, METH_VARARGS, NULL},
-	 { "Conv1D_filters_get", _wrap_Conv1D_filters_get, METH_O, NULL},
-	 { "Conv1D_dilation_rate_set", _wrap_Conv1D_dilation_rate_set, METH_VARARGS, NULL},
-	 { "Conv1D_dilation_rate_get", _wrap_Conv1D_dilation_rate_get, METH_O, NULL},
-	 { "Conv1D_activation_set", _wrap_Conv1D_activation_set, METH_VARARGS, NULL},
-	 { "Conv1D_activation_get", _wrap_Conv1D_activation_get, METH_O, NULL},
-	 { "Conv1D_padding_set", _wrap_Conv1D_padding_set, METH_VARARGS, NULL},
-	 { "Conv1D_padding_get", _wrap_Conv1D_padding_get, METH_O, NULL},
-	 { "Conv1D_data_format_set", _wrap_Conv1D_data_format_set, METH_VARARGS, NULL},
-	 { "Conv1D_data_format_get", _wrap_Conv1D_data_format_get, METH_O, NULL},
-	 { "Conv1D_input_shape_set", _wrap_Conv1D_input_shape_set, METH_VARARGS, NULL},
-	 { "Conv1D_input_shape_get", _wrap_Conv1D_input_shape_get, METH_O, NULL},
-	 { "Conv1D_output_shape_set", _wrap_Conv1D_output_shape_set, METH_VARARGS, NULL},
-	 { "Conv1D_output_shape_get", _wrap_Conv1D_output_shape_get, METH_O, NULL},
-	 { "new_Conv1D", _wrap_new_Conv1D, METH_NOARGS, NULL},
-	 { "delete_Conv1D", _wrap_delete_Conv1D, METH_O, NULL},
-	 { "Conv1D_swigregister", Conv1D_swigregister, METH_O, NULL},
-	 { "Conv1D_swiginit", Conv1D_swiginit, METH_VARARGS, NULL},
+	 { "build_layer_conv2d", _wrap_build_layer_conv2d, METH_VARARGS, NULL},
+	 { "padding_2d", _wrap_padding_2d, METH_VARARGS, NULL},
+	 { "fwd_conv2d", _wrap_fwd_conv2d, METH_VARARGS, NULL},
+	 { "Conv2D_weights_set", _wrap_Conv2D_weights_set, METH_VARARGS, NULL},
+	 { "Conv2D_weights_get", _wrap_Conv2D_weights_get, METH_O, NULL},
+	 { "Conv2D_bias_set", _wrap_Conv2D_bias_set, METH_VARARGS, NULL},
+	 { "Conv2D_bias_get", _wrap_Conv2D_bias_get, METH_O, NULL},
+	 { "Conv2D_weight_shape_set", _wrap_Conv2D_weight_shape_set, METH_VARARGS, NULL},
+	 { "Conv2D_weight_shape_get", _wrap_Conv2D_weight_shape_get, METH_O, NULL},
+	 { "Conv2D_strides_set", _wrap_Conv2D_strides_set, METH_VARARGS, NULL},
+	 { "Conv2D_strides_get", _wrap_Conv2D_strides_get, METH_O, NULL},
+	 { "Conv2D_filters_set", _wrap_Conv2D_filters_set, METH_VARARGS, NULL},
+	 { "Conv2D_filters_get", _wrap_Conv2D_filters_get, METH_O, NULL},
+	 { "Conv2D_dilation_rate_set", _wrap_Conv2D_dilation_rate_set, METH_VARARGS, NULL},
+	 { "Conv2D_dilation_rate_get", _wrap_Conv2D_dilation_rate_get, METH_O, NULL},
+	 { "Conv2D_activation_set", _wrap_Conv2D_activation_set, METH_VARARGS, NULL},
+	 { "Conv2D_activation_get", _wrap_Conv2D_activation_get, METH_O, NULL},
+	 { "Conv2D_padding_set", _wrap_Conv2D_padding_set, METH_VARARGS, NULL},
+	 { "Conv2D_padding_get", _wrap_Conv2D_padding_get, METH_O, NULL},
+	 { "Conv2D_data_format_set", _wrap_Conv2D_data_format_set, METH_VARARGS, NULL},
+	 { "Conv2D_data_format_get", _wrap_Conv2D_data_format_get, METH_O, NULL},
+	 { "Conv2D_kernel_shape_set", _wrap_Conv2D_kernel_shape_set, METH_VARARGS, NULL},
+	 { "Conv2D_kernel_shape_get", _wrap_Conv2D_kernel_shape_get, METH_O, NULL},
+	 { "Conv2D_input_shape_set", _wrap_Conv2D_input_shape_set, METH_VARARGS, NULL},
+	 { "Conv2D_input_shape_get", _wrap_Conv2D_input_shape_get, METH_O, NULL},
+	 { "Conv2D_output_shape_set", _wrap_Conv2D_output_shape_set, METH_VARARGS, NULL},
+	 { "Conv2D_output_shape_get", _wrap_Conv2D_output_shape_get, METH_O, NULL},
+	 { "new_Conv2D", _wrap_new_Conv2D, METH_NOARGS, NULL},
+	 { "delete_Conv2D", _wrap_delete_Conv2D, METH_O, NULL},
+	 { "Conv2D_swigregister", Conv2D_swigregister, METH_O, NULL},
+	 { "Conv2D_swiginit", Conv2D_swiginit, METH_VARARGS, NULL},
 	 { "activate", _wrap_activate, METH_VARARGS, NULL},
 	 { "sigmoid", _wrap_sigmoid, METH_VARARGS, NULL},
 	 { "softplus", _wrap_softplus, METH_VARARGS, NULL},
@@ -5132,7 +5178,7 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 static void *_p_inputTo_p_float(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((float *)  ((input *) x));
 }
-static swig_type_info _swigt__p_Conv1D = {"_p_Conv1D", "Conv1D *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Conv2D = {"_p_Conv2D", "Conv2D *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_float = {"_p_float", "float *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_input = {"_p_input", "input *", 0, 0, (void*)0, 0};
@@ -5146,7 +5192,7 @@ static swig_type_info _swigt__p_unsigned_long_long = {"_p_unsigned_long_long", "
 static swig_type_info _swigt__p_unsigned_short = {"_p_unsigned_short", "unsigned short *|uint_least16_t *|uint16_t *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
-  &_swigt__p_Conv1D,
+  &_swigt__p_Conv2D,
   &_swigt__p_char,
   &_swigt__p_float,
   &_swigt__p_input,
@@ -5160,7 +5206,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_unsigned_short,
 };
 
-static swig_cast_info _swigc__p_Conv1D[] = {  {&_swigt__p_Conv1D, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Conv2D[] = {  {&_swigt__p_Conv2D, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_input, _p_inputTo_p_float, 0, 0},  {&_swigt__p_float, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_input[] = {  {&_swigt__p_input, 0, 0, 0},{0, 0, 0, 0}};
@@ -5174,7 +5220,7 @@ static swig_cast_info _swigc__p_unsigned_long_long[] = {  {&_swigt__p_unsigned_l
 static swig_cast_info _swigc__p_unsigned_short[] = {  {&_swigt__p_unsigned_short, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
-  _swigc__p_Conv1D,
+  _swigc__p_Conv2D,
   _swigc__p_char,
   _swigc__p_float,
   _swigc__p_input,
