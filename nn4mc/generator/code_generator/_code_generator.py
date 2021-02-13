@@ -64,6 +64,7 @@ class Generator():
                         activations.append(activation)
                 if type not in layers:
                     layers.append(type)
+                    
         #For each layer type scrape file and replace delimiters
         for layer_type in layers:
             #Replace delimiters and add to layer_templates

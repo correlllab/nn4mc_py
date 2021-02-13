@@ -7,7 +7,11 @@ class Layer(ABC):
     #Input and output data shapes: None if not unspecified
     input_shape = None
     output_shape = None
-    params = {'w':Weight(None, None), 'b':Weight(None, None), 'w_rec':Weight(None, None)}
+    params = {
+        'w':Weight(None, None), 
+        'b':Weight(None, None), 
+        'w_rec':Weight(None, None)
+    }
 
     def __init__(self, id, type=None):
         self.identifier = id #Unique ID
@@ -48,13 +52,18 @@ class Layer(ABC):
     def generateCall(self, temp_string): #For derived classes
         start = temp_string.find(G.start_delim)
         end = temp_string.find(G.end_delim)
+
         while(start != -1):
             meta = temp_string[start+len(G.start_delim):end]
             if meta in G.delim_map.keys():
-                val = eval(G.delim_map[meta])
+                try:
+                    val = eval(G.delim_map[meta])
+                except:
+                    print(temp_string)
+                    quit()
 
                 temp_string = temp_string.replace(temp_string[start:end+len(G.end_delim)],
-                val)
+                                                    val)
 
             start = temp_string.find(G.start_delim)
             end = temp_string.find(G.end_delim)
@@ -87,24 +96,6 @@ class Conv1D(Layer):
     activation = ''
     use_bias = True
 
-    # def generateInit(self):
-    #     init_string = self.identifier + ' = buildConv1D(&' +\
-    #                 self.param['w'].identifier + '[0], ' +\
-    #                 self.params['b'].identifier + ', ' +\
-    #                 str(self.kernel_shape[0]) + ', ' +\
-    #                 str(self.strides[0]) + ', ' +\
-    #                 str(self.input_shape[0]) + ', ' +\
-    #                 str(self.input_shape[1]) + ', ' +\
-    #                 str(self.filters) + ', ' +\
-    #                 self.activation + ');\n'
-    #
-    #     return init_string
-    #
-    # def generateFwd(self):
-    #     fwd_string = 'data = fwdConv1D(' + self.identifier + ', data);\n'
-    #
-    #     return fwd_string
-
     def computeOutShape(self, input_shape = None):
         self.input_shape = input_shape
         output_shape = [0.0]*2
@@ -125,25 +116,6 @@ class Conv2D(Layer):
     activation = ''
     use_bias = True
 
-    # def generateInit(self):
-    #     init_string = self.identifier + ' = buildConv2D(&' +\
-    #                 self.params['w'].identifier + '[0], ' +\
-    #                 self.params['b'].identifier + ', ' +\
-    #                 str(self.kernel_shape[0]) + ', ' +\
-    #                 str(self.kernel_shape[1]) + ', ' +\
-    #                 str(self.filters) + ', ' +\
-    #                 str(self.strides[0]) + ', ' +\
-    #                 str(self.strides[1]) + ', ' +\
-    #                 str(self.input_shape[0]) + ', ' +\
-    #                 str(self.input_shape[1]) + ', ' +\
-    #                 str(self.input_shape[2]) + ', ' +\
-    #                 self.activation + ');\n'
-    #
-    # def generateFwd(self):
-    #     fwd_string = 'data = fwdConv2D(' + self.identifier + ', data);\n'
-    #
-    #     return fwd_string
-
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         output_shape = [0.0]*3
@@ -160,21 +132,6 @@ class Dense(Layer):
     activation = ''
     use_bias = True
 
-    # def generateInit(self):
-    #     init_string = self.identifier + ' = buildDense(&' +\
-    #                 self.params['w'].identifier + '[0], ' +\
-    #                 self.params['b'].identifier + ', ' +\
-    #                 str(self.input_shape[0]) + ', ' +\
-    #                 str(self.output_shape[0]) + ', ' +\
-    #                 self.activation + ');\n'
-    #
-    #     return init_string
-    #
-    # def generateFwd(self):
-    #     fwd_string = 'data = fwdDense(' + self.identifier + ', data);\n'
-    #
-    #     return fwd_string
-
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = [self.params['b'].values.shape[0]]
@@ -187,20 +144,6 @@ class MaxPooling1D(Layer):
     padding = ''
     data_format = ''
 
-    # def generateInit(self):
-    #     init_string = self.identifier + ' = buildMaxPooling1D(' +\
-    #                 str(self.pool_shape[0]) + ', ' +\
-    #                 str(self.strides[0]) + ', ' +\
-    #                 str(input_shape[0]) + ', ' +\
-    #                 str(input_shape[1]) + ');\n'
-    #
-    #     return init_string
-    #
-    # def generateFwd(self):
-    #     fwd_string = 'data = fwdMaxPooling1D(' + self.identifier + ', data);\n'
-    #
-    #     return fwd_string
-
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = input_shape
@@ -212,22 +155,6 @@ class MaxPooling2D(Layer):
     strides = []
     padding = ''
     data_format = ''
-
-    # def generateInit(self):
-    #     init_string = self.identifier + ' = buildMaxPooling2D(' +\
-    #                 str(self.pool_shape[0]) + ', ' +\
-    #                 str(self.pool_shape[1]) + ', ' +\
-    #                 str(self.strides[0]) + ', ' +\
-    #                 str(input_shape[0]) + ', ' +\
-    #                 str(input_shape[1]) + ', ' +\
-    #                 str(input_shape[2]) + ');\n'
-    #
-    #     return init_string
-    #
-    # def generateFwd(self):
-    #     fwd_string = 'data = fwdMaxPooling2D(' + self.identifier + ', data);\n'
-    #
-    #     return fwd_string
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -248,24 +175,6 @@ class SimpleRNN(Layer):
     go_backwards = False
     stateful = False
 
-    # def generateInit():
-    #     init_string = self.identifier + ' = buildSimpleRNN(&' +\
-    #                 self.params['w'].identifier + '[0], ' +\
-    #                 self.params['w_rec'].identifier + '[0], ' +\
-    #                 self.params['b'].identifier + ',' +\
-    #                 str(self.input_shape[0]) + ',' +\
-    #                 str(self.input_shape[1]) + ',' +\
-    #                 str(self.output_shape[0]) + ',' +\
-    #                 self.activation + ',' +\
-    #                 self.go_backwards + ');\n'
-    #
-    #     return init_string
-    #
-    # def generateFwd():
-    #     fwd_string = 'data = fwdSimpleRNN(' + self.identifier + ', data);\n'
-    #
-    #     return fwd_string
-
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = [self.params['b'].values.shape[0]]
@@ -281,27 +190,6 @@ class GRU(Layer):
     stateful = False
     unroll = False
     reset_after = False
-
-    # def generateInit():
-    #     init_string = self.identifier + ' = buildGRU(&' +\
-    #                 self.params['w'].identifier + '[0], ' +\
-    #                 self.params['w_rec'].identifier + '[0], ' +\
-    #                 self.params['b'].identifier + ',' +\
-    #                 str(self.input_shape[0]) + ',' +\
-    #                 str(self.input_shape[1]) + ',' +\
-    #                 str(self.output_shape[0]) + ',' +\
-    #                 self.activation + ',' +\
-    #                 self.recurrent_activation + ',' +\
-    #                 str(self.dropout) + ',' +\
-    #                 str(self.recurrent_dropout) + ',' +\
-    #                 self.go_backwards + + ');\n'
-    #
-    #     return init_string
-    #
-    # def generateFwd():
-    #     fwd_string = 'data = fwdGRU(' + self.identifier + ', data);\n'
-    #
-    #     return fwd_string
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -321,27 +209,6 @@ class LSTM(Layer):
     stateful = False
     unroll = False
 
-    # def generateInit():
-    #     init_string = self.identifier + ' = buildGRU(&' +\
-    #                 self.params['w'].identifier + '[0], ' +\
-    #                 self.params['w_rec'].identifier + '[0], ' +\
-    #                 self.params['b'].identifier + ',' +\
-    #                 str(self.input_shape[0]) + ',' +\
-    #                 str(self.input_shape[1]) + ',' +\
-    #                 str(self.output_shape[0]) + ',' +\
-    #                 self.activation + ',' +\
-    #                 self.recurrent_activation + ',' +\
-    #                 str(self.dropout) + ',' +\
-    #                 str(self.recurrent_dropout) + ',' +\
-    #                 self.go_backwards + + ');\n'
-    #
-    #     return init_string
-    #
-    # def generateFwd():
-    #     fwd_string = 'data = fwdLSTM(' + self.identifier + ', data);\n'
-    #
-    #     return fwd_string
-
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = [self.params['b'].values.shape[0]]
@@ -353,22 +220,11 @@ class LSTM(Layer):
 class Activation(Layer):
     activation = ''
 
-    # def generateInit():
-    #     pass
-    #
-    # def generateFwd():
-    #     pass
-
     def computeOutShape(self, input_shape):
         pass
 
 #NOTE: No template or anything for this as everything is already flattened
-class Flatten(Layer):
-    # def generateInit():
-    #     return ''
-    #
-    # def generateFwd():
-    #     return ''
+class Flatten(Layer):'
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -379,11 +235,6 @@ class Flatten(Layer):
         return temp
 
 class Dropout(Layer):
-    # def generateInit():
-    #     return ''
-    #
-    # def generateFwd():
-    #     return ''
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -393,12 +244,6 @@ class Dropout(Layer):
 #NOTE: This is really just useful in the graph to find starting point
 class Input(Layer):
     size = 0
-
-    # def generateInit(self):
-    #     return ''
-    #
-    # def generateFwd(self):
-    #     return ''
 
     def computeOutShape(self, input_shape):
         return input_shape

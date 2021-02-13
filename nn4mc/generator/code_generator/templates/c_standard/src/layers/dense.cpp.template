@@ -54,9 +54,9 @@ struct Dense build_layer_dense(<%WEIGHT_DATATYPE_DELIMITER>* W, <%WEIGHT_DATATYP
 
 
 <%BEGIN_INITIALIZE_TEMPLATE>
-        <%LAYER_NAME> = build_layer_dense(&<%WEIGHT_NAME>[0], <%BIAS_NAME>, <%INPUT_SHAPE_0>, <%OUTPUT_SIZE>, <%ACTIVATION>);
+        <%LAYER_NAME> = build_layer_dense(&<%WEIGHT_NAME>[0], <%BIAS_NAME>, <%INPUT_SHAPE_0>, <%OUTPUT_SHAPE>, <%ACTIVATION>);
 <%END_INITIALIZE_TEMPLATE>
 
 <%BEGIN_CALL_TEMPLATE>
-        data = fwd_dense(<%LAYER_NAME>, <%INPUT>);
+        data = fwd_dense(<%LAYER_NAME>, data);
 <%END_CALL_TEMPLATE>
