@@ -74,7 +74,6 @@ class HDF5Parser(Parser):
                 self.nn.addLayer(layer) #Add Layer to neural network
                 self.nn.addEdge(last_layer, layer)
 
-
                 last_layer = layer
 
     #Parses all of the weights
