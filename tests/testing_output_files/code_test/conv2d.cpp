@@ -64,20 +64,21 @@ float * padding_2d(struct Conv2D L, float * input, int * shape_0_change, int * s
             *shape_0_change = (int)floor((pad_0 + pad_1) / L.strides[0]);
             *shape_1_change = (int)floor((pad_0 + pad_1) / L.strides[1]);
 
-            input_size += (int)(2*pad_0 + 2*pad_1 + 2*pad_0*pad_1 + pad_0*pad_0 + pad_1*pad_1);
+            input_size += (int)(2*pad_0 + 2*pad_1 + 2*pad_0*pad_1 + pad_0*pad_0 + pad_1*pad_1)*L.input_shape[2];
             float new_input[input_size];
             for(int i = 0; i < input_size; i++) new_input[i] = 0.0;
 
             for (int i = 0; i < L.input_shape[0]; i++){
                 for (int j = 0; j < L.input_shape[1]; j++){
                     for (int k = 0; k < L.input_shape[2]; k++){
-                        new_input[((i + pad_0) * (L.input_shape[1] + pad_0 + pad_1) + (j + pad_0)) * L.input_shape[2] + k] = input[(i * L.input_shape[1] + j) * L.input_shape[2] + k];
+                        new_input[((i + pad_0) * (L.input_shape[1] + *shape_1_change) + (j + pad_0)) * L.input_shape[2] + k] = *(input + (i * L.input_shape[1] + j) * L.input_shape[2] + k);
                     }
                 }
             }
             //free(input);
-            input = (float*)malloc(input_size * sizeof(float));
+            input = (float*)malloc(input_size*sizeof(float));
             for (int i = 0; i < input_size; i++) input[i] = new_input[i];
+
         }
     return input;
 }
@@ -104,7 +105,7 @@ float* fwd_conv2d(struct Conv2D L, float* input)
 				for (int k_x = 0; k_x < L.weight_shape[0]; k_x++)
 					for (int k_y = 0; k_y < L.weight_shape[1]; k_y++)
 					    for (int k_z = 0; k_z < L.weight_shape[2]; k_z++)
-                            h[idx] += *(L.weights + ((k_x * L.weight_shape[1] + k_y) * L.weight_shape[2] + k_z) * L.weight_shape[3] + k) * *(input + ((k_x + i*L.strides[0]) * (L.input_shape[1] + shape_1_ch) + (k_y + j*L.strides[1])) * L.input_shape[2] + k_z);
+                            h[idx] += *(L.weights + ((k_x * L.weight_shape[1] + k_y) * L.weight_shape[2] + k_z) * L.weight_shape[3] + k) * *(input + ((k_x + i * L.strides[0]) * (L.input_shape[1] + shape_1_ch) + (k_y + j*L.strides[1])) * L.input_shape[2] + k_z);
             }
         }
     }

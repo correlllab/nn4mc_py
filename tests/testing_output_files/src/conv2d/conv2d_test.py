@@ -54,7 +54,7 @@ class Conv1DTest(unittest.TestCase):
         Conv1D
     """
     def __generate_sample(self, input_dims):
-        return np.random.normal(0.0, 20, size = input_dims)
+        return np.random.normal(-5.0, 5., size = input_dims)
 
     def __keras_build(self, build_dict : dict):
         model = Sequential()
@@ -143,14 +143,14 @@ class Conv1DTest(unittest.TestCase):
         return prediction
 
     def test_fwd(self):
-        N = 1000
-        assert_result = True
+        N = 100
         for _ in range(N):
             print(_)
             strides = tuple(np.random.randint(1, 5, size = 2))
             kernel_size = tuple(np.random.randint(1, 10, size = 2))
             dilation_rate = (1, 1)
-            build_dict = {'filters': 7, 'kernel_size' : kernel_size, 'strides' : strides, 'padding' : 'valid',
+            filters = np.random.randint(2, 35, size = 1)[0]
+            build_dict = {'filters': filters, 'kernel_size' : kernel_size, 'strides' : strides, 'padding' : 'valid',
                     'data_format' : 'channels_last', 'dilation_rate' : dilation_rate, 'activation' : 'linear',
                     'use_bias' : True}
 
@@ -160,9 +160,9 @@ class Conv1DTest(unittest.TestCase):
             build_dict['input_shape'] = input_dims
             original_input = input_.copy()
 
-            weight = np.random.normal(-3., 3., size = (build_dict['kernel_size'][0], build_dict['kernel_size'][1],
+            weight = np.random.normal(-1., 1., size = (build_dict['kernel_size'][0], build_dict['kernel_size'][1],
                                             input_dims[-1], build_dict['filters'])).astype(np.float32)
-            bias = np.random.normal(-3., 3., size = (build_dict['filters'])).astype(np.float32)
+            bias = np.random.normal(-1., 1., size = (build_dict['filters'])).astype(np.float32)
 
             weight_ptr = list_2_swig_float_pointer(weight.flatten().tolist(), weight.size)
             bias_ptr = list_2_swig_float_pointer(bias.flatten().tolist(), bias.size)
@@ -174,9 +174,10 @@ class Conv1DTest(unittest.TestCase):
                                                  bias.size, input_dims, output_dims)
 
             c_output = np.array(c_output).reshape(c_keras.shape)
-            assert_result = assert_result and np.testing.assert_allclose(c_output, c_keras, rtol = 1e-4)
+            #print(c_output)
+            #print(c_keras)
+            np.testing.assert_allclose(c_output, c_keras, rtol = 2e-5)
 
-        return assert_result
 
 if __name__=='__main__':
     unittest.main()
