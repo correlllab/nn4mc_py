@@ -174,7 +174,7 @@ class Conv1DTest(unittest.TestCase):
                                                  bias.size, input_dims, output_dims)
 
             c_output = np.array(c_output).reshape(c_keras.shape)
-            assert_result = assert_result and np.testing.assert_allclose(c_output, c_keras, rtol = 5e-4)
+            assert_result = assert_result and np.testing.assert_allclose(c_output, c_keras, rtol = 1e-4)
 
         return assert_result
 
