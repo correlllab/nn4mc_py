@@ -46,8 +46,8 @@ struct Conv2D build_layer_conv2d(const float* W, const float* b, int kernel_shap
 	layer.input_shape[1] = input_shape_1;
 	layer.input_shape[2] = input_shape_2;
 
-	layer.output_shape[0] = (int)(input_shape_0 - kernel_shape_0 + 1);
-	layer.output_shape[1] = (int)(input_shape_1 - kernel_shape_1 + 1);
+	layer.output_shape[0] = (int)((input_shape_0 - kernel_shape_0) / strides_0) + 1;
+	layer.output_shape[1] = (int)((input_shape_1 - kernel_shape_1) / strides_1) + 1;
 	layer.output_shape[2] = (int)(filters);
 
 	return layer;
@@ -61,8 +61,8 @@ float * padding_2d(struct Conv2D L, float * input, int * shape_0_change, int * s
             int pad_0 = floor(pad / 2);
             int pad_1 = abs(pad - pad_0);
 
-            *shape_0_change = pad_0 + pad_1;
-            *shape_1_change = pad_0 + pad_1;
+            *shape_0_change = (int)floor((pad_0 + pad_1) / L.strides[0]);
+            *shape_1_change = (int)floor((pad_0 + pad_1) / L.strides[1]);
 
             input_size += (int)(2*pad_0 + 2*pad_1 + 2*pad_0*pad_1 + pad_0*pad_0 + pad_1*pad_1);
             float new_input[input_size];
@@ -92,32 +92,23 @@ float* fwd_conv2d(struct Conv2D L, float* input)
 
     float * h = (float*)malloc(output_size * sizeof(float));
 
-    for (int k = 0; k < L.output_shape[2]; k++)
+    for (int i = 0; i < (int)((L.output_shape[0] + shape_0_ch)); i++)
     {
-        for (int i = 0; i < L.output_shape[0] + shape_0_ch; i++)
+        for (int j = 0; j < (int)((L.output_shape[1] + shape_1_ch)); j++)
         {
-            for (int j = 0; j < L.output_shape[1] + shape_1_ch; j++)
-            {
-				int idx = i * (L.output_shape[1] + shape_1_ch) * L.output_shape[2] + j * L.output_shape[2] + k;
-
+           for (int k = 0; k < L.output_shape[2]; k++)
+           {
+				int idx = (i * (L.output_shape[1] + shape_1_ch) + j) * L.output_shape[2] + k;
 				h[idx] = L.bias[k];
 
-				for (int k_x = 0; k_x < L.kernel_shape[0]; k_x++)
-				{
-					for (int k_y = 0; k_y < L.kernel_shape[1]; k_y++)
-					{
-                        for (int f=0; f<L.filters; f++){
-                            h[idx] += *(L.weights + L.weight_shape[3]*L.weight_shape[2]*L.weight_shape[1] + L.weight_shape[2]*L.weight_shape[1] + L.weight_shape[1]) * (input[((i+k_x) * (L.input_shape[1] + shape_1_ch) + j) * L.input_shape[2] + k]);
-                        }
-                    }
-                }
+				for (int k_x = 0; k_x < L.weight_shape[0]; k_x++)
+					for (int k_y = 0; k_y < L.weight_shape[1]; k_y++)
+					    for (int k_z = 0; k_z < L.weight_shape[2]; k_z++)
+                            h[idx] += *(L.weights + ((k_x * L.weight_shape[1] + k_y) * L.weight_shape[2] + k_z) * L.weight_shape[3] + k) * *(input + ((k_x + i*L.strides[0]) * (L.input_shape[1] + shape_1_ch) + (k_y + j*L.strides[1])) * L.input_shape[2] + k_z);
             }
         }
     }
-
-
 	h = activate(h, output_size, L.activation);
-
     //free(input);
     return h;
 }

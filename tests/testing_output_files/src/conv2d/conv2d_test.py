@@ -7,6 +7,10 @@ import unittest
 from typing import List, Final
 import ctypes
 import copy
+import numpy as np
+import seaborn as sns
+import matplotlib.pylab as plt
+
 
 def swig_py_object_2_list(object, size : int) -> List[float]:
     """
@@ -72,14 +76,15 @@ class Conv1DTest(unittest.TestCase):
         return model
 
     def __test_padding(self):
-        shape = np.random.randint(1, 10, size=3).tolist()
+        print("test padding")
+        shape = np.random.randint(5, 10, size=3).tolist()
         input_dims = (1, shape[0], shape[1], shape[2])
         input_ = self.__generate_sample(input_dims)
         strides = tuple(np.random.normal(1, 5, size=2))
         kernel_size = tuple(np.random.normal(1, 10, size=2))
         dilation_rate = (1, 1)
         build_dict = {'filters': 32, 'kernel_size': kernel_size, 'strides': strides, 'padding': 'valid',
-                      'data_format': 'channels_last', 'dilation_rate': dilation_rate, 'activation': 'relu',
+                      'data_format': 'channels_last', 'dilation_rate': dilation_rate, 'activation': 'linear',
                       'use_bias': True}
 
         weight = conv2d.input(input_dims[1] * input_dims[2])
@@ -141,42 +146,48 @@ class Conv1DTest(unittest.TestCase):
         return prediction
 
     def test_fwd(self):
-        N = 1
+        N = 1000
         assert_result = True
         for _ in range(N):
+            print(_)
             strides = tuple(np.random.randint(1, 5, size = 2))
+            #strides = (1, 1)
             kernel_size = tuple(np.random.randint(1, 10, size = 2))
             dilation_rate = (1, 1)
-            build_dict = {'filters': 32, 'kernel_size' : kernel_size, 'strides' : strides, 'padding' : 'same',
+            build_dict = {'filters': 7, 'kernel_size' : kernel_size, 'strides' : strides, 'padding' : 'valid',
                     'data_format' : 'channels_last', 'dilation_rate' : dilation_rate, 'activation' : 'linear',
                     'use_bias' : True}
 
-            shape = np.random.randint(max(kernel_size), 10, size = 3).tolist()
+            shape = np.random.randint(max(kernel_size), 20, size = 3).tolist()
             input_dims = (1, shape[0], shape[1], shape[2])
             input_ = self.__generate_sample(input_dims)
             build_dict['input_shape'] = input_dims
             original_input = input_.copy()
 
-            weight = np.random.normal(-10., 10., size = (build_dict['kernel_size'][0], build_dict['kernel_size'][1],
+            weight = np.random.normal(-3., 3., size = (build_dict['kernel_size'][0], build_dict['kernel_size'][1],
                                             input_dims[-1], build_dict['filters'])).astype(np.float32)
-            bias = np.random.normal(-10., 10., size = (build_dict['filters'])).astype(np.float32)
+            bias = np.random.normal(-3., 3., size = (build_dict['filters'])).astype(np.float32)
 
             weight_ptr = list_2_swig_float_pointer(weight.flatten().tolist(), weight.size)
             bias_ptr = list_2_swig_float_pointer(bias.flatten().tolist(), bias.size)
 
             c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
-            print(c_keras.shape)
             output_dims = c_keras.shape[0] * c_keras.shape[1] * c_keras.shape[2] * c_keras.shape[3]
             c_output, output_dims = self.__c_fwd(build_dict, input_,
                                                  weight_ptr, bias_ptr, weight.size,
                                                  bias.size, input_dims, output_dims)
 
-
             print(c_keras)
-            print(c_output)
             c_output = np.array(c_output).reshape(c_keras.shape)
-            #print(c_output)
-            assert_result = assert_result or np.testing.assert_allclose(c_output, c_keras, rtol = 1e-5)
+            print(c_output)
+            print(c_output.shape)
+            print(strides)
+            #for i in range(c_output.shape[-1]):
+            #    difference = np.sum(c_output - c_keras, axis = 0)[:, :, i]
+            #    ax = sns.heatmap(difference, linewidth = 0.5)
+            #    plt.show()
+            assert_result = assert_result and np.testing.assert_allclose(c_output, c_keras, rtol = 5e-3)
+
         return assert_result
 
 if __name__=='__main__':
