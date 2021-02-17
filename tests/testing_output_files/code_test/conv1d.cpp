@@ -114,7 +114,7 @@ float * fwd_conv1d(struct Conv1D L, float * input)
 			{
 				for (int y = 0; y < L.weight_shape[1]; y++)
 				{
-                    h[idx] += *(L.weights + L.weight_shape[2] * (x * L.weight_shape[1] + y) + j) * input[(i + x) * L.input_shape[1] + y];
+                    h[idx] += *(L.weights + L.weight_shape[2] * (x * L.weight_shape[1] + y) + j) * input[(i * L.strides + x) * L.input_shape[1] + y];
 				}
 			}
 		}

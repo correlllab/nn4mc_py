@@ -8,9 +8,6 @@ from typing import List, Final
 import ctypes
 import copy
 import numpy as np
-import seaborn as sns
-import matplotlib.pylab as plt
-
 
 def swig_py_object_2_list(object, size : int) -> List[float]:
     """
@@ -151,7 +148,6 @@ class Conv1DTest(unittest.TestCase):
         for _ in range(N):
             print(_)
             strides = tuple(np.random.randint(1, 5, size = 2))
-            #strides = (1, 1)
             kernel_size = tuple(np.random.randint(1, 10, size = 2))
             dilation_rate = (1, 1)
             build_dict = {'filters': 7, 'kernel_size' : kernel_size, 'strides' : strides, 'padding' : 'valid',
@@ -177,16 +173,8 @@ class Conv1DTest(unittest.TestCase):
                                                  weight_ptr, bias_ptr, weight.size,
                                                  bias.size, input_dims, output_dims)
 
-            print(c_keras)
             c_output = np.array(c_output).reshape(c_keras.shape)
-            print(c_output)
-            print(c_output.shape)
-            print(strides)
-            #for i in range(c_output.shape[-1]):
-            #    difference = np.sum(c_output - c_keras, axis = 0)[:, :, i]
-            #    ax = sns.heatmap(difference, linewidth = 0.5)
-            #    plt.show()
-            assert_result = assert_result and np.testing.assert_allclose(c_output, c_keras, rtol = 5e-3)
+            assert_result = assert_result and np.testing.assert_allclose(c_output, c_keras, rtol = 5e-4)
 
         return assert_result
 

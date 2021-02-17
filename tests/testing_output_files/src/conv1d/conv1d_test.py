@@ -142,10 +142,11 @@ class Conv1DTest(unittest.TestCase):
 
     def test_fwd(self):
         N = 1000
-        assert_result = True
         for _ in range(N):
             print(_)
-            build_dict = {'filters': 32, 'kernel_size' : 3, 'strides' : 1, 'padding' : 'valid',
+            strides = int(np.random.randint(1, 5, size = 1)[0])
+            print(strides)
+            build_dict = {'filters': 32, 'kernel_size' : 3, 'strides' : strides, 'padding' : 'valid',
                     'data_format' : 'channels_last', 'dilation_rate' : 1, 'activation' : 'relu',
                     'use_bias' : True}
 
@@ -168,8 +169,7 @@ class Conv1DTest(unittest.TestCase):
 
             c_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
             c_output = np.array(c_output).reshape(c_keras.shape)
-            assert_result = assert_result or np.testing.assert_allclose(c_output, c_keras, rtol = 5e-5)
-        return assert_result
+            np.testing.assert_allclose(c_output, c_keras, atol = 1e-3, rtol = 1e-3)
 
 if __name__=='__main__':
     unittest.main()
