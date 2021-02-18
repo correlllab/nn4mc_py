@@ -1,34 +1,36 @@
-from nn4mc.parser._parser import Parser
 from nn4mc.datastructures import NetworkGraph
 from ._layer_builder import *
 import h5py
 import numpy as np
 import json
 
-# This class deals with parsing an HDF5 file from a keras neural network model.
-# It will scrape the file and generate a NeuralNetwork object
-# NOTE:
-class HDF5Parser(Parser):
-    #Maps layer types to code to dynamically build layers
-    builder_map = {'Conv1D' : 'Conv1DBuilder()',
-                    'Conv2D' : 'Conv2DBuilder()',
-                    'Dense' : 'DenseBuilder()',
-                    'Flatten' : 'FlattenBuilder()',
-                    'MaxPooling1D' : 'MaxPooling1DBuilder()',
-                    'MaxPooling2D' : 'MaxPooling2DBuilder()',
-                    'Dropout' : 'DropoutBuilder()',
-                    'SimpleRNN' : 'SimpleRNNBuilder()',
-                    'GRU' : 'GRUBuilder()',
-                    'LSTM' : 'LSTMBuilder()',
-                    'Input' : 'InputBuilder()',
-                    'Activation' : 'ActivationBuilder()'}
+'''
+Implements functionality to parse an hdf5 neural network model created
+using TensorFlow/Keras.
+'''
+class HDF5Parser():
+    #Maps layer types to builder handles
+    builder_map = {
+        'Conv1D' : Conv1DBuilder,
+        'Conv2D' : Conv2DBuilder,
+        'Dense' : DenseBuilder,
+        'MaxPooling1D' : MaxPooling1DBuilder,
+        'MaxPooling2D' : MaxPooling2DBuilder,
+        'SimpleRNN' : SimpleRNNBuilder,
+        'GRU' : GRUBuilder,
+        'LSTM' : LSTMBuilder,
+        'Activation' : ActivationBuilder,
+        'Dropout' : DropoutBuilder,
+        'Input' : InputBuilder,
+        'Flatten' : FlattenBuilder
+    }
 
     #NOTE: file is etheir a file name or a filetype object
     #If file object it needs to be binary I/O i.e 'rb'
     def __init__(self, file):
         self.file = file #HDF5 model file
         self.nn = NetworkGraph() #NeuralNetwork to be filled
-        self.nn_input_size = None
+        self.nn_input_shape = None
 
     #Parses the model and creates a NeuralNetwork
     #NOTE:
@@ -52,7 +54,10 @@ class HDF5Parser(Parser):
         configAttr = h5file['/'].attrs['model_config'] #Gets all metadata
         configJSON = self.bytesToJSON(configAttr)
 
-        self.parse_nn_input(configJSON['config'])
+        self.parseInput(configJSON['config'])
+
+        #NOTE: We are assuming the model is sequential
+        print('Assuming model is sequential.')
 
         #This adds an input layer before everything, not sure if it is
         #really neccessary.
@@ -60,18 +65,16 @@ class HDF5Parser(Parser):
         last_layer = Input('input_1','input')
         self.nn.addLayer(last_layer)
 
-        #NOTE: Could check to see if its sequential here
         for model_layer in configJSON['config']['layers']:
             type = model_layer['class_name']
             name = model_layer['config']['name']
-            builder = eval(self.builder_map[type])
+            builder = self.builder_map[type]()
 
             #Build a layer object from metadata
             layer = builder.build_layer(model_layer['config'], name.lower(), type.lower())
 
             self.nn.addLayer(layer) #Add Layer to neural network
             self.nn.addEdge(last_layer, layer)
-
 
             last_layer = layer
 
@@ -80,7 +83,7 @@ class HDF5Parser(Parser):
     def parseWeights(self, h5file):
         weightGroup = h5file['model_weights'] #Open weight group
 
-        input_shape = self.nn_input_size
+        input_shape = self.nn_input_shape
 
         for id in weightGroup.keys():
             layer = self.nn.getLayer(id)
@@ -106,15 +109,15 @@ class HDF5Parser(Parser):
             input_shape = layer.computeOutShape(input_shape)
 
     #Parses model for input size
-    def parse_nn_input(self, model_config : dict):
+    def parseInput(self, model_config : dict):
         """
             INPUT: model_config is the json object dictionary
             OUTPUT: numpy array with the input size of the model
         """
         if model_config.get('build_input_shape'):
-            self.nn_input_size = model_config['build_input_shape'][1:]
+            self.nn_input_shape = model_config['build_input_shape'][1:]
         if model_config['layers'][0].get('config','batch_input_shape'):
-            self.nn_input_size = model_config['layers'][0]['config']['batch_input_shape'][1:]
+            self.nn_input_shape = model_config['layers'][0]['config']['batch_input_shape'][1:]
 
 ################################################################################
 #Helper functions
