@@ -9,9 +9,8 @@ class Layer(ABC):
     output_shape = None
     params = {'w':Weight(None, None), 'b':Weight(None, None), 'w_rec':Weight(None, None)}
 
-    def __init__(self, id, type=None):
+    def __init__(self, id):
         self.identifier = id #Unique ID
-        self.layer_type = type #Layer type (i.e conv1d)
 
     #Add weight and bias parameters
     #Takes tuple of (id, values) for weights and biases
@@ -77,6 +76,8 @@ class Layer(ABC):
 #Derived classes (i.e specific layer types)
 
 class Conv1D(Layer):
+    layer_type = conv1d
+
     filters = 0
     kernel_shape = []
     strides = []
@@ -115,6 +116,8 @@ class Conv1D(Layer):
         return output_shape
 
 class Conv2D(Layer):
+    layer_type = conv2d
+
     filters = 0
     kernel_shape = []
     strides = []
@@ -155,6 +158,8 @@ class Conv2D(Layer):
         return output_shape
 
 class Dense(Layer):
+    layer_type = dense
+
     units = 0
     activation = ''
     use_bias = True
@@ -181,6 +186,8 @@ class Dense(Layer):
         return self.output_shape
 
 class MaxPooling1D(Layer):
+    layer_type = maxpooling1d
+
     pool_shape = []
     strides = []
     padding = ''
@@ -207,6 +214,8 @@ class MaxPooling1D(Layer):
         return self.output_shape
 
 class MaxPooling2D(Layer):
+    layer_type = maxpooling2d
+
     pool_shape = []
     strides = []
     padding = ''
@@ -239,6 +248,8 @@ class MaxPooling2D(Layer):
 #TODO: Check on all parameters
 
 class SimpleRNN(Layer):
+    layer_type = simplernn
+
     units = 0
     activation = ''
     use_bias = True
@@ -272,6 +283,8 @@ class SimpleRNN(Layer):
         return self.output_shape
 
 class GRU(Layer):
+    layer_type = gru
+
     units = 0
     activation = ''
     recurrent_activation = ''
@@ -309,6 +322,8 @@ class GRU(Layer):
         return self.output_shape
 
 class LSTM(Layer):
+    layer_type = lstm
+
     units = 0
     dropout = 0.0
     implementation = 0
@@ -350,6 +365,8 @@ class LSTM(Layer):
 ################################################################################
 #TODO: Check the implementation of this in code generator
 class Activation(Layer):
+    layer_type = activation
+
     activation = ''
 
     # def generateInit():
@@ -363,6 +380,8 @@ class Activation(Layer):
 
 #NOTE: No template or anything for this as everything is already flattened
 class Flatten(Layer):
+    layer_type = flatten
+
     # def generateInit():
     #     return ''
     #
@@ -378,6 +397,8 @@ class Flatten(Layer):
         return temp
 
 class Dropout(Layer):
+    layer_type = dropout
+
     # def generateInit():
     #     return ''
     #
@@ -391,6 +412,8 @@ class Dropout(Layer):
 
 #NOTE: This is really just useful in the graph to find starting point
 class Input(Layer):
+    layer_type = input
+
     size = 0
 
     # def generateInit(self):

@@ -7,15 +7,15 @@ class LayerBuilder(ABC):
 
     #Builds a layer object from JSON metadata
     @abstractmethod
-    def build_layer(self, json_obj, id, layer_type):
+    def build_layer(self, json_obj, id):
         pass
 
 ################################################################################
 #Derived classes
 
 class Conv1DBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Conv1D(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = Conv1D(id)
 
         new_layer.filters = json_obj['filters']
         new_layer.kernel_shape = copy.copy(json_obj['kernel_size'])
@@ -29,8 +29,8 @@ class Conv1DBuilder(LayerBuilder):
         return new_layer
 
 class Conv2DBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Conv2D(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = Conv2D(id)
 
         new_layer.filters = json_obj['filters']
         new_layer.kernel_shape = copy.copy(json_obj['kernel_size'])
@@ -44,8 +44,8 @@ class Conv2DBuilder(LayerBuilder):
         return new_layer
 
 class DenseBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Dense(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = Dense(id)
 
         new_layer.units = json_obj['units']
         new_layer.activation = json_obj['activation']
@@ -54,8 +54,8 @@ class DenseBuilder(LayerBuilder):
         return new_layer
 
 class MaxPooling1DBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = MaxPooling1D(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = MaxPooling1D(id)
 
         new_layer.pool_shape = copy.copy(json_obj['pool_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
@@ -65,8 +65,8 @@ class MaxPooling1DBuilder(LayerBuilder):
         return new_layer
 
 class MaxPooling2DBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = MaxPooling2D(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = MaxPooling2D(id)
 
         new_layer.pool_shape = copy.copy(json_obj['pool_size'])
         new_layer.strides = copy.copy(json_obj['strides'])
@@ -76,8 +76,8 @@ class MaxPooling2DBuilder(LayerBuilder):
         return new_layer
 
 class SimpleRNNBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = SimpleRNN(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = SimpleRNN(id)
 
         new_layer.units = json_obj['units']
         new_layer.activation = json_obj['activation']
@@ -90,8 +90,8 @@ class SimpleRNNBuilder(LayerBuilder):
         return new_layer
 
 class GRUBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = GRU(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = GRU(id)
 
         new_layer.units = json_obj['units']
         new_layer.dropout = json_obj['dropout']
@@ -107,8 +107,8 @@ class GRUBuilder(LayerBuilder):
         return new_layer
 
 class LSTMBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = LSTM(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = LSTM(id)
 
         new_layer.units = json_obj['units']
         new_layer.dropout = json_obj['dropout']
@@ -124,27 +124,27 @@ class LSTMBuilder(LayerBuilder):
         return new_layer
 
 class ActivationBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Activation(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = Activation(id)
 
         new_layer.activation = json_obj['activation']
 
         return new_layer
 
 class FlattenBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Flatten(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = Flatten(id)
 
         return new_layer
 
 class DropoutBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Dropout(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = Dropout(id)
 
         return new_layer
 
 class InputBuilder(LayerBuilder):
-    def build_layer(self, json_obj, id, layer_type):
-        new_layer = Input(id, layer_type)
+    def build_layer(self, json_obj, id):
+        new_layer = Input(id)
 
         return new_layer

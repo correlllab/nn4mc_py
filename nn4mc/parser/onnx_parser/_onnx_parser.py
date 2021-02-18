@@ -11,17 +11,19 @@ in the ONNX file format.
 class ONNXParser():
     #Maps layer types to builder handles
     builder_map = {
-        'Conv' : ConvBuilder,
-        'Gemm' : DenseBuilder,
-        'MaxPool' : MaxPoolBuilder,
-        'RNN' : SimpleRNNBuilder,
-        'GRU' : GRUBuilder,
-        'LSTM' : LSTMBuilder,
-        'Activation' : ActivationBuilder,
-        'Dropout' : DropoutBuilder,
-        'Input' : InputBuilder,
-        'Flatten' : FlattenBuilder
+        'conv' : ConvBuilder,
+        'gemm' : DenseBuilder,
+        'maxpool' : MaxPoolBuilder,
+        'rnn' : SimpleRNNBuilder,
+        'gru' : GRUBuilder,
+        'lstm' : LSTMBuilder,
+        'activation' : ActivationBuilder,
+        'dropout' : DropoutBuilder,
+        'input' : InputBuilder,
+        'flatten' : FlattenBuilder
     }
+    activations = ['sigmoid', 'softplus', 'softsign', 'hardsigmoid',
+                    'exp', 'relu', 'tanh', 'softmax']
 
     def __init__(self, file):
         self.file = file
@@ -33,8 +35,6 @@ class ONNXParser():
         #Can check model ir_version or opset_import here
 
         self.parseModelConfig(onnx_model)
-
-        self.parseWeights(onnx_model)
 
     def parseModelConfig(self, onnx_model):
         graph = onnx_model.node
@@ -50,31 +50,49 @@ class ONNXParser():
         self.nn.addLayer(last_layer)
 
         for node in graph:
-            type = node.op_type
-            name = node.name
-            builder = self.builder_map[type]()
+            type = node.op_type.lower()
+            name = (node.name).lower()
 
-            weights = self.parseWeight(node.inputs, params)
+            try:
+                builder = self.builder_map[type]()
+                weights = self.parseWeight(node.inputs, params)
 
-            layer, output_shape = builder.build_layer(node.attribute,
-                                                        weights,
-                                                        input_shape,
-                                                        name.lower(),
-                                                        type.lower())
+                layer = builder.build_layer(node.attribute, weights, input_shape, name)
+            except:
+                if type in self.activations:
+                    builder = self.builder_map['activation']()
+                    layer = builder.build_layer(name, type)
+                else:
+                    raise ValueError('Unsupported layer type encountered.')
 
             self.nn.addLayer(layer)
             self.nn.addEdge(last_layer, layer)
 
-            input_shape = output_shape
+            input_shape = layer.computeOutShape()
             last_layer = layer
 
     def parseWeight(self, inputs, params):
+        weight_inputs = []
+        num_params = 0
+        for input in inputs:
+            if 'bias' in input or 'weight' in input:
+                weight_inputs.append(input)
+                num_params += 1
+
+        if num_params == 0:
+            return None
+
         weights = {}
 
         for param in params:
             if param.name in inputs:
+                num_params -= 1
+
                 key = param.name.split('.')[1]
                 weights[key] = to_array(param)
+
+            if num_params == 0:
+                break
 
         return weights
 

@@ -71,7 +71,7 @@ class HDF5Parser():
             builder = self.builder_map[type]()
 
             #Build a layer object from metadata
-            layer = builder.build_layer(model_layer['config'], name.lower(), type.lower())
+            layer = builder.build_layer(model_layer['config'], name.lower())
 
             self.nn.addLayer(layer) #Add Layer to neural network
             self.nn.addEdge(last_layer, layer)

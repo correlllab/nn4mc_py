@@ -36,7 +36,7 @@
   return input;
 }
 
-<%LAYER_DATATYPE_DELIMITER> hard_sigmoid(<%LAYER_DATATYPE_DELIMITER> input)
+<%LAYER_DATATYPE_DELIMITER> hardsigmoid(<%LAYER_DATATYPE_DELIMITER> input)
 {
   if (input < -2.5){
       input = 0.0;
@@ -63,7 +63,7 @@
   return input;
 }
 
-<%LAYER_DATATYPE_DELIMITER> hyper_tan(<%LAYER_DATATYPE_DELIMITER> input)
+<%LAYER_DATATYPE_DELIMITER> tanh(<%LAYER_DATATYPE_DELIMITER> input)
 {
   input = tanh(input);
 
