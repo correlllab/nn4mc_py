@@ -1,6 +1,7 @@
 from nn4mc.datastructures import NetworkGraph
 from ._layer_builder import *
 import onnx
+import onnx.numpy_helper.to_array as to_array
 import numpy as np
 
 '''
@@ -25,7 +26,6 @@ class ONNXParser():
     def __init__(self, file):
         self.file = file
         self.nn = NetworkGraph()
-        self.nn_input_shape = None
 
     def parse(self):
         onnx_model = onnx.load(file)
@@ -38,10 +38,10 @@ class ONNXParser():
 
     def parseModelConfig(self, onnx_model):
         graph = onnx_model.node
-        params = onnx_model.initializers
+        params = onnx_model.initializer
 
         #Deal with input dimensions
-        self.parse_nn_input(onnx_model.input)
+        input_shape = self.parse_nn_input(onnx_model.input)
 
         #NOTE: We are assuming the model is sequential
         print('Assuming model is sequential.')
@@ -54,23 +54,33 @@ class ONNXParser():
             name = node.name
             builder = self.builder_map[type]()
 
-            layer = builder.build_layer(node.attribute, name.lower(), type.lower())
+            weights = self.parseWeight(node.inputs, params)
 
-            weights = self.parseWeight(node.inputs)
-            ids = [] #Something here
-            layer.addParameters(weights, ids)
+            layer, output_shape = builder.build_layer(node.attribute,
+                                                        weights,
+                                                        input_shape,
+                                                        name.lower(),
+                                                        type.lower())
 
             self.nn.addLayer(layer)
             self.nn.addEdge(last_layer, layer)
 
+            input_shape = output_shape
             last_layer = layer
 
-    def parseWeight(self, inputs):
-        pass
+    def parseWeight(self, inputs, params):
+        weights = {}
+
+        for param in params:
+            if param.name in inputs:
+                key = param.name.split('.')[1]
+                weights[key] = to_array(param)
+
+        return weights
 
     def parseInput(self, model_input):
         #This assumes there is only one input
         input_shape = model_input[0].type.tensor_type.shape
 
         #Here we are assuming the first dim is the batch dim which we ignore
-        self.nn_input_shape = [dim.dim_value for dim in shape.dim[1:]]
+        return [dim.dim_value for dim in shape.dim[1:]]
