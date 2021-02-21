@@ -8,14 +8,12 @@
 
 */
 
-#include "maxpool2d.h"
-#include "activations.h"
-#include <math.h>
-#include <stdlib.h>
+#include "maxpooling2d.h"
+
 #define max(a, b) (((a)>(b) ? (a) : (b)))
 #define min(a, b) (((a)<(b) ? (a) : (b)))
 
-struct MaxPooling2D buildMaxPooling2D(<%INDEX_DATATYPE_DELIMITER> pool_size_0, <%INDEX_DATATYPE_DELIMITER> pool_size_1, <%INDEX_DATATYPE_DELIMITER> strides_0, <%INDEX_DATATYPE_DELIMITER> strides_1, <%INDEX_DATATYPE_DELIMITER> input_shape_0, <%INDEX_DATATYPE_DELIMITER> input_shape_1, <%INDEX_DATATYPE_DELIMITER> input_shape_2)
+struct MaxPooling2D build_layer_maxpooling2d(<%INDEX_DATATYPE_DELIMITER> pool_size_0, <%INDEX_DATATYPE_DELIMITER> pool_size_1, <%INDEX_DATATYPE_DELIMITER> strides_0, <%INDEX_DATATYPE_DELIMITER> strides_1, <%ACTIVATION_DATATYPE_DELIMITER> padding, <%INDEX_DATATYPE_DELIMITER> input_shape_0, <%INDEX_DATATYPE_DELIMITER> input_shape_1, <%INDEX_DATATYPE_DELIMITER> input_shape_2)
 {
 	MaxPooling2D layer;
 
@@ -28,34 +26,44 @@ struct MaxPooling2D buildMaxPooling2D(<%INDEX_DATATYPE_DELIMITER> pool_size_0, <
     layer.input_shape[1] = input_shape_1;
     layer.input_shape[2] = input_shape_2;
 
-	layer.output_shape[0] = pool_size_0;
-	layer.output_shape[1] = pool_size_1;
+	layer.output_shape[0] = (<%INDEX_DATATYPE_DELIMITER>)floor((input_shape_0 - pool_size_0) / strides_0) + 1;
+	layer.output_shape[1] = (<%INDEX_DATATYPE_DELIMITER>)floor((input_shape_1 - pool_size_1) / strides_1) + 1;
     layer.output_shape[2] = input_shape_2;
+
+    if (padding == 0x03)
+    {
+        layer.output_shape[0] = (<%INDEX_DATATYPE_DELIMITER>)ceil(input_shape_0 / strides_0);
+        layer.output_shape[1] = (<%INDEX_DATATYPE_DELIMITER>)ceil(input_shape_1 / strides_1);
+        layer.output_shape[2] = input_shape_2;
+    }
 
 	return layer;
 }
 
 
-<%LAYER_DATATYPE_DELIMITER> * fwdMaxPooling2D(struct MaxPooling2D L, <%LAYER_DATATYPE_DELIMITER> * input)
+<%LAYER_DATATYPE_DELIMITER> * fwd_maxpooling2d(struct MaxPooling2D L, <%LAYER_DATATYPE_DELIMITER> * input)
 {
 
-    // Data array:
-     <%LAYER_DATATYPE_DELIMITER> * h = (<%LAYER_DATATYPE_DELIMITER>*)malloc((int)L.output_shape[0]*L.output_shape[1]*L.output_shape[2] * sizeof(<%LAYER_DATATYPE_DELIMITER>));
+    <%LAYER_DATATYPE_DELIMITER> * h = (<%LAYER_DATATYPE_DELIMITER>*)malloc((<%INDEX_DATATYPE_DELIMITER>)L.output_shape[0]*L.output_shape[1]*L.output_shape[2] * sizeof(<%LAYER_DATATYPE_DELIMITER>));
 
-	// Loop through to calculate the output at each point
-	for(<%INDEX_DATATYPE_DELIMITER> i = 0; i < L.output_shape[0]; i++)
+	for (<%INDEX_DATATYPE_DELIMITER> i = 0; i < L.output_shape[0]; i++)
 	{
-		for(<%INDEX_DATATYPE_DELIMITER> j = 0; j < L.output_shape[1]; j++)
+		for (<%INDEX_DATATYPE_DELIMITER> j = 0; j < L.output_shape[1]; j++)
 		{
-            for (<%INDEX_DATATYPE_DELIMITER> k = 0; k< L.output_shape[2]; j++)
+            for (<%INDEX_DATATYPE_DELIMITER> k = 0; k < L.output_shape[2]; k++)
             {
-                <%INDEX_DATATYPE_DELIMITER> idx = i*L.output_shape[1]*L.output_shape[2] + L.output_shape[1]*j + k;
-                <%LAYER_DATATYPE_DELIMITER> x1 = input[(2*i)*L.input_shape[2]*L.input_shape[1] + j*L.input_shape[1] + k];
-                <%LAYER_DATATYPE_DELIMITER> x2 = input[(2*i+1)*L.input_shape[2]*L.input_shape[1] + j*L.input_shape[1]+k];
-                h[idx] = max(x1, x2);
-                // Now perform the activation function
-								if(L.activation != 0xB)
-									h[i] = activate(h[i],L.output_shape[0],L.activation);
+                <%INDEX_DATATYPE_DELIMITER> idx = (i*L.output_shape[1] + j) * L.output_shape[2] + k;
+
+                h[idx] = -INFINITY;
+
+                for (<%INDEX_DATATYPE_DELIMITER> s1 = 0; s1 < L.pool_size[0]; s1++)
+                {
+                    for (<%INDEX_DATATYPE_DELIMITER> s2 = 0; s2 < L.pool_size[1]; s2++)
+                    {
+                        <%LAYER_DATATYPE_DELIMITER> x = *(input + ((L.strides[0] * i + s1) * L.input_shape[1] + (L.strides[1] * j + s2)) * L.input_shape[2] + k);
+                        h[idx] = max(x, h[idx]);
+                    }
+                }
             }
         }
     }
@@ -65,11 +73,10 @@ struct MaxPooling2D buildMaxPooling2D(<%INDEX_DATATYPE_DELIMITER> pool_size_0, <
 
 <%END_DEFINITION_TEMPLATE>
 
-
 <%BEGIN_INITIALIZE_TEMPLATE>
-        <%LAYER_NAME> = buildMaxPooling2D(<%POOL_SHAPE_0>, <%POOL_SHAPE_1>, <%STRIDE_SHAPE_0>, <%STRIDE_SHAPE_1>, <%INPUT_SHAPE_0>,  <%INPUT_SHAPE_1>, <%INPUT_SHAPE_2>);
+        <%LAYER_NAME> = build_layer_maxpooling2d(<%POOL_SHAPE_0>, <%POOL_SHAPE_1>, <%STRIDE_SHAPE_0>, <%STRIDE_SHAPE_1>, <%PADDING>, <%INPUT_SHAPE_0>,  <%INPUT_SHAPE_1>, <%INPUT_SHAPE_2>);
 <%END_INITIALIZE_TEMPLATE>
 
 <%BEGIN_CALL_TEMPLATE>
-        data = fwdMaxPooling2D(<%LAYER_NAME>, data);
+        data = fwd_maxpooling2d(<%LAYER_NAME>, data);
 <%END_CALL_TEMPLATE>

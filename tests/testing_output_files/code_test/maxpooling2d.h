@@ -9,7 +9,6 @@
 #ifndef __MAXPOOLING2D_H__
 #define __MAXPOOLING2D_H__
 
-#include "activations.h"
 #include <math.h>
 #include <stdlib.h>
 
