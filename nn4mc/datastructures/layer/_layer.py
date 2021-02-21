@@ -224,7 +224,7 @@ class Activation(Layer):
         pass
 
 #NOTE: No template or anything for this as everything is already flattened
-class Flatten(Layer):'
+class Flatten(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
