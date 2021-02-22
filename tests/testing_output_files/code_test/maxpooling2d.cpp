@@ -24,24 +24,23 @@ struct MaxPooling2D build_layer_maxpooling2d(int pool_size_0, int pool_size_1, i
     layer.input_shape[1] = input_shape_1;
     layer.input_shape[2] = input_shape_2;
 
+    layer.padding = padding;
+
 	layer.output_shape[0] = (int)floor((input_shape_0 - pool_size_0) / strides_0) + 1;
 	layer.output_shape[1] = (int)floor((input_shape_1 - pool_size_1) / strides_1) + 1;
     layer.output_shape[2] = input_shape_2;
 
     if (padding == 0x03)
     {
-        layer.output_shape[0] = (int)ceil(input_shape_0 / strides_0);
-        layer.output_shape[1] = (int)ceil(input_shape_1 / strides_1);
+        layer.output_shape[0] = floor((input_shape_0 - 1) / strides_0) + 1;
+        layer.output_shape[1] = floor((input_shape_1 - 1) / strides_1) + 1;
         layer.output_shape[2] = input_shape_2;
     }
-
 	return layer;
 }
 
-
 float * fwd_maxpooling2d(struct MaxPooling2D L, float * input)
 {
-
     float * h = (float*)malloc((int)L.output_shape[0]*L.output_shape[1]*L.output_shape[2] * sizeof(float));
 
 	for (int i = 0; i < L.output_shape[0]; i++)
@@ -58,7 +57,26 @@ float * fwd_maxpooling2d(struct MaxPooling2D L, float * input)
                 {
                     for (int s2 = 0; s2 < L.pool_size[1]; s2++)
                     {
-                        float x = *(input + ((L.strides[0] * i + s1) * L.input_shape[1] + (L.strides[1] * j + s2)) * L.input_shape[2] + k);
+                        float x;
+                        if (L.padding == 0x03)
+                        {
+                            int original_shape_0 = (int)floor((L.input_shape[0] - L.pool_size[0]) / L.strides[0]) + 1;
+                            int original_shape_1 = (int)floor((L.input_shape[1] - L.pool_size[1]) / L.strides[1]) + 1;
+
+                            int pad_0 = abs(L.output_shape[0] - original_shape_0);
+                            int pad_1 = abs(L.output_shape[1] - original_shape_1);
+
+                            int pad_over_2_0 = floor((pad_0) / 2);
+                            int pad_over_2_1 = floor((pad_1) / 2);
+
+                            if (((i < pad_over_2_0) || (j < pad_over_2_1)) || (i > (L.output_shape[0] - abs(pad_0 - pad_over_2_0 )) || (j > (L.output_shape[1] - abs(pad_1 - pad_over_2_1 ))))){
+                                x = 0.0;
+                            } else{
+                              x = *(input + ((L.strides[0] * i + s1 - pad_over_2_0) * L.input_shape[1] + (L.strides[1] * j + s2 - pad_over_2_1)) * L.input_shape[2] + k);
+                            }
+                        } else{
+                            x = *(input + ((L.strides[0] * i + s1) * L.input_shape[1] + (L.strides[1] * j + s2)) * L.input_shape[2] + k);
+                        }
                         h[idx] = max(x, h[idx]);
                     }
                 }

@@ -3093,6 +3093,38 @@ SWIG_AsVal_char (PyObject * obj, char *val)
 }
 
 
+SWIGINTERNINLINE PyObject *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  if (carray) {
+    if (size > INT_MAX) {
+      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+      return pchar_descriptor ? 
+	SWIG_InternalNewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
+    } else {
+#if PY_VERSION_HEX >= 0x03000000
+#if defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
+      return PyBytes_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
+#else
+      return PyUnicode_DecodeUTF8(carray, static_cast< Py_ssize_t >(size), "surrogateescape");
+#endif
+#else
+      return PyString_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
+#endif
+    }
+  } else {
+    return SWIG_Py_Void();
+  }
+}
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_char  (char c) 
+{ 
+  return SWIG_FromCharPtrAndSize(&c,1);
+}
+
+
 #include <stdint.h>		// Use the C99 official header
 
 
@@ -3543,6 +3575,58 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MaxPooling2D_padding_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MaxPooling2D *arg1 = (MaxPooling2D *) 0 ;
+  char arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  char val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MaxPooling2D_padding_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MaxPooling2D, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MaxPooling2D_padding_set" "', argument " "1"" of type '" "MaxPooling2D *""'"); 
+  }
+  arg1 = reinterpret_cast< MaxPooling2D * >(argp1);
+  ecode2 = SWIG_AsVal_char(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MaxPooling2D_padding_set" "', argument " "2"" of type '" "char""'");
+  } 
+  arg2 = static_cast< char >(val2);
+  if (arg1) (arg1)->padding = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MaxPooling2D_padding_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MaxPooling2D *arg1 = (MaxPooling2D *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  char result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MaxPooling2D, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MaxPooling2D_padding_get" "', argument " "1"" of type '" "MaxPooling2D *""'"); 
+  }
+  arg1 = reinterpret_cast< MaxPooling2D * >(argp1);
+  result = (char) ((arg1)->padding);
+  resultobj = SWIG_From_char(static_cast< char >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MaxPooling2D_input_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MaxPooling2D *arg1 = (MaxPooling2D *) 0 ;
@@ -3884,6 +3968,8 @@ static PyMethodDef SwigMethods[] = {
 	 { "MaxPooling2D_pool_size_get", _wrap_MaxPooling2D_pool_size_get, METH_O, NULL},
 	 { "MaxPooling2D_strides_set", _wrap_MaxPooling2D_strides_set, METH_VARARGS, NULL},
 	 { "MaxPooling2D_strides_get", _wrap_MaxPooling2D_strides_get, METH_O, NULL},
+	 { "MaxPooling2D_padding_set", _wrap_MaxPooling2D_padding_set, METH_VARARGS, NULL},
+	 { "MaxPooling2D_padding_get", _wrap_MaxPooling2D_padding_get, METH_O, NULL},
 	 { "MaxPooling2D_input_shape_set", _wrap_MaxPooling2D_input_shape_set, METH_VARARGS, NULL},
 	 { "MaxPooling2D_input_shape_get", _wrap_MaxPooling2D_input_shape_get, METH_O, NULL},
 	 { "MaxPooling2D_output_shape_set", _wrap_MaxPooling2D_output_shape_set, METH_VARARGS, NULL},

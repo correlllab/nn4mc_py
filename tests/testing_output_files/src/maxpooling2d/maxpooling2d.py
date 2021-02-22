@@ -72,6 +72,7 @@ class MaxPooling2D(object):
     __repr__ = _swig_repr
     pool_size = property(_maxpooling2d.MaxPooling2D_pool_size_get, _maxpooling2d.MaxPooling2D_pool_size_set)
     strides = property(_maxpooling2d.MaxPooling2D_strides_get, _maxpooling2d.MaxPooling2D_strides_set)
+    padding = property(_maxpooling2d.MaxPooling2D_padding_get, _maxpooling2d.MaxPooling2D_padding_set)
     input_shape = property(_maxpooling2d.MaxPooling2D_input_shape_get, _maxpooling2d.MaxPooling2D_input_shape_set)
     output_shape = property(_maxpooling2d.MaxPooling2D_output_shape_get, _maxpooling2d.MaxPooling2D_output_shape_set)
 

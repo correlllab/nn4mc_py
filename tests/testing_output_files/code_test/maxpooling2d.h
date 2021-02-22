@@ -15,6 +15,7 @@
 struct MaxPooling2D {
 	int pool_size[2];
 	int strides[2];
+	char padding;
 	int input_shape[3];
 	int output_shape[3];
 };

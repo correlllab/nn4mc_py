@@ -87,7 +87,7 @@ class MaxPooling1DTest(unittest.TestCase):
         return prediction
 
     def test_fwd(self):
-        N = 1000
+        N = 1
         for _ in range(N):
             print(_)
             pool_size = np.random.randint(1, 10, size=2).tolist()
@@ -95,7 +95,7 @@ class MaxPooling1DTest(unittest.TestCase):
 
             build_dict = {'pool_size' : pool_size ,
                           'strides' :  strides,
-                          'padding' : 'valid',
+                          'padding' : 'same',
                           'data_format' : "channels_last"}
 
             shape = np.random.randint(10, 50, size = 3).tolist()
@@ -109,9 +109,9 @@ class MaxPooling1DTest(unittest.TestCase):
             c_output, output_dims = self.__c_fwd(build_dict, input_, input_dims, c_keras.shape)
 
             c_output = np.array(c_output).reshape(c_keras.shape).astype(np.float32)
-            #print(c_keras.shape)
-            #print(c_keras)
-            #print(c_output)
+            print(c_keras.shape)
+            print(c_keras)
+            print(c_output)
             assert_result = np.testing.assert_allclose(c_output.flatten(), c_keras.flatten(), rtol = 1e-5)
             print(assert_result)
 
