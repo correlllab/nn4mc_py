@@ -87,7 +87,7 @@ class MaxPooling1DTest(unittest.TestCase):
         return prediction
 
     def test_fwd(self):
-        N = 1
+        N = 1000
         for _ in range(N):
             print(_)
             pool_size = np.random.randint(1, 10, size=2).tolist()
@@ -97,6 +97,13 @@ class MaxPooling1DTest(unittest.TestCase):
                           'strides' :  strides,
                           'padding' : 'same',
                           'data_format' : "channels_last"}
+
+            print(build_dict)
+
+            pad = np.floor(np.array(pool_size) / np.array(strides))
+            pad_left = np.floor(pad / 2)
+            pad_right = pad - pad_left
+            print(pad, pad_left, pad_right)
 
             shape = np.random.randint(10, 50, size = 3).tolist()
             input_dims = (1, shape[0], shape[1], shape[2])
@@ -110,10 +117,11 @@ class MaxPooling1DTest(unittest.TestCase):
 
             c_output = np.array(c_output).reshape(c_keras.shape).astype(np.float32)
             print(c_keras.shape)
-            print(c_keras)
-            print(c_output)
-            assert_result = np.testing.assert_allclose(c_output.flatten(), c_keras.flatten(), rtol = 1e-5)
-            print(assert_result)
+
+            print(c_keras[0, 0, :, 0])
+            print(c_output[0, 0, :, 0])
+
+            np.testing.assert_allclose(c_output.flatten(), c_keras.flatten(), rtol = 1e-5)
 
         print("forward passed!")
 
