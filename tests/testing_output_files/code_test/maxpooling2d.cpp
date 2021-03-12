@@ -61,8 +61,8 @@ float * fwd_maxpooling2d(struct MaxPooling2D L, float * input)
                         float x;
                         if (L.padding == 0x03) // padding is same
                         {
-                           int pad_0 =  floor(L.pool_size[0] / L.strides[0]);
-                           int pad_1 =  floor(L.pool_size[1] / L.strides[1]);
+                           int pad_0 =  floor((L.pool_size[0]) / L.strides[0]);
+                           int pad_1 =  floor((L.pool_size[1]) / L.strides[1]);
 
                            int pad_left_0 = floor(pad_0 / 2);
                            int pad_left_1 = floor(pad_1 / 2);
@@ -70,8 +70,10 @@ float * fwd_maxpooling2d(struct MaxPooling2D L, float * input)
                            int pad_right_0 = abs(pad_0 - pad_left_0);
                            int pad_right_1 = abs(pad_1 - pad_left_1);
 
-                           if (j > L.output_shape[1] - pad_right_1 || i > L.output_shape[0] - pad_right_0)
-                               x = 0.0;
+                           if (i > L.output_shape[0] - pad_right_0)
+                               x = *(input + ((L.strides[0] * (L.output_shape[0] - 1) + s1) * L.input_shape[1] + (L.strides[1] * (j) + s2)) * L.input_shape[2] + k);
+                           else if (j > L.output_shape[1] - pad_right_1)
+                               x = *(input + ((L.strides[0] * (i) + s1) * L.input_shape[1] + (L.strides[1] * (L.output_shape[1] - 1) + s2)) * L.input_shape[2] + k);
                            else
                                x = *(input + ((L.strides[0] * (i) + s1) * L.input_shape[1] + (L.strides[1] * (j) + s2)) * L.input_shape[2] + k);
                         }

@@ -117,9 +117,12 @@ class MaxPooling1DTest(unittest.TestCase):
 
             c_output = np.array(c_output).reshape(c_keras.shape).astype(np.float32)
             print(c_keras.shape)
-
-            print(c_keras[0, 0, :, 0])
-            print(c_output[0, 0, :, 0])
+            print("i")
+            print("c_keras: ", c_keras[0, :, 0, 0])
+            print("c_output: ", c_output[0, :, 0, 0])
+            print("j")
+            print("c_keras: ", c_keras[0, 0, :, 0])
+            print("c_output: ", c_output[0, 0, :, 0])
 
             np.testing.assert_allclose(c_output.flatten(), c_keras.flatten(), rtol = 1e-5)
 
