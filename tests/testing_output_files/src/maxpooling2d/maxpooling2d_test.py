@@ -90,8 +90,8 @@ class MaxPooling1DTest(unittest.TestCase):
         N = 1000
         for _ in range(N):
             print(_)
-            pool_size = (2, 2) #np.random.randint(1, 5, size=2).tolist()
-            strides = np.random.randint(1, 5, size=2).tolist()
+            pool_size = np.random.randint(1, 3, size=2).tolist()
+            strides = np.random.randint(1, 3, size=2).tolist()
 
             build_dict = {'pool_size' : pool_size ,
                           'strides' :  strides,

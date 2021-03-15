@@ -79,8 +79,10 @@ float * fwd_maxpooling2d(struct MaxPooling2D L, float * input)
                            int iss = L.strides[0] * i + s1;
                            int jss = L.strides[1] * j + s2;
 
-                           if ( iss < pad_top || jss < pad_left || jss >= virtual_size_1 - pad_right || iss >= virtual_size_0 - pad_bottom)
-                                x = -INFINITY;
+                           //if (iss < pad_top || jss < pad_left )
+                           //     x = -INFINITY;
+                           if (jss >= virtual_size_1 - pad_right || iss >= virtual_size_0 - pad_bottom)
+                                x = - INFINITY;
                            else
                                 x = *(input + (istar * L.input_shape[1] + jstar) * L.input_shape[2] + k);
                         }
