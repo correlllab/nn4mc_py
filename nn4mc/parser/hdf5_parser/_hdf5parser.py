@@ -121,7 +121,8 @@ class HDF5Parser(Parser):
 #Helper functions
     #Converts byte array to JSON for scraping
     def bytesToJSON(self, byte_array):
-        string = byte_array.decode('utf8')
+        print(byte_array)
+        string = bytearray(byte_array).decode('utf8')
         JSON = json.loads(string)
 
         return JSON
