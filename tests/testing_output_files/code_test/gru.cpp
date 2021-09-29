@@ -45,19 +45,19 @@ struct GRU build_layer_gru(const float* W, const float* U, const float* b,
 
 float * fwd_gru(struct GRU L, float * input)
 {
-    float* z_t = (float*)malloc(L.output_shape[0] * sizeof(float));
-    float* r_t = (float*)malloc(L.output_shape[0] * sizeof(float));
-    float* h_hat_t = (float*)malloc(L.output_shape[0]*sizeof(float));
+    //float* z_t = (float*)malloc(L.output_shape[0] * sizeof(float));
+    //float* r_t = (float*)malloc(L.output_shape[0] * sizeof(float));
+    //float* h_hat_t = (float*)malloc(L.output_shape[0]*sizeof(float));
     float* h_t = (float*)malloc(L.output_shape[0]*sizeof(float));
 
     for (int i =0; i < L.output_shape[0]; i++){
-        z_t[i] = L.biases[i];
-        r_t[i] = L.biases[i + L.output_shape[0]];
-        h_hat_t[i] = L.biases[i + 2*L.output_shape[0]];
+   //     z_t[i] = L.biases[i];
+   //     r_t[i] = L.biases[i + L.output_shape[0]];
+   //     h_hat_t[i] = L.biases[i + 2*L.output_shape[0]];
         h_t[i] = 0.;
     }
 
-    for (int i = 0; i < L.output_shape[0]; i++){
+    /*for (int i = 0; i < L.output_shape[0]; i++){
         for (int j = 0; j < L.input_shape[1]; j++){
             z_t[i] += L.weights[i*L.output_shape[0]+ j] * input[j];
             r_t[i] += L.weights[i*L.output_shape[0] + (j + L.output_shape[0])] * input[j];
@@ -87,10 +87,10 @@ float * fwd_gru(struct GRU L, float * input)
         h_t[i] = (1 - z_t[i]) * L.h_tm1[i] + z_t[i] * h_hat_t[i];
         L.h_tm1[i] = h_t[i];
     }
-
-    free(z_t);
-    free(r_t);
-    free(h_hat_t);
-    free(input);
+    */
+    //free(z_t);
+    //free(r_t);
+    //free(h_hat_t);
+    //free(input);
     return h_t;
 }
