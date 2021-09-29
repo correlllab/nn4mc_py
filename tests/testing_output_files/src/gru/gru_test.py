@@ -1,4 +1,4 @@
-import conv1d
+import gru
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Conv1D
 from tensorflow.keras.backend import clear_session

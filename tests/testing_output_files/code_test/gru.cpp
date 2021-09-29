@@ -48,7 +48,7 @@ float * fwd_gru(struct GRU L, float * input)
     float* z_t = (float*)malloc(L.output_shape[0] * sizeof(float));
     float* r_t = (float*)malloc(L.output_shape[0] * sizeof(float));
     float* h_hat_t = (float*)malloc(L.output_shape[0]*sizeof(float));
-    float* h_t = (float*)malloc(output_size*sizeof(float));
+    float* h_t = (float*)malloc(L.output_shape[0]*sizeof(float));
 
     for (int i =0; i < L.output_shape[0]; i++){
         z_t[i] = L.biases[i];
@@ -85,7 +85,7 @@ float * fwd_gru(struct GRU L, float * input)
 
     for (int i = 0; i < L.output_shape[0]; i++){
         h_t[i] = (1 - z_t[i]) * L.h_tm1[i] + z_t[i] * h_hat_t[i];
-        L.htm1[i] = h_t[i];
+        L.h_tm1[i] = h_t[i];
     }
 
     free(z_t);

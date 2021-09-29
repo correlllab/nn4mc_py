@@ -20,16 +20,15 @@
 %include "stdint.i"
 %include "carrays.i"
 
-%module conv1d
+%module gru
 
 %array_class(float, input);
 
 %{
-    extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
+    extern struct GRU build_layer_gru(const float*, const float*, const float*,
+                            char, char, int, int, int);
 
-    extern float * fwd_conv1d(struct Conv1D, float *);
-
-    extern float * padding_1d(struct Conv1D, float * );
+    extern float * fwd_gru(struct GRU, float *);
 
     extern float * activate(float* input, int output_shape, char type);
 
@@ -52,11 +51,10 @@
     extern float * softmax(float * input, int m);
 %}
 
-extern struct Conv1D build_layer_conv1d(const float*, const float*, int, int, int, int, int, char, char, char, int);
+extern struct  GRU build_layer_gru(const float*, const float*, const float*,
+                            char, char, int, int, int);
 
-extern float * fwd_conv1d(struct Conv1D, float *);
-
-extern float * padding_1d(struct Conv1D, float *);
+extern float * fwd_gru(struct GRU, float *);
 
 extern float * activate(float* input, int output_shape, char type);
 
