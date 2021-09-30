@@ -54,7 +54,6 @@ class GRUTest(unittest.TestCase):
 
     def __keras_build(self, build_dict : dict):
         model = Sequential()
-        print(build_dict['input_shape'])
         model.add(GRU(
                     input_shape = build_dict['input_shape'][1:],
                     activation = build_dict['activation'],
@@ -65,7 +64,8 @@ class GRUTest(unittest.TestCase):
         model.trainable = False
         return model
 
-    def __c_fwd(self, build_dict : dict, input_, weight, big_u, bias, weight_size, bias_size, input_dims, units):
+    def __c_fwd(self, build_dict : dict, input_, weight, big_u,
+                                    bias, weight_size, bias_size, input_dims, units):
         weight = list_2_swig_float_pointer(weight, weight_size)
         big_u = list_2_swig_float_pointer(big_u, weight_size)
         bias = list_2_swig_float_pointer(bias, bias_size)
@@ -95,12 +95,12 @@ class GRUTest(unittest.TestCase):
         N = 1000
         for _ in range(N):
             units = int(np.random.randint(1, 5, size = 1)[0])
-            build_dict = {'activation' : 'sigmoid',
-                          'recurrent_activation' : 'tanh',
+            build_dict = {'activation' : 'tanh',
+                          'recurrent_activation' : 'sigmoid',
                           'units': units,
                           'use_bias' : True, 'input_shape': None}
             shape = np.random.randint(1, 5, size = 2).tolist()
-            input_dims = (1, shape[0] + 1, shape[1] + 1)
+            input_dims = (1, shape[0], shape[1])
             input_ = self.__generate_sample(input_dims)
             build_dict['input_shape'] = input_dims
             original_input = input_.copy()
@@ -114,7 +114,6 @@ class GRUTest(unittest.TestCase):
                                                  weight_ptr, big_u_ptr, bias_ptr, weight.size,
                                                  bias.size, input_dims, units)
             output_keras = self.__keras_fwd(build_dict, original_input, weight, big_u, bias)
-            print(output_keras)
             output_c = np.array(c_output).reshape(output_keras.shape)
             np.testing.assert_allclose(output_c, output_keras, atol = 1e-3, rtol = 1e-3)
 
