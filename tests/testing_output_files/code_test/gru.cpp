@@ -19,10 +19,10 @@ struct GRU build_layer_gru(const float* W, const float* U, const float* b,
 	layer.biases = b;
 
 	layer.weight_shape[0] = input_shape_1;
-	layer.weight_shape[1] = output_units;
+	layer.weight_shape[1] = 3 * output_units;
 
     layer.big_u_shape[0] = output_units;
-    layer.big_u_shape[1] = output_units;
+    layer.big_u_shape[1] = 3 * output_units;
 
     layer.biases_shape[0] = 2;
     layer.biases_shape[1] = output_units;
@@ -50,25 +50,22 @@ float * fwd_gru(struct GRU L, float * input)
     float* h_hat_t = (float*)malloc(L.output_shape[0]*sizeof(float));
     float* h_t = (float*)malloc(L.output_shape[0]*sizeof(float));
 
-    for (int j = 0; j < L.output_shape[0]; j++){
-        z_t[j] = L.biases[j];
-        r_t[j] = L.biases[j + L.output_shape[0]];
-        h_hat_t[j] = L.biases[j + 2*L.output_shape[0]];
-        h_t[j] = 0.;
-    }
-
-    for (int i = 0; i < L.input_shape[1]; i++){
-        for (int j = 0; j < L.output_shape[0]; j++){
-            z_t[j] += input[i] * L.weights[i * 3 * L.output_shape[0] + j];
-            r_t[j] += input[i] * L.weights[i * 3 * L.output_shape[0] + (j + L.output_shape[0])];
-            h_hat_t[j] += input[i] * L.weights[i * 3 * L.output_shape[0] + (j + 2*L.output_shape[0])];
+    for (int i = 0; i < L.output_shape[0]; i++){
+        z_t[i] = L.biases[i];
+        r_t[i] = L.biases[i + L.output_shape[0]];
+        h_hat_t[i] = L.biases[i + 2*L.output_shape[0]];
+        h_t[i] = 0.;
+        for (int j = 0; j < L.input_shape[1]; j++){
+            z_t[i] += *(L.weights + j * L.weight_shape[1] + i) * input[j];
+            r_t[i] += *(L.weights + (j + L.output_shape[0]) * L.weight_shape[1] + i) * input[j] ;
+            h_hat_t[i] += *(L.weights + (j + 2*L.output_shape[0]) * L.weight_shape[1] + i) * input[j];
         }
     }
 
     for (int i = 0; i < L.output_shape[0]; i++){
         for (int j = 0; j < L.output_shape[0]; j++){
-            z_t[j] += L.big_u[i* 3 * L.output_shape[0] + j] * L.h_tm1[i];
-            r_t[j] += L.big_u[i* 3 * L.output_shape[0] + (j + L.output_shape[0])] * L.h_tm1[i];
+            z_t[i] += *(L.big_u + j * L.big_u_shape[1] + i) * L.h_tm1[j];
+            r_t[i] += *(L.big_u + (j + L.output_shape[0]) * L.big_u_shape[1] + i) * L.h_tm1[j];
         }
     }
 
@@ -77,8 +74,8 @@ float * fwd_gru(struct GRU L, float * input)
 
     for (int i = 0; i < L.output_shape[0]; i++){
         for (int j = 0; j < L.output_shape[0]; j++){
-            h_hat_t[j] += L.big_u[i* 3 * L.output_shape[0] +
-                                (j + 2*L.output_shape[0])] * r_t[i] * L.h_tm1[i];
+            h_hat_t[i] += *(L.big_u + (j + 2*L.output_shape[0]) * L.big_u_shape[1] +
+                                i) * r_t[j] * L.h_tm1[j];
         }
     }
 
