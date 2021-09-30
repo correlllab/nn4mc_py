@@ -54,8 +54,9 @@ class GRUTest(unittest.TestCase):
 
     def __keras_build(self, build_dict : dict):
         model = Sequential()
+        print(build_dict['input_shape'])
         model.add(GRU(
-                    input_shape = build_dict['input_shape'],
+                    input_shape = build_dict['input_shape'][1:],
                     activation = build_dict['activation'],
                     units = build_dict['units'],
                     recurrent_activation= build_dict['recurrent_activation'],
@@ -74,19 +75,17 @@ class GRUTest(unittest.TestCase):
         input_all = list_2_swig_float_pointer(input_, len(input_))
 
         output_dims = units
-        print("here0")
         layer = gru.build_layer_gru(weight.cast(), big_u.cast(), bias.cast(),
                                               activation_dictionary[build_dict['recurrent_activation']],
                                               activation_dictionary[build_dict['activation']],
-                                              input_dims[1], input_dims[2], units)
-        print(layer)
+                                              input_dims[0], input_dims[1], units)
         output = gru.fwd_gru(layer, input_all.cast())
         output = swig_py_object_2_list(output, output_dims)
         return output, output_dims
 
-    def __keras_fwd(self, config_dict : dict, input_, weight, bias):
+    def __keras_fwd(self, config_dict : dict, input_, weight, big_u, bias):
         model = self.__keras_build(config_dict)
-        model.set_weights([weight, bias])
+        model.set_weights([weight, big_u, bias])
         prediction = model.predict(input_)
         del model
         clear_session()
@@ -105,7 +104,7 @@ class GRUTest(unittest.TestCase):
             input_ = self.__generate_sample(input_dims)
             build_dict['input_shape'] = input_dims
             original_input = input_.copy()
-            weight = np.random.normal(-10., 10., size = (input_dims[2], build_dict['units']*3)).astype(np.float32)
+            weight = np.random.normal(-10., 10., size = (input_dims[-1], build_dict['units']*3)).astype(np.float32)
             big_u = np.random.normal(-10., 10., size = (build_dict['units'], build_dict['units']*3)).astype(np.float32)
             bias = np.random.normal(-10., 10., size = (2, build_dict['units']*3)).astype(np.float32)
             weight_ptr = list_2_swig_float_pointer(weight.flatten().tolist(), weight.size)
@@ -114,7 +113,8 @@ class GRUTest(unittest.TestCase):
             c_output, output_dims = self.__c_fwd(build_dict, input_,
                                                  weight_ptr, big_u_ptr, bias_ptr, weight.size,
                                                  bias.size, input_dims, units)
-            output_keras = self.__keras_fwd(build_dict, original_input, weight, bias)
+            output_keras = self.__keras_fwd(build_dict, original_input, weight, big_u, bias)
+            print(output_keras)
             output_c = np.array(c_output).reshape(output_keras.shape)
             np.testing.assert_allclose(output_c, output_keras, atol = 1e-3, rtol = 1e-3)
 
