@@ -5,6 +5,11 @@
 
     This file implements a gru layer.
 
+    Implementation from:
+    Cho et. al (2014)
+    https://arxiv.org/pdf/1406.1078.pdf
+    https://github.com/keras-team/keras/blob/master/keras/layers/recurrent.py
+
 */
 #include "gru.h"
 
@@ -57,10 +62,10 @@ float * fwd_gru(struct GRU L, float * input)
         h_t[i] = 0.;
         for (int j = 0; j < L.input_shape[1]; j++){
             z_t[i] += *(L.weights + i * L.weight_shape[1] + j) * input[j];
-            r_t[i] += *(L.weights + i * L.weight_shape[1] + (j + L.output_shape[0])) *
+            r_t[i] += *(L.weights + (i + L.output_shape[0]) * L.weight_shape[1] + j) *
                                                        input[j];
-            h_hat_t[i] += *(L.weights + i * L.weight_shape[1] +
-                                        (j + 2 * L.output_shape[0])) * input[j];
+            h_hat_t[i] += *(L.weights + (i + 2*L.output_shape[0]) * L.weight_shape[1] +
+                                        j) * input[j];
         }
     }
 
@@ -69,7 +74,7 @@ float * fwd_gru(struct GRU L, float * input)
         r_t[i] += *(L.biases + i + L.biases_shape[1] + L.output_shape[0]);
         for (int j = 0; j < L.output_shape[0]; j++){
             z_t[i] += *(L.big_u + i * L.big_u_shape[1] + j) * L.h_tm1[j];
-            r_t[i] += *(L.big_u + i * L.big_u_shape[1] + (j + L.output_shape[0])) * L.h_tm1[j];
+            r_t[i] += *(L.big_u + (i + L.output_shape[0]) * L.big_u_shape[1] + j) * L.h_tm1[j];
         }
     }
 
@@ -79,8 +84,8 @@ float * fwd_gru(struct GRU L, float * input)
     for (int i = 0; i < L.output_shape[0]; i++){
         h_hat_t[i] += *(L.biases + i + L.biases_shape[1] + 2 * L.output_shape[0]);
         for (int j = 0; j < L.output_shape[0]; j++){
-            h_hat_t[i] += *(L.big_u + i * L.big_u_shape[1] +
-                                (j + 2 * L.output_shape[0])) * r_t[j] * L.h_tm1[j];
+            h_hat_t[i] += *(L.big_u + (i + 2* L.output_shape[0]) * L.big_u_shape[1] +
+                                j) * r_t[j] * L.h_tm1[j];
         }
     }
 
