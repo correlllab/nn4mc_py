@@ -50,7 +50,7 @@ class GRUTest(unittest.TestCase):
         GRU Testing Module
     """
     def __generate_sample(self, input_dims):
-        return np.random.normal(0.0, 20, size = input_dims)
+        return np.random.normal(-10, 10, size = input_dims)
 
     def __keras_build(self, build_dict : dict):
         model = Sequential()
@@ -94,17 +94,17 @@ class GRUTest(unittest.TestCase):
     def test_fwd(self):
         N = 1000
         for _ in range(N):
-            units = int(np.random.randint(1, 5, size = 1)[0])
+            units = int(np.random.randint(1, 10, size = 1)[0])
             build_dict = {'activation' : 'tanh',
                           'recurrent_activation' : 'sigmoid',
                           'units': units,
                           'use_bias' : True, 'input_shape': None}
-            shape = np.random.randint(1, 5, size = 1).tolist()
-            input_dims = (1, 1, shape[0])
+            shape = np.random.randint(1, 10, size = 2).tolist()
+            input_dims = (1, shape[0], shape[1])
             input_ = self.__generate_sample(input_dims)
             build_dict['input_shape'] = input_dims[1:]
             original_input = input_.copy()
-            weight = np.random.normal(-10., 10., size = (shape[0], build_dict['units']*3)).astype(np.float32)
+            weight = np.random.normal(-10., 10., size = (shape[1], build_dict['units']*3)).astype(np.float32)
             big_u = np.random.normal(-10., 10., size = (build_dict['units'], build_dict['units']*3)).astype(np.float32)
             bias = np.random.normal(-10., 10., size = (2, build_dict['units']*3)).astype(np.float32)
             weight_ptr = list_2_swig_float_pointer(weight.flatten().tolist(), weight.size)
@@ -115,7 +115,12 @@ class GRUTest(unittest.TestCase):
                                                  bias.size, input_dims, units)
             output_keras = self.__keras_fwd(build_dict, original_input, weight, big_u, bias)
             output_c = np.array(c_output).reshape(output_keras.shape)
-            np.testing.assert_allclose(output_c, output_keras, atol = 1e-5, rtol = 1e-5)
+            print(input_dims)
+            print("c:", output_c)
+            print("keras:", output_keras)
+            print("error: ", abs(output_c - output_keras.flatten()))
+            np.testing.assert_allclose(output_c, output_keras, atol = 1e-5,
+                                       rtol = 1e-5)
 
 if __name__=='__main__':
     unittest.main()

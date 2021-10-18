@@ -73,7 +73,6 @@ class GRU(object):
     weights = property(_gru.GRU_weights_get, _gru.GRU_weights_set)
     big_u = property(_gru.GRU_big_u_get, _gru.GRU_big_u_set)
     biases = property(_gru.GRU_biases_get, _gru.GRU_biases_set)
-    h_tm1 = property(_gru.GRU_h_tm1_get, _gru.GRU_h_tm1_set)
     weight_shape = property(_gru.GRU_weight_shape_get, _gru.GRU_weight_shape_set)
     big_u_shape = property(_gru.GRU_big_u_shape_get, _gru.GRU_big_u_shape_set)
     biases_shape = property(_gru.GRU_biases_shape_get, _gru.GRU_biases_shape_set)
@@ -81,6 +80,7 @@ class GRU(object):
     activation = property(_gru.GRU_activation_get, _gru.GRU_activation_set)
     input_shape = property(_gru.GRU_input_shape_get, _gru.GRU_input_shape_set)
     output_shape = property(_gru.GRU_output_shape_get, _gru.GRU_output_shape_set)
+    h_tm1 = property(_gru.GRU_h_tm1_get, _gru.GRU_h_tm1_set)
 
     def __init__(self):
         _gru.GRU_swiginit(self, _gru.new_GRU())

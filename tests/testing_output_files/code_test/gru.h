@@ -18,8 +18,6 @@ struct GRU {
 	const float* big_u;
 	const float* biases;				// Pointer to constant bias
 
-    float* h_tm1;                       // storing past h value
-
     int weight_shape[2];
     int big_u_shape[2];
     int biases_shape[2];
@@ -29,6 +27,8 @@ struct GRU {
 
 	int input_shape[2];		            // (TIMESTEPS, FEATURE)
 	int output_shape[1];	            // (UNITS)
+
+    float* h_tm1;                       // storing past h value
 };
 
 struct GRU build_layer_gru(const float*, const float*, const float*,

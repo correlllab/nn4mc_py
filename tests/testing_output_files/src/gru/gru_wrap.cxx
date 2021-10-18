@@ -3636,58 +3636,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_GRU_h_tm1_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  GRU *arg1 = (GRU *) 0 ;
-  float *arg2 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "GRU_h_tm1_set", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_GRU, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GRU_h_tm1_set" "', argument " "1"" of type '" "GRU *""'"); 
-  }
-  arg1 = reinterpret_cast< GRU * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_float, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "GRU_h_tm1_set" "', argument " "2"" of type '" "float *""'"); 
-  }
-  arg2 = reinterpret_cast< float * >(argp2);
-  if (arg1) (arg1)->h_tm1 = arg2;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_GRU_h_tm1_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  GRU *arg1 = (GRU *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  float *result = 0 ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_GRU, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GRU_h_tm1_get" "', argument " "1"" of type '" "GRU *""'"); 
-  }
-  arg1 = reinterpret_cast< GRU * >(argp1);
-  result = (float *) ((arg1)->h_tm1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_GRU_weight_shape_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   GRU *arg1 = (GRU *) 0 ;
@@ -4081,6 +4029,58 @@ SWIGINTERN PyObject *_wrap_GRU_output_shape_get(PyObject *SWIGUNUSEDPARM(self), 
   arg1 = reinterpret_cast< GRU * >(argp1);
   result = (int *)(int *) ((arg1)->output_shape);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_GRU_h_tm1_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  GRU *arg1 = (GRU *) 0 ;
+  float *arg2 = (float *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "GRU_h_tm1_set", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_GRU, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GRU_h_tm1_set" "', argument " "1"" of type '" "GRU *""'"); 
+  }
+  arg1 = reinterpret_cast< GRU * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_float, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "GRU_h_tm1_set" "', argument " "2"" of type '" "float *""'"); 
+  }
+  arg2 = reinterpret_cast< float * >(argp2);
+  if (arg1) (arg1)->h_tm1 = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_GRU_h_tm1_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  GRU *arg1 = (GRU *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  float *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_GRU, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "GRU_h_tm1_get" "', argument " "1"" of type '" "GRU *""'"); 
+  }
+  arg1 = reinterpret_cast< GRU * >(argp1);
+  result = (float *) ((arg1)->h_tm1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4961,8 +4961,6 @@ static PyMethodDef SwigMethods[] = {
 	 { "GRU_big_u_get", _wrap_GRU_big_u_get, METH_O, NULL},
 	 { "GRU_biases_set", _wrap_GRU_biases_set, METH_VARARGS, NULL},
 	 { "GRU_biases_get", _wrap_GRU_biases_get, METH_O, NULL},
-	 { "GRU_h_tm1_set", _wrap_GRU_h_tm1_set, METH_VARARGS, NULL},
-	 { "GRU_h_tm1_get", _wrap_GRU_h_tm1_get, METH_O, NULL},
 	 { "GRU_weight_shape_set", _wrap_GRU_weight_shape_set, METH_VARARGS, NULL},
 	 { "GRU_weight_shape_get", _wrap_GRU_weight_shape_get, METH_O, NULL},
 	 { "GRU_big_u_shape_set", _wrap_GRU_big_u_shape_set, METH_VARARGS, NULL},
@@ -4977,6 +4975,8 @@ static PyMethodDef SwigMethods[] = {
 	 { "GRU_input_shape_get", _wrap_GRU_input_shape_get, METH_O, NULL},
 	 { "GRU_output_shape_set", _wrap_GRU_output_shape_set, METH_VARARGS, NULL},
 	 { "GRU_output_shape_get", _wrap_GRU_output_shape_get, METH_O, NULL},
+	 { "GRU_h_tm1_set", _wrap_GRU_h_tm1_set, METH_VARARGS, NULL},
+	 { "GRU_h_tm1_get", _wrap_GRU_h_tm1_get, METH_O, NULL},
 	 { "new_GRU", _wrap_new_GRU, METH_NOARGS, NULL},
 	 { "delete_GRU", _wrap_delete_GRU, METH_O, NULL},
 	 { "GRU_swigregister", GRU_swigregister, METH_O, NULL},
