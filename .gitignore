@@ -7,6 +7,7 @@ dist/
 venv/
 ### CMake
 Makefile
+.DS_Store
 
 ### Sphinx
 docs/_build/
