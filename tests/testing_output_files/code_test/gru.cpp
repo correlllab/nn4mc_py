@@ -35,7 +35,7 @@ struct GRU build_layer_gru(
     layer.big_u_shape[0] = output_units;
     layer.big_u_shape[1] = 3 * output_units;
 
-    layer.biases_shape[0] = 2;                      // (input_bias, recurrent_bias)
+    layer.biases_shape[0] = 2;
     layer.biases_shape[1] = 3 * output_units;
 
     layer.recurrent_activation = recurrent_activation;
@@ -55,49 +55,50 @@ struct GRU build_layer_gru(
 
 float * fwd_gru(struct GRU L, float * input)
 {
-    float* z_t = (float*)malloc(L.output_shape[0] * sizeof(float));
-    float* r_t = (float*)malloc(L.output_shape[0] * sizeof(float));
-    float* h_hat_t = (float*)malloc(L.output_shape[0]*sizeof(float));
-    float* h_t = (float*)malloc(L.output_shape[0]*sizeof(float));
+    float* x_z = (float*)malloc(L.output_shape[0] * sizeof(float));
+    float* x_r = (float*)malloc(L.output_shape[0] * sizeof(float));
+    float* x_h = (float*)malloc(L.output_shape[0] * sizeof(float));
+    float* h_t = (float*)malloc(L.output_shape[0] * sizeof(float));
 
     for (int i = 0; i < L.output_shape[0]; i++){
-        z_t[i] = *(L.biases + i) +
-                 *(L.biases + L.biases_shape[1] + i); // input bias
-        r_t[i] = *(L.biases + i + L.output_shape[0]) +
-                 *(L.biases + L.biases_shape[1] + i); // input bias
-        h_hat_t[i] = *(L.biases + i + 2 * L.output_shape[0]) +
-                     *(L.biases + i + 2*L.output_shape[0] + L.biases_shape[1]); // input bias
-        h_t[i] = 0.;
-        for (int k = 0; k < L.input_shape[0]; k++){
-            for (int j = 0; j < L.input_shape[1]; j++){
+        x_z[i] = *(L.biases + i);
+        x_r[i] = *(L.biases + i + L.output_shape[0]);
+        x_h[i] = *(L.biases + i + 2 * L.output_shape[0]);
+        x_z[i] += *(L.biases + 3 * L.output_shape[0] + i);
+        x_r[i] += *(L.biases + 4 * L.output_shape[0] + i);
+        x_h[i] += *(L.biases + 5 * L.output_shape[0] + i);
+        for (int j = 0; j < L.input_shape[0]; j++){
+            for (int k = 0; k < L.input_shape[1]; k++){
                 int idx = k * L.input_shape[1] + j;
-                z_t[i] += *(L.weights + j * L.weight_shape[1] + i) * input[idx];
-                r_t[i] += *(L.weights + j * L.weight_shape[1] + i + L.output_shape[0]) *
-                                                           input[idx];
-                h_hat_t[i] += *(L.weights + j * L.weight_shape[1] +
-                                            i + 2 * L.output_shape[0]) * input[idx];
+                x_z[i] += *(L.weights + i * L.weight_shape[1] + j) * input[idx];
+                x_r[i] += *(L.weights + (i + L.output_shape[0]) *
+                                L.weight_shape[1] + j) * input[idx];
+                x_h[i] += *(L.weights + (i + 2 * L.output_shape[0]) *
+                               L.weight_shape[1] + j) * input[idx];
             }
         }
         for (int j = 0; j < L.output_shape[0]; j++){
-            z_t[i] += *(L.big_u + i * L.big_u_shape[1] + j) * L.h_tm1[j];
-            r_t[i] += *(L.big_u + i * L.big_u_shape[1] + j + L.output_shape[0]) * L.h_tm1[j];
+            x_z[i] += *(L.big_u + i * L.big_u_shape[1] + j) * L.h_tm1[j];
+            x_r[i] += *(L.big_u + i * L.big_u_shape[1] + j +
+                                L.output_shape[0]) * L.h_tm1[j];
+            x_h[i] += *(L.big_u + i * L.big_u_shape[1] + j +
+                                2 * L.output_shape[0]) * L.h_tm1[j];
         }
     }
-
-    z_t = activate(z_t, L.output_shape[0], L.recurrent_activation);
-    r_t = activate(r_t, L.output_shape[0], L.recurrent_activation);
+    x_z = activate(x_z, L.output_shape[0], L.recurrent_activation);
+    x_r = activate(x_r, L.output_shape[0], L.recurrent_activation);
 
     for (int i = 0; i < L.output_shape[0]; i++){
         for (int j = 0; j < L.output_shape[0]; j++){
-            h_hat_t[i] += *(L.big_u + i * L.big_u_shape[1] +
-                                j + 2 * L.output_shape[0]) * r_t[j] * L.h_tm1[j];
+            x_h[i] += *(L.big_u + i * L.big_u_shape[0] +
+                                    (j + 2 * L.output_shape[0])) * L.h_tm1[i];
         }
+        x_h[i] *= x_r[i];
     }
-
-    h_hat_t = activate(h_hat_t, L.output_shape[0], L.activation);
+    x_h = activate(x_h, L.output_shape[0], L.activation);
 
     for (int i = 0; i < L.output_shape[0]; i++){
-        h_t[i] = (1. - z_t[i]) * L.h_tm1[i] + z_t[i] * h_hat_t[i];
+        h_t[i] = (1. - x_z[i]) * L.h_tm1[i] + x_z[i] * x_h[i];
         L.h_tm1[i] = h_t[i];
     }
     //free(z_t);

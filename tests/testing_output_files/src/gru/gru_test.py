@@ -94,7 +94,7 @@ class GRUTest(unittest.TestCase):
     def test_fwd(self):
         N = 1000
         for _ in range(N):
-            units = int(np.random.randint(1, 10, size = 1)[0])
+            units = int(np.random.randint(1, 20, size = 1)[0])
             build_dict = {'activation' : 'tanh',
                           'recurrent_activation' : 'sigmoid',
                           'units': units,
