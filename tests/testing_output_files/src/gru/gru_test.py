@@ -7,6 +7,7 @@ import unittest
 from typing import List, Final
 import ctypes
 import copy
+import matplotlib.pyplot as plt
 
 def swig_py_object_2_list(object, size : int) -> List[float]:
     """
@@ -58,8 +59,9 @@ class GRUTest(unittest.TestCase):
                     input_shape = build_dict['input_shape'],
                     activation = build_dict['activation'],
                     units = build_dict['units'],
+                    bias_initializer='zeros',
                     recurrent_activation= build_dict['recurrent_activation'],
-                    use_bias = build_dict['use_bias']
+                    use_bias = build_dict['use_bias'],
                     ))
         model.trainable = False
         return model
@@ -78,7 +80,7 @@ class GRUTest(unittest.TestCase):
         layer = gru.build_layer_gru(weight.cast(), big_u.cast(), bias.cast(),
                                               activation_dictionary[build_dict['recurrent_activation']],
                                               activation_dictionary[build_dict['activation']],
-                                              input_dims[0], input_dims[1], units)
+                                              input_dims[1], input_dims[2], units)
         output = gru.fwd_gru(layer, input_all.cast())
         output = swig_py_object_2_list(output, output_dims)
         return output, output_dims
@@ -116,11 +118,13 @@ class GRUTest(unittest.TestCase):
             output_keras = self.__keras_fwd(build_dict, original_input, weight, big_u, bias)
             output_c = np.array(c_output).reshape(output_keras.shape)
             print(input_dims)
-            print("c:", output_c)
+            print("c:", output_c.reshape(output_keras.shape))
             print("keras:", output_keras)
-            print("error: ", abs(output_c - output_keras.flatten()))
-            np.testing.assert_allclose(output_c, output_keras, atol = 1e-5,
-                                       rtol = 1e-5)
+            print("error: ", abs(output_c.reshape(output_keras.shape) - output_keras))
+            plt.imshow(abs(output_c.reshape(output_keras.shape) - output_keras), cmap = 'hot')
+            plt.show()
+            np.testing.assert_allclose(output_c, output_keras, atol = 2,
+                                       rtol = 2)
 
 if __name__=='__main__':
     unittest.main()

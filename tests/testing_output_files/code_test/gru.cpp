@@ -56,53 +56,49 @@ struct GRU build_layer_gru(
 
 float * fwd_gru(struct GRU L, float * input)
 {
-    float* x_z = (float*)malloc(L.output_shape[0] * sizeof(float));
-    float* x_r = (float*)malloc(L.output_shape[0] * sizeof(float));
-    float* x_h = (float*)malloc(L.output_shape[0] * sizeof(float));
-    float* h_t = (float*)malloc(L.output_shape[0] * sizeof(float));
-
-    for (int i = 0; i < L.output_shape[0]; i++){
-        x_z[i] = *(L.biases + i) +
-                    *(L.biases + 3 * L.output_shape[0] + i);
-        x_r[i] = *(L.biases + i + L.output_shape[0]) +
-                    *(L.biases + 4 * L.output_shape[0] + i);
-        x_h[i] = *(L.biases + i + 2 * L.output_shape[0]) +
-                    *(L.biases + 5 * L.output_shape[0] + i);
-        /*for (int j = 0; j < L.input_shape[0]; j++){
+    const int M = L.output_shape[0];
+    float x_z[M];
+    float x_r[M];
+    float x_h[M];
+    float* h_t = (float*)malloc(M * sizeof(float));
+    for (int i = 0; i < M; i++){
+        x_z[i] =  L.biases[i];
+        x_r[i] =  L.biases[i + 1 * M];
+        x_h[i] =  L.biases[i + 2 * M];
+        x_z[i] += L.biases[i + 3 * M];
+        x_r[i] += L.biases[i + 4 * M];
+        x_h[i] += L.biases[i + 5 * M];
+        for (int j = 0; j < L.input_shape[0]; j++){
             for (int k = 0; k < L.input_shape[1]; k++){
-                int idx = k * L.input_shape[1] + j;
-                x_z[i] += *(L.weights + i * L.weight_shape[1] + j) * input[idx];
-                x_r[i] += *(L.weights + (i + L.output_shape[0]) *
-                                L.weight_shape[1] + j) * input[idx];
-                x_h[i] += *(L.weights + (i + 2 * L.output_shape[0]) *
-                               L.weight_shape[1] + j) * input[idx];
+                int idx = j * L.input_shape[1] + k;
+                x_z[i] += L.weights[i * L.weight_shape[1] + j] * input[idx];
+                x_r[i] += L.weights[i *
+                                L.weight_shape[1] + j + M] * input[idx];
+                //x_h[i] += L.weights[i *
+                //                3 * M + j + 2*M] * input[idx];
             }
         }
-        for (int j = 0; j < L.output_shape[0]; j++){
+        for (int j = 0; j < M; j++){
             x_z[i] += *(L.big_u + i * L.big_u_shape[1] + j) * L.h_tm1[j];
-            x_r[i] += *(L.big_u + (i + L.output_shape[0]) * L.big_u_shape[1] + j) * L.h_tm1[j];
+            x_r[i] += *(L.big_u + i * L.big_u_shape[1] + j + M) * L.h_tm1[j];
         }
-        */
     }
-    x_z = activate(x_z, L.output_shape[0], L.recurrent_activation);
-    x_r = activate(x_r, L.output_shape[0], L.recurrent_activation);
-
-    //for (int i = 0; i < L.output_shape[0]; i++){
-    //    for (int j = 0; j < L.output_shape[0]; j++){
-    //        x_h[i] += *(L.big_u + (i + 2 * L.output_shape[0]) * L.big_u_shape[1] +
-    //                                j);
+    for (int i = 0; i < M; i++){
+        int a = *activate(&x_z[i], 1, L.recurrent_activation);
+        int b = *activate(&x_r[i], 1, L.recurrent_activation);
+    }
+    //for (int i = 0; i < M; i++){
+    //    for (int j = 0; j < M; j++){
+    //        x_h[i] += *(L.big_u + i * L.big_u_shape[1] + j + 2 * M) * L.h_tm1[i] * x_r[i];
     //    }
-    //    x_h[i] *=  L.h_tm1[i] * x_r[i];
     //}
-    x_h = activate(x_h, L.output_shape[0], L.activation);
-
-    for (int i = 0; i < L.output_shape[0]; i++){
-        h_t[i] = (1. - x_z[i]) * x_h[i] + x_z[i] * L.h_tm1[i];
+    for (int i = 0; i < M; i++){
+        int a = *activate(&x_h[i], 1, L.activation);
+    }
+    for (int i = 0; i < M; i++){
+        h_t[i] = (1.0 - x_z[i]) * x_h[i] + x_z[i] * L.h_tm1[i];
         L.h_tm1[i] = h_t[i];
     }
-    //free(x_z);
-    //free(x_r);
-    //free(x_h);
     //free(input);
     return h_t;
 }

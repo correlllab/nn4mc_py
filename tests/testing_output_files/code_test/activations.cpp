@@ -30,7 +30,6 @@ float * sigmoid(float * input, int m)
    }
   return input;
 }
-
 float * softplus(float * input, int m)
 {
   for (int i = m - 1; i>= 0; i--){
@@ -150,7 +149,6 @@ float * softmax(float * input, int m)
             input[i] = e[i] / max;
       }
   }
-
   return input;
 }
 
@@ -188,4 +186,3 @@ float* activate(float * input, int output_shape, char type)
 
   return input;
 }
-
