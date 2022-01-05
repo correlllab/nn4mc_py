@@ -50,7 +50,7 @@ class GRUTest(unittest.TestCase):
         GRU Testing Module
     """
     def __generate_sample(self, input_dims):
-        return np.random.normal(-10, 10, size = input_dims)
+        return np.zeros(input_dims) #np.random.normal(-10, 10, size = input_dims)
 
     def __keras_build(self, build_dict : dict):
         model = Sequential()
