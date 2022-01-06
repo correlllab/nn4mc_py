@@ -68,13 +68,12 @@ float * fwd_gru(struct GRU L, float * input)
         x_z[i] += L.biases[i + 3 * M];
         x_r[i] += L.biases[i + 4 * M];
         x_h[i] += L.biases[i + 5 * M];
-        for (int j = 0; j < L.input_shape[0]; j++){
-            for (int k = 0; k < L.input_shape[1]; k++){
-                int idx = j * L.input_shape[1] + k;
-                x_z[i] += L.weights[i * L.weight_shape[1] + j] * input[idx];
-                x_r[i] += L.weights[i *
-                                L.weight_shape[1] + j + M] * input[idx];
-                x_h[i] += L.weights[i * L.weight_shape[1] + j] * input[idx];
+        for (int j = 0; j < L.input_shape[1]; j++){
+            for (int k = 0; k < L.input_shape[0]; k++){
+                int idx = k * L.input_shape[1] + j;
+                x_z[i] += L.weights[k * L.weight_shape[0] + j] * input[idx];
+                x_r[i] += L.weights[k * L.weight_shape[0] + j + M] * input[idx];
+                x_h[i] += L.weights[k * L.weight_shape[0] + j + 2 * M] * input[idx];
             }
         }
         for (int j = 0; j < M; j++){
@@ -91,15 +90,14 @@ float * fwd_gru(struct GRU L, float * input)
             x_h[i] += *(L.big_u + i * L.big_u_shape[1] + j + 2 * M) * L.h_tm1[i] * x_r[i];
         }
     }
-
     for (int i = 0; i < M; i++){
         activate(&x_h[i], 1, L.activation);
     }
     for (int i = 0; i < M; i++){
         h_t[i] = (1.0 - x_z[i]) * x_h[i] + x_z[i] * L.h_tm1[i];
-        if (isnan(h_t[i])){
-            h_t[i] = -1;
-        }
+        //if (isnan(h_t[i])){
+        //    h_t[i] = -1;
+        //}
         L.h_tm1[i] = h_t[i];
     }
     //free(input);
