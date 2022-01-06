@@ -71,14 +71,14 @@ float * fwd_gru(struct GRU L, float * input)
         for (int j = 0; j < L.input_shape[1]; j++){
             for (int k = 0; k < L.input_shape[0]; k++){
                 int idx = k * L.input_shape[1] + j;
-                x_z[i] += L.weights[k * L.weight_shape[0] + j] * input[idx];
-                x_r[i] += L.weights[k * L.weight_shape[0] + j + M] * input[idx];
-                x_h[i] += L.weights[k * L.weight_shape[0] + j + 2 * M] * input[idx];
+                x_z[i] += L.weights[(i + 0*M) * L.weight_shape[1] + k] * input[idx];
+                x_r[i] += L.weights[(i + 1*M) * L.weight_shape[1] + k] * input[idx];
+                x_h[i] += L.weights[(i + 2*M) * L.weight_shape[1] + k] * input[idx];
             }
         }
         for (int j = 0; j < M; j++){
-            x_z[i] += *(L.big_u + i * L.big_u_shape[1] + j) * L.h_tm1[j];
-            x_r[i] += *(L.big_u + i * L.big_u_shape[1] + j + M) * L.h_tm1[j];
+            x_z[i] += L.big_u[i * M + j] * L.h_tm1[j];
+            x_r[i] += L.big_u[i * M + j + M] * L.h_tm1[j];
         }
     }
     for (int i = 0; i < M; i++){
@@ -87,14 +87,14 @@ float * fwd_gru(struct GRU L, float * input)
     }
     for (int i = 0; i < M; i++){
         for (int j = 0; j < M; j++){
-            x_h[i] += *(L.big_u + i * L.big_u_shape[1] + j + 2 * M) * L.h_tm1[i] * x_r[i];
+            //x_h[i] += L.big_u[i * M + j] * L.h_tm1[j] * x_r[j];
         }
     }
     for (int i = 0; i < M; i++){
         activate(&x_h[i], 1, L.activation);
     }
     for (int i = 0; i < M; i++){
-        h_t[i] = (1.0 - x_z[i]) * x_h[i] + x_z[i] * L.h_tm1[i];
+        h_t[i] = x_h[i]; //(1.0 - x_z[i]) * x_h[i] + x_z[i] * L.h_tm1[i];
         //if (isnan(h_t[i])){
         //    h_t[i] = -1;
         //}
