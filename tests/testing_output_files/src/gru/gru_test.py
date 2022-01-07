@@ -106,9 +106,9 @@ class GRUTest(unittest.TestCase):
             input_ = self.__generate_sample(input_dims)
             build_dict['input_shape'] = input_dims[1:]
             original_input = input_.copy()
-            weight = np.random.normal(-2., 2., size = (input_dims[2], build_dict['units']*3)).astype(np.float32)
-            big_u = np.random.normal(-2., 2., size = (build_dict['units'], build_dict['units']*3)).astype(np.float32)
-            bias = np.random.normal(-2., 2., size = (2, build_dict['units']*3)).astype(np.float32)
+            weight = np.random.normal(-1., 1., size = (input_dims[2], build_dict['units']*3)).astype(np.float32)
+            big_u = np.random.normal(-1., 1., size = (build_dict['units'], build_dict['units']*3)).astype(np.float32)
+            bias = np.random.normal(-1., 1., size = (2, build_dict['units']*3)).astype(np.float32)
             weight_ptr = list_2_swig_float_pointer(weight.flatten().tolist(), weight.size)
             big_u_ptr = list_2_swig_float_pointer(big_u.flatten().tolist(), big_u.size)
             bias_ptr = list_2_swig_float_pointer(bias.flatten().tolist(), bias.size)

@@ -86,7 +86,7 @@ float * fwd_gru(struct GRU L, float * input)
 
     //for (int i = 0; i < M; i++){
     //    for (int j = 0; j < M; j++){
-    //        x_h[i] += L.big_u[i * 3 * M + j + 2 * M] * L.h_tm1[j] * x_r[j];
+    //        x_h[i] += *(L.big_u + i * 3 * M + j + 2 * M) * L.h_tm1[j] * x_r[j];
     //    }
     //}
     x_h = activate(x_h, M, L.activation);
