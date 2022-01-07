@@ -70,15 +70,15 @@ float * fwd_gru(struct GRU L, float * input)
         x_h[i] += L.biases[i + 5 * M];
         for (int k = 0; k < L.input_shape[0]; k++){
             for (int j = 0; j < L.input_shape[1]; j++){
-                int idx = k * L.input_shape[1] + j;
-                x_z[i] += L.weights[j * 3*M + i] * input[idx];
-                x_r[i] += L.weights[j * 3*M + i + M] * input[idx];
-                x_h[i] += L.weights[j * 3*M + i + 2*M] * input[idx];
+                int idx = j * L.input_shape[0] + k;
+                x_z[i] += *(L.weights + j * 3*M + i) * input[idx];
+                x_r[i] += *(L.weights + j * 3*M + i + M) * input[idx];
+                x_h[i] += *(L.weights + j * 3*M + i + 2*M) * input[idx];
             }
         }
         for (int j = 0; j < M; j++){
-            x_z[i] += L.big_u[i * 3*M + j] * L.h_tm1[j];
-            x_r[i] += L.big_u[i * 3*M + j + M] * L.h_tm1[j];
+            x_z[i] += *(L.big_u + i * 3*M + j) * L.h_tm1[j];
+            x_r[i] += *(L.big_u + i * 3*M + j + M) * L.h_tm1[j];
         }
     }
     x_z = activate(x_z, M, L.recurrent_activation);
