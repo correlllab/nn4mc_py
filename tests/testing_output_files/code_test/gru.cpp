@@ -70,10 +70,9 @@ float * fwd_gru(struct GRU L, float * input)
         x_h[i] += L.biases[i + 5 * M];
         for (int k = 0; k < L.input_shape[0]; k++){
             for (int j = 0; j < L.input_shape[1]; j++){
-                int idx = j * L.input_shape[0] + k;
-                x_z[i] += *(L.weights + j * 3*M + i) * input[idx];
-                x_r[i] += *(L.weights + j * 3*M + i + M) * input[idx];
-                x_h[i] += *(L.weights + j * 3*M + i + 2*M) * input[idx];
+                x_z[i] += input[k * L.input_shape[1] + j] * *(L.weights + j * 3*M + i);
+                x_r[i] += input[k * L.input_shape[1] + j] * *(L.weights + j * 3*M + i + M);
+                x_h[i] += input[k * L.input_shape[1] + j] * *(L.weights + j * 3*M + i + 2*M);
             }
         }
         for (int j = 0; j < M; j++){
@@ -83,14 +82,12 @@ float * fwd_gru(struct GRU L, float * input)
     }
     x_z = activate(x_z, M, L.recurrent_activation);
     x_r = activate(x_r, M, L.recurrent_activation);
-
-    //for (int i = 0; i < M; i++){
-    //    for (int j = 0; j < M; j++){
-    //        x_h[i] += *(L.big_u + i * 3 * M + j + 2 * M) * L.h_tm1[j] * x_r[j];
-    //    }
-    //}
+    for (int i = 0; i < M; i++){
+        for (int j = 0; j < M; j++){
+            x_h[i] += *(L.big_u + i * 3 * M + j + 2 * M) * L.h_tm1[j] * x_r[j];
+        }
+    }
     x_h = activate(x_h, M, L.activation);
-
     for (int i = 0; i < M; i++){
         h_t[i] = (1.0 - x_z[i]) * x_h[i] + x_z[i] * L.h_tm1[i];
         L.h_tm1[i] = h_t[i];
