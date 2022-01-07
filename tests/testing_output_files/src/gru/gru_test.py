@@ -51,7 +51,7 @@ class GRUTest(unittest.TestCase):
         GRU Testing Module
     """
     def __generate_sample(self, input_dims):
-        return np.zeros(input_dims) #np.random.normal(-10, 10, size = input_dims)
+        return np.random.normal(-2, 2, size = input_dims)
 
     def __keras_build(self, build_dict : dict):
         model = Sequential()
@@ -106,11 +106,9 @@ class GRUTest(unittest.TestCase):
             input_ = self.__generate_sample(input_dims)
             build_dict['input_shape'] = input_dims[1:]
             original_input = input_.copy()
-            weight = np.random.normal(-10., 10., size = (shape[1], build_dict['units']*3)).astype(np.float32)
-            big_u = np.random.normal(-10., 10., size = (build_dict['units'], build_dict['units']*3)).astype(np.float32)
-            bias = np.random.normal(-10., 10., size = (2, build_dict['units']*3)).astype(np.float32)
-            print(big_u.shape, big_u.size)
-            print(len(big_u.flatten()))
+            weight = np.random.normal(-2., 2., size = (shape[1], build_dict['units']*3)).astype(np.float32)
+            big_u = np.random.normal(-2., 2., size = (build_dict['units'], build_dict['units']*3)).astype(np.float32)
+            bias = np.random.normal(-2., 2., size = (2, build_dict['units']*3)).astype(np.float32)
             weight_ptr = list_2_swig_float_pointer(weight.flatten().tolist(), weight.size)
             big_u_ptr = list_2_swig_float_pointer(big_u.flatten().tolist(), big_u.size)
             bias_ptr = list_2_swig_float_pointer(bias.flatten().tolist(), bias.size)
@@ -123,10 +121,8 @@ class GRUTest(unittest.TestCase):
             print("c:", output_c.reshape(output_keras.shape))
             print("keras:", output_keras)
             print("error: ", abs(output_c.reshape(output_keras.shape) - output_keras))
-            plt.imshow(abs(output_c.reshape(output_keras.shape) - output_keras), cmap = 'hot')
-            plt.show()
-            np.testing.assert_allclose(output_c, output_keras, atol = 2,
-                                       rtol = 2)
+            np.testing.assert_allclose(output_c, output_keras, atol = 1,
+                                       rtol = 1)
 
 if __name__=='__main__':
     unittest.main()
