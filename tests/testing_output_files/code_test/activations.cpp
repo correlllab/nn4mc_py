@@ -60,9 +60,6 @@ float * hard_sigmoid(float * input, int m)
           } else if (input[i] > 1.0){
               input[i] = 1.0;
           }
-          if(isnan(input[i])){
-            input[i] = 1.;
-          }
       }
   return input;
 }

@@ -63,7 +63,7 @@ float * fwd_gru(struct GRU L, float * input)
     float* h_t = (float*)malloc(M * sizeof(float));
     for (int i = 0; i < M; i++){
         x_z[i] =  L.biases[i];
-        x_r[i] =  L.biases[i + 1 * M];
+        x_r[i] =  L.biases[i + M];
         x_h[i] =  L.biases[i + 2 * M];
         x_z[i] += L.biases[i + 3 * M];
         x_r[i] += L.biases[i + 4 * M];
