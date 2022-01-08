@@ -55,8 +55,7 @@ class GRUTest(unittest.TestCase):
 
     def __keras_build(self, build_dict : dict):
         model = Sequential()
-        model.add(Input(shape = (build_dict['input_shape'][0],
-                                 build_dict['input_shape'][1]),
+        model.add(Input(shape = build_dict['input_shape'],
                         batch_size = 1))
         model.add(GRU(
                     input_shape = build_dict['input_shape'],
@@ -135,7 +134,7 @@ class GRUTest(unittest.TestCase):
             print("c:", output_c.reshape(output_keras.shape))
             print("keras:", output_keras)
             print("error: ", abs(output_c.reshape(output_keras.shape) - output_keras))
-            np.testing.assert_allclose(output_c, output_keras, atol = 1,
-                                       rtol = 1)
+            np.testing.assert_allclose(output_c, output_keras, atol = 1e-5,
+                                       rtol = 1e-5)
 if __name__=='__main__':
     unittest.main()
