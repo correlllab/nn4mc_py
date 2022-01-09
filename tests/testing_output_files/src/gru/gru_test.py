@@ -51,23 +51,19 @@ class GRUTest(unittest.TestCase):
         GRU Testing Module
     """
     def __generate_sample(self, input_dims):
-        return np.random.normal(-1, 1, size = input_dims)
+        return np.random.normal(-2, 2, size = input_dims)
 
     def __keras_build(self, build_dict : dict):
         model = Sequential()
-        model.add(Input(shape = build_dict['input_shape'],
-                        batch_size = 1))
         model.add(GRU(
                     input_shape = build_dict['input_shape'],
                     activation = build_dict['activation'],
                     units = build_dict['units'],
                     bias_initializer='zeros',
                     trainable = False,
-                    stateful = True,
                     recurrent_activation= build_dict['recurrent_activation'],
                     use_bias = build_dict['use_bias'],
                     ))
-        model.layers[0].reset_states(states = None)
         return model
 
     def __c_fwd(self, build_dict : dict, input_, weight, big_u,
@@ -80,7 +76,7 @@ class GRUTest(unittest.TestCase):
 
         input_length = input_.size
         input_all = list_2_swig_float_pointer(input_.flatten().tolist(), input_length)
-        output_dims = units
+        output_dims = units * input_dims[0]
 
         layer = gru.build_layer_gru(weight.cast(), big_u.cast(), bias.cast(),
                                     activation_dictionary[build_dict['recurrent_activation']],
@@ -102,12 +98,13 @@ class GRUTest(unittest.TestCase):
     def test_fwd(self):
         N = 1000
         for _ in range(N):
-            units = int(np.random.randint(1, 20, size = 1)[0])
+            units = int(np.random.randint(1, 5, size = 1)[0])
             build_dict = {'activation' : 'tanh',
                           'recurrent_activation' : 'hard_sigmoid',
                           'units': units,
                           'use_bias' : True, 'input_shape': None}
-            shape = np.random.randint(1, 10, size = 2).tolist()
+            shape = np.random.randint(10, 20, size = 2).tolist()
+            shape[0] = 1
             input_ = self.__generate_sample(shape)
             build_dict['input_shape'] = shape
 
@@ -126,15 +123,15 @@ class GRUTest(unittest.TestCase):
                                                  shape, units)
 
             output_keras = self.__keras_fwd(build_dict,
-                                            input_.reshape(1, shape[0], -1),
+                                            input_.reshape(1, shape[0], shape[1]),
                                             weight, big_u, bias)
-
             output_c = np.array(c_output).reshape(output_keras.shape)
             print(build_dict)
             print("c:", output_c.reshape(output_keras.shape))
             print("keras:", output_keras)
             print("error: ", abs(output_c.reshape(output_keras.shape) - output_keras))
-            np.testing.assert_allclose(output_c, output_keras, atol = 1e-5,
-                                       rtol = 1e-5)
+            np.testing.assert_allclose(output_c, output_keras, atol = 4e-5,
+                                       rtol = 4e-5)
+
 if __name__=='__main__':
     unittest.main()
