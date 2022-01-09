@@ -119,7 +119,7 @@ class ActivationTest(unittest.TestCase):
         rtol = 1e-5
         size = 10
         for _ in range(1000):
-            x = np.random.uniform(low = -1000., high = 1000., size = size).tolist()
+            x = np.random.uniform(low = -1000, high = 1000, size = size).tolist()
             y_numpy = np.tanh(x)
             test_buffer = list_2_swig_float_pointer(x, size)
             y_nn4mc = activation.hyper_tan(test_buffer.cast(), size)
@@ -140,7 +140,7 @@ class ActivationTest(unittest.TestCase):
         rtol = 1e-3
         size = 10
         for _ in range(1000):
-            x = np.random.uniform(low = -1000., high = 1000., size = size).flatten()
+            x = np.random.uniform(low = -1., high = 1., size = size).flatten()
             y_numpy = _ref_softmax(x)
             test_buffer = list_2_swig_float_pointer(x, size)
             y_nn4mc = activation.softmax(test_buffer.cast(), size)

@@ -95,14 +95,17 @@ float * fwd_gru(struct GRU L, float * input)
         }
     }
     x_h = activate(x_h, M * L.input_shape[0], L.activation);
+
+    float one = 1.0;
     for (int i = 0; i < M; i++){
         for (int j = 0; j < L.input_shape[0]; j++){
-                h_t[j * M + i] = (1.0000 - x_z[j * M + i]) *
+                h_t[j * M + i] = (one - x_z[j * M + i]) *
                                         x_h[j * M + i] +
                                             x_z[j * M + i] *
                                             L.h_tm1[i];
 
             }
+
             L.h_tm1[i] = h_t[i];
     }
     //free(x_z);
