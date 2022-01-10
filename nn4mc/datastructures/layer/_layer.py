@@ -61,11 +61,9 @@ class Layer(ABC):
                 except:
                     print(temp_string)
                     quit()
-                if val is not None:
-                    temp_string = temp_string.replace(temp_string[start:end+len(G.end_delim)],
-                                                        val)
-                else:
-                    break
+
+                temp_string = temp_string.replace(temp_string[start:end+len(G.end_delim)],
+                                                    val)
             start = temp_string.find(G.start_delim)
             end = temp_string.find(G.end_delim)
 
