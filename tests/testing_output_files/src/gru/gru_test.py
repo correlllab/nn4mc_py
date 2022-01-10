@@ -135,7 +135,7 @@ class GRUTest(unittest.TestCase):
             print("keras:", output_keras)
             print("error: ", abs(output_c.reshape(output_keras.shape) - output_keras))
             np.testing.assert_allclose(output_c, output_keras,
-                                      rtol = 1e-2, atol = 1e-2)
+                                      rtol = 7e-3, atol = 7e-3)
 
 if __name__=='__main__':
     unittest.main()
