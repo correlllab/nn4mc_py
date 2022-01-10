@@ -30,8 +30,6 @@ class Generator():
     # Generates the code
     #NOTE: F specifies file output, and W specifies web output
     def generate(self, output_dir='', output_type='F'):
-        print(output_dir)
-
         self.processTemplates() #Processes required templates
 
         self.processLayers() #Processes layers
@@ -223,7 +221,6 @@ class Generator():
         directories.append(output_dir + '/nn4mc/include/layers')
         directories.append(output_dir + '/nn4mc/src')
         directories.append(output_dir + '/nn4mc/src/layers')
-
         try:
             for dir in directories:
                 os.mkdir(dir)

@@ -8,7 +8,7 @@ class TestTranslator(unittest.TestCase):
         pass
 
     def test_translate(self):
-        file = '../data/test_1.hdf5'
+        file = '../data/GRU.hdf5'
 
         path = os.path.dirname(os.path.abspath(__file__))
         path2 = os.path.join(path, '../output')

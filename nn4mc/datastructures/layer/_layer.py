@@ -177,7 +177,7 @@ class SimpleRNN(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.params['b'].values.shape[0]]
+        self.output_shape = [self.params['b'].values.shape[0] // 3]
 
         return self.output_shape
 
@@ -186,15 +186,10 @@ class GRU(Layer):
     activation = ''
     recurrent_activation = ''
     use_bias = True
-    go_backwards = False
-    stateful = False
-    unroll = False
-    reset_after = False
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.params['b'].values.shape[0]]
-
+        self.output_shape = [self.params['b'].values.shape[-1] // 3]
         return self.output_shape
 
 class LSTM(Layer):
@@ -211,7 +206,7 @@ class LSTM(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.params['b'].values.shape[0]]
+        self.output_shape = [self.params['b'].values.shape[0] // 3]
 
         return self.output_shape
 

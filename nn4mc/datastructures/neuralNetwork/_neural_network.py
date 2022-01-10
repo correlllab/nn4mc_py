@@ -25,6 +25,7 @@ class LayerNode:
 #NOTE:
 class NeuralNetwork:
     def __init__(self):
+        self.layer_list = []
         self.layers = {} #Dictionary of LayerNodes and list of edges
         self.input = [] #List of input LayerNodes
 
@@ -39,6 +40,7 @@ class NeuralNetwork:
     #Adds LayerNode to graph with empty list of edges
     def addLayer(self, layer):
         newLayer = LayerNode(layer) #New layer
+        self.layer_list += [layer]
         self.layers[newLayer] = [] #No edges
 
         if(layer.isInput()): #Adds to input list if Input Layer

@@ -1,3 +1,4 @@
+<%BEGIN_DEFINITION_TEMPLATE>
 /********************
     gru.h
 
@@ -38,3 +39,4 @@ struct GRU build_layer_gru(<%WEIGHT_DATATYPE_DELIMITER>*, <%WEIGHT_DATATYPE_DELI
 <%LAYER_DATATYPE_DELIMITER> * fwd_gru(struct GRU, <%LAYER_DATATYPE_DELIMITER>*);
 
 #endif
+<%END_DEFINITION_TEMPLATE>

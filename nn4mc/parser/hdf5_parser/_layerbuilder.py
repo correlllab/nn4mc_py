@@ -99,10 +99,6 @@ class GRUBuilder(LayerBuilder):
         new_layer.activation = json_obj['activation']
         new_layer.recurrent_activation = json_obj['recurrent_activation']
         new_layer.use_bias = json_obj['use_bias']
-        new_layer.go_backwards = json_obj['go_backwards']
-        new_layer.stateful = json_obj['stateful']
-        new_layer.unroll = json_obj['unroll']
-        new_layer.reset_after = json_obj['reset_after']
 
         return new_layer
 

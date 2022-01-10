@@ -1,3 +1,4 @@
+<%BEGIN_DEFINITION_TEMPLATE>
 /********************
 
     gru.cpp
@@ -114,3 +115,21 @@ struct GRU build_layer_gru(
     free(input);
     return h_t;
 }
+<%END_DEFINITION_TEMPLATE>
+
+<%BEGIN_INITIALIZE_TEMPLATE>
+<%LAYER_NAME> = build_layer_gru(
+                          &<%WEIGHT_NAME>[0],
+                          &<%RECURRENT_WEIGHT_NAME>[0],
+                          &<%BIAS_NAME>[0],
+                          <%RECURRENT_ACTIVATION>,
+                          <%ACTIVATION>,
+                          <%INPUT_SHAPE_0>,
+                          <%INPUT_SHAPE_1>,
+                          <%OUTPUT_SHAPE>,
+);
+<%END_INITIALIZE_TEMPLATE>
+
+<%BEGIN_CALL_TEMPLATE>
+data =  fwd_gru(<%LAYER_NAME>, data);
+<%END_CALL_TEMPLATE>

@@ -83,6 +83,8 @@ class HDF5Parser(Parser):
 
         input_shape = self.nn_input_size
 
+        # NOTE(sarahaguasvivas) here, the order matters,
+        #                       therefore, using different list
         for id in weightGroup.keys():
             layer = self.nn.getLayer(id)
 
@@ -100,10 +102,11 @@ class HDF5Parser(Parser):
 
             try: #Access recurrent weights if they exist
                 rec_weight = np.array(weightGroup[id][id]['recurrent_kernel:0'][()])
-                layer.addParameters('weight_rec', (id+'_Wrec', weight))
+                layer.addParameters('weight_rec', (id+'_Wrec', rec_weight))
 
             except Exception as e: pass#print(e)
 
+        for layer in self.nn.layer_list:
             input_shape = layer.computeOutShape(input_shape)
 
     #Parses model for input size
@@ -124,5 +127,4 @@ class HDF5Parser(Parser):
         print(byte_array)
         string = bytearray(byte_array).decode('utf8')
         JSON = json.loads(string)
-
         return JSON
