@@ -21,6 +21,7 @@ class HDF5Parser(Parser):
                     'GRU' : 'GRUBuilder()',
                     'LSTM' : 'LSTMBuilder()',
                     'Input' : 'InputBuilder()',
+                    'InputLayer': 'InputBuilder()',
                     'Activation' : 'ActivationBuilder()'}
 
     #NOTE: file is etheir a file name or a filetype object
