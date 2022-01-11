@@ -14,11 +14,9 @@ setup(name='nn4mc',
         long_description_content_type='text/markdown',
         author='Cooper Simpson, Sarah Manzano, Dana Hughes',
         author_email='cooper.simpson@colorado.edu',
-        url='https://github.com/RS-Coop/nn4mc_py',
-        # download_url = '',
+        url='https://github.com/correlllab/nn4mc_py',
         license="MIT",
         packages=find_packages(exclude=('tests','tests.*')),
-        # packages=['nn4mc_py'],
         include_package_data=True,
         install_requires=['h5py', 'numpy'], #Might need more here
         classifiers=[
