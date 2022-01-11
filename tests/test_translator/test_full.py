@@ -15,7 +15,7 @@ class TestTranslator(unittest.TestCase):
         p.parse()
 
         path = os.path.dirname(os.path.abspath(__file__))
-        if (os.path.exists(os.path.join(path, 'output'))):
+        if (not os.path.exists(os.path.join(path, 'output'))):
             os.makedirs(os.path.join(path, 'output'))
         path2 = os.path.join(path, 'output')
 

@@ -55,7 +55,7 @@ class Generator():
         #Get lists of all activations and layers
         for node in self.nn.iterate():
             type = node.layer.layer_type
-            if type != 'input' and type != 'flatten':
+            if type != 'input' and type != 'inputlayer' and type != 'flatten':
                 if hasattr('node.layer', 'activation'):
                     activation = node.layer.activation
                     if activation != '' and activation not in activations and activation != 'linear':
@@ -169,7 +169,9 @@ class Generator():
         nn_source = self.source_files[G.NEURAL_NETWORK_SOURCE]
 
         for node in self.nn.iterate():
-            if node.layer.layer_type != 'input' and node.layer.layer_type != 'flatten':
+            if node.layer.layer_type != 'input' and \
+                    node.layer.layer_type != 'flatten' and \
+                    node.layer.layer_type != 'inputlayer':
                 param_string = node.layer.getParameters()
                 init_string = node.layer.generateCall(self.init_strings[node.layer.layer_type])
                 fwd_string = node.layer.generateCall(self.fwd_strings[node.layer.layer_type])
