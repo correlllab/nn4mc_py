@@ -19,13 +19,13 @@ void buildLayers(){
     
 gru = build_layer_gru(
                           &dense_W[0],
-                          &<%RECURRENT_WEIGHT_NAME>[0],
-                          &<%BIAS_NAME>[0],
-                          <%RECURRENT_ACTIVATION>,
-                          <%ACTIVATION>,
-                          <%INPUT_SHAPE_0>,
-                          <%INPUT_SHAPE_1>,
-                          <%OUTPUT_SHAPE>,
+                          &gru_Wrec[0],
+                          &dense_b[0],
+                          sigmoid,
+                          tanh,
+                          1,
+                          68,
+                          1,
 );
 
         dense = build_layer_dense(&dense_W[0], dense_b, 1, 3, relu);

@@ -81,30 +81,34 @@ class HDF5Parser(Parser):
     #NOTE:
     def parseWeights(self, h5file):
         weightGroup = h5file['model_weights'] #Open weight group
-        print(weightGroup)
-        input_shape = self.nn_input_size
 
+        input_shape = self.nn_input_size
         # NOTE(sarahaguasvivas) here, the order matters,
         #                       therefore, using different list
         for id in weightGroup.keys():
+
             if id != 'top_level_model_weights':
                 layer = self.nn.getLayer(id)
 
                 try: #Access weights if they exist
                     weight = np.array(weightGroup[id][id]['kernel:0'][()])
+                    if 'gru_cell' in weightGroup[id][id].keys():
+                        weight = np.array(weightGroup[id][id]['gru_cell']['kernel:0'])
                     layer.addParameters('weight', (id+'_W', weight))
 
                 except Exception as e: pass#print(e)
 
                 try: #Access biases if they exist
                     bias = np.array(weightGroup[id][id]['bias:0'][()])
+                    if 'gru_cell' in weightGroup[id][id].keys():
+                        bias = np.array(weightGroup[id][id]['gru_cell']['bias:0'])
                     layer.addParameters('bias', (id+'_b', bias))
 
                 except Exception as e: pass#print(e)
-                print(id, weightGroup[id][id].keys())
+
                 try: #Access recurrent weights if they exist
-                    rec_weight = np.array(weightGroup[id]['kernel:1'][()])
-                    print(rec_weight)
+                    if 'gru_cell' in weightGroup[id][id].keys():
+                        rec_weight = np.array(weightGroup[id][id]['gru_cell']['recurrent_kernel:0'][()])
                     layer.addParameters('weight_rec', (id+'_Wrec', rec_weight))
 
                 except Exception as e: pass#print(e)
@@ -127,7 +131,5 @@ class HDF5Parser(Parser):
 #Helper functions
     #Converts byte array to JSON for scraping
     def bytesToJSON(self, byte_array):
-        string = bytearray(byte_array).decode('utf8')
-        print(string)
-        json_ = json.loads(string)
+        json_ = json.loads(byte_array)
         return json_
