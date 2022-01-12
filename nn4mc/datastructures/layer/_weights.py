@@ -30,5 +30,4 @@ class Weight:
                 param_string = param_string + ', '
 
         param_string = param_string + '}\n\n'
-
         return param_string

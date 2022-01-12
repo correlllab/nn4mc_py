@@ -14,10 +14,12 @@ extern "C" {
 #endif
 
 
-<%BEGIN_TEMPLATE>
-const <%WEIGHT_DATATYPE> <%WEIGHT_NAME><%WEIGHT_INDEX> = <%DATA>;
+//<%BEGIN_TEMPLATE>
 
-<%END_TEMPLATE>
+<%WEIGHT>
+//const <%WEIGHT_DATATYPE> <%WEIGHT_NAME><%WEIGHT_INDEX> = <%DATA>;
+
+//<%END_TEMPLATE>
 
 #ifdef __cplusplus
 //}
