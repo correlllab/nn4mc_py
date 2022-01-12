@@ -9,7 +9,7 @@
 #ifndef __NEURAL_NET_PARAMS_H__
 #define __NEURAL_NET_PARAMS_H__
 
-#ifdef __cpluscplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
