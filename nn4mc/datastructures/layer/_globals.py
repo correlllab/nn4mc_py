@@ -1,4 +1,10 @@
 #Contains all global maps for Layer
+
+INDEX_DATATYPE = 'int'
+LAYER_OUTPUT_DATATYPE = 'float'
+ACTIVATION_DATATYPE = 'char'
+WEIGHT_DATATYPE = 'const float'
+
 class G():
     #Padding
     padding = {

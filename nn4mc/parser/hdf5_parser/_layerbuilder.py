@@ -1,4 +1,5 @@
 from nn4mc.datastructures.layer._layer import *
+from nn4mc.generator.code_generator._globals import activation_lookup
 from abc import ABC, abstractmethod
 import copy
 
@@ -23,7 +24,7 @@ class Conv1DBuilder(LayerBuilder):
         new_layer.padding = json_obj['padding']
         new_layer.data_format = json_obj['data_format']
         new_layer.dilation_rate = copy.copy(json_obj['dilation_rate'])
-        new_layer.activation = json_obj['activation']
+        new_layer.activation = activation_lookup[json_obj['activation']]
         new_layer.use_bias = json_obj['use_bias']
 
         return new_layer
@@ -38,7 +39,7 @@ class Conv2DBuilder(LayerBuilder):
         new_layer.padding = json_obj['padding']
         new_layer.data_format = json_obj['data_format']
         new_layer.dilation_rate = copy.copy(json_obj['dilation_rate'])
-        new_layer.activation = json_obj['activation']
+        new_layer.activation = activation_lookup[json_obj['activation']]
         new_layer.use_bias = json_obj['use_bias']
 
         return new_layer
@@ -48,7 +49,7 @@ class DenseBuilder(LayerBuilder):
         new_layer = Dense(id, layer_type)
 
         new_layer.units = json_obj['units']
-        new_layer.activation = json_obj['activation']
+        new_layer.activation = activation_lookup[json_obj['activation']]
         new_layer.use_bias = json_obj['use_bias']
 
         return new_layer
@@ -80,7 +81,7 @@ class SimpleRNNBuilder(LayerBuilder):
         new_layer = SimpleRNN(id, layer_type)
 
         new_layer.units = json_obj['units']
-        new_layer.activation = json_obj['activation']
+        new_layer.activation = activation_lookup[json_obj['activation']]
         new_layer.use_bias = json_obj['use_bias']
         new_layer.return_sequences = json_obj['return_sequences']
         new_layer.return_state = json_obj['return_state']
@@ -96,7 +97,7 @@ class GRUBuilder(LayerBuilder):
         new_layer.units = json_obj['units']
         new_layer.dropout = json_obj['dropout']
         new_layer.recurrent_dropout = json_obj['recurrent_dropout']
-        new_layer.activation = json_obj['activation']
+        new_layer.activation = activation_lookup[json_obj['activation']]
         new_layer.recurrent_activation = json_obj['recurrent_activation']
         new_layer.use_bias = json_obj['use_bias']
 
@@ -109,7 +110,7 @@ class LSTMBuilder(LayerBuilder):
         new_layer.units = json_obj['units']
         new_layer.dropout = json_obj['dropout']
         new_layer.recurrent_dropout = json_obj['recurrent_dropout']
-        new_layer.activation = json_obj['activation']
+        new_layer.activation = activation_lookup[json_obj['activation']]
         new_layer.recurrent_activation = json_obj['recurrent_activation']
         new_layer.implementation = json_obj['implementation']
         new_layer.use_bias = json_obj['use_bias']
@@ -123,7 +124,7 @@ class ActivationBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = Activation(id, layer_type)
 
-        new_layer.activation = json_obj['activation']
+        new_layer.activation = activation_lookup[json_obj['activation']]
 
         return new_layer
 

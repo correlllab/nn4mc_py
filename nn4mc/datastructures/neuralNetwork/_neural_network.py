@@ -34,8 +34,12 @@ class NeuralNetwork:
         for layernode in self.layers:
             if layernode.layer.identifier == id:
                 return layernode.layer
-
         return None
+
+    def setLayer(self, id: str, new_layer: Layer):
+        for layernode in self.layers:
+            if layernode.layer.identifier == id:
+                layernode.layer = new_layer
 
     #Adds LayerNode to graph with empty list of edges
     def addLayer(self, layer):
@@ -63,19 +67,15 @@ class NeuralNetwork:
     def iterate(self):
         for node in self.layers:
             node.visited = False
-
         q = Queue()
-
         for node in self.input: #Add all input nodes
             node.visited = True
             q.put(node)
-
-        while q.empty() == False:
+        while not q.empty():
             node = q.get()
 
             for edge in self.layers[node]:
                 if edge.visited == False:
                     edge.visited = True
                     q.put(edge)
-
             yield node #Returns a node

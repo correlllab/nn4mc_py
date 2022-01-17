@@ -1,5 +1,5 @@
 from nn4mc.datastructures import NeuralNetwork
-from ._globals import G
+from ._globals import G, activation_lookup
 import numpy as np
 import os, json
 
@@ -97,7 +97,6 @@ class Generator():
 
                 start = contents.find(begin) + len(begin)
                 stop = contents.find(end)
-
                 activations_string = activations_string + contents[start:stop] + '\n'
 
             activations_string = self.replaceDelimiters(activations_string)
@@ -117,9 +116,7 @@ class Generator():
 
                 start = contents.find(begin) + len(begin)
                 stop = contents.find(end)
-
                 activations_string = activations_string + contents[start:stop] + '\n'
-
             activations_string = self.replaceDelimiters(activations_string)
             head_contents = head_contents.replace(G.ACTIVATIONS_DELIMITER, activations_string)
 

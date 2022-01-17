@@ -1,5 +1,20 @@
 #Contains all global file names, and delimiters for use
 #in code generator.
+activation_lookup = {
+    "softmax" :  "0x00",
+    "elu" : "0x02",
+    "selu" :  "0x03",
+    "softplus" : "0x04",
+    "softsign" : "0x05",
+    "relu" :  "0x06",
+    "tanh" : "0x07",
+    "sigmoid" :  "0x08",
+    "hard_sigmoid" :  "0x09",
+    "exponential" :  "0xA",
+    "linear" :  "0xB",
+    "custom" : "0xC"
+}
+
 class G():
 
     #Template files

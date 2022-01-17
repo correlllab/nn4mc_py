@@ -17,9 +17,9 @@ class Layer(ABC):
         self.identifier = id #Unique ID
         self.layer_type = type #Layer type (i.e conv1d)
 
-    #Add weight and bias parameters
-    #Takes tuple of (id, values) for weights and biases
-    def addParameters(self, type, data):
+    # add weight and bias parameters
+    # takes tuple of (id, values) for weights and biases
+    def setParameters(self, type, data):
         if type == 'weight':
             self.params['w'] = Weight(data[0], data[1])
 
@@ -32,14 +32,12 @@ class Layer(ABC):
     def getParameters(self):
         param_string = ''
         for weight in self.params.values():
-            if weight.identifier!=None:
-                param_string = param_string + weight.getParams()
-
+            param_string = param_string + weight.getParams()
         return param_string
 
     def generateAct(self):
         if self.activation!='' and self.activation!='linear':
-            if self.activation=='softmax':
+            if self.activation == 'softmax':
                 act_string = 'data = ' + self.activation +\
                  '(data, ' + self.output_shape + ' );\n'
             else:
@@ -135,7 +133,7 @@ class Dense(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.params['b'].values.shape[0]]
+        self.output_shape = [self.units]
 
         return self.output_shape
 
@@ -190,7 +188,7 @@ class GRU(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.params['b'].values.shape[-1] // 3]
+        self.output_shape = [self.units]
         return self.output_shape
 
 class LSTM(Layer):
@@ -207,7 +205,7 @@ class LSTM(Layer):
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
-        self.output_shape = [self.params['b'].values.shape[0] // 3]
+        self.output_shape = [self.units]
 
         return self.output_shape
 

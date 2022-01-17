@@ -3,7 +3,7 @@ from nn4mc.datastructures import NeuralNetwork
 from ._layerbuilder import *
 import h5py
 import numpy as np
-import json
+from nn4mc.parser.hdf5_parser.helpers import bytesToJSON
 
 # This class deals with parsing an HDF5 file from a keras neural network model.
 # It will scrape the file and generate a NeuralNetwork object
@@ -51,7 +51,7 @@ class HDF5Parser(Parser):
     def parseModelConfig(self, h5file):
         # with h5py.File(self.file_name, 'r') as h5file: #Open hdf5 file
         configAttr = h5file['/'].attrs['model_config'] #Gets all metadata
-        configJSON = self.bytesToJSON(configAttr)
+        configJSON = bytesToJSON(configAttr)
 
         self.parse_nn_input(configJSON['config'])
 
@@ -81,42 +81,44 @@ class HDF5Parser(Parser):
     #NOTE:
     def parseWeights(self, h5file):
         weightGroup = h5file['model_weights'] #Open weight group
-
-        input_shape = self.nn_input_size
         # NOTE(sarahaguasvivas) here, the order matters,
         #                       therefore, using different list
-        for id in weightGroup.keys():
-
-            if id != 'top_level_model_weights':
-                layer = self.nn.getLayer(id)
-
-                try: #Access weights if they exist
+        for layer_node in self.nn.iterate():
+            weight = None
+            bias = None
+            rec_weight = None
+            id = layer_node.layer.identifier
+            if layer_node.layer.identifier in weightGroup.keys():
+                # NOTE(sarahaguasvivas): kernel/weight assigment
+                if 'gru_cell' in weightGroup[id][id].keys():
+                    weight = np.array(weightGroup[id][id]['gru_cell']['kernel:0'])
+                else:
                     weight = np.array(weightGroup[id][id]['kernel:0'][()])
-                    if 'gru_cell' in weightGroup[id][id].keys():
-                        weight = np.array(weightGroup[id][id]['gru_cell']['kernel:0'])
-                    layer.addParameters('weight', (id+'_W', weight))
-
-                except Exception as e: pass#print(e)
-
-                try: #Access biases if they exist
+                # NOTE(sarahaguasvivas): bias
+                if 'gru_cell' in weightGroup[id][id].keys():
+                    bias = np.array(weightGroup[id][id]['gru_cell']['bias:0'])
+                else:
                     bias = np.array(weightGroup[id][id]['bias:0'][()])
-                    if 'gru_cell' in weightGroup[id][id].keys():
-                        bias = np.array(weightGroup[id][id]['gru_cell']['bias:0'])
-                    layer.addParameters('bias', (id+'_b', bias))
+                # NOTE(sarahaguasvivas): recurrent weights
+                if 'gru_cell' in weightGroup[id][id].keys():
+                    rec_weight = np.array(weightGroup[id][id]['gru_cell']['recurrent_kernel:0'][()])
+                else:
+                    rec_weight = None
+            layer_node.layer.setParameters('weight', (id + '_W', weight))
+            layer_node.layer.setParameters('bias', (id + '_b', bias))
+            layer_node.layer.setParameters('weight_rec', (id + '_Wrec', rec_weight))
+            print(layer_node.layer.getParameters())
 
-                except Exception as e: pass#print(e)
-
-                try: #Access recurrent weights if they exist
-                    if 'gru_cell' in weightGroup[id][id].keys():
-                        rec_weight = np.array(weightGroup[id][id]['gru_cell']['recurrent_kernel:0'][()])
-                    layer.addParameters('weight_rec', (id+'_Wrec', rec_weight))
-
-                except Exception as e: pass#print(e)
-
+        for layer_node in self.nn.iterate():
+            print(layer_node.layer.identifier)
+            print(layer_node.layer.getParameters())
+        # NOTE(sarahaguasvivas): calculating output shapes
+        input_shape = self.nn_input_size
         for layer in self.nn.layer_list:
-            input_shape = layer.computeOutShape(input_shape)
+            if "input" not in layer.identifier:
+                input_shape = layer.computeOutShape(input_shape)
 
-    #Parses model for input size
+    #parses model for input size
     def parse_nn_input(self, model_config : dict):
         """
             INPUT: model_config is the json object dictionary
@@ -126,10 +128,3 @@ class HDF5Parser(Parser):
             self.nn_input_size = model_config['build_input_shape'][1:]
         if model_config['layers'][0].get('config','batch_input_shape'):
             self.nn_input_size = model_config['layers'][0]['config']['batch_input_shape'][1:]
-
-################################################################################
-#Helper functions
-    #Converts byte array to JSON for scraping
-    def bytesToJSON(self, byte_array):
-        json_ = json.loads(byte_array)
-        return json_

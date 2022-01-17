@@ -13,15 +13,16 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 
+#include <stdlib.h>
 #include "parameters.h"
-<%INCLUDE>
 
-<%STRUCTS>
 
 <%LAYER_DATATYPE_DELIMITER>* fwdNN(<%LAYER_DATATYPE_DELIMITER>*);
 void buildLayers();
 
+#ifdef __cplusplus
 }
 #endif
 #endif

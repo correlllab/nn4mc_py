@@ -13,19 +13,16 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
 
+#include <stdlib.h>
 #include "parameters.h"
-#include gru.h
-#include dense.h
-
-
-gru gru;
-dense dense;
 
 
 float* fwdNN(float*);
 void buildLayers();
 
+#ifdef __cplusplus
 }
 #endif
 #endif
