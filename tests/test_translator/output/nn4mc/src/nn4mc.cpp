@@ -20,7 +20,7 @@ gru = build_layer_gru(
                           &dense_W[0],
                           &dense_Wrec[0],
                           &dense_b[0],
-                          sigmoid,
+                          0x08,
                           0x07,
                           1,
                           68,

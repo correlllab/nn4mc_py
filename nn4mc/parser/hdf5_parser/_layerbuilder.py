@@ -98,7 +98,7 @@ class GRUBuilder(LayerBuilder):
         new_layer.dropout = json_obj['dropout']
         new_layer.recurrent_dropout = json_obj['recurrent_dropout']
         new_layer.activation = activation_lookup[json_obj['activation']]
-        new_layer.recurrent_activation = json_obj['recurrent_activation']
+        new_layer.recurrent_activation = activation_lookup[json_obj['recurrent_activation']]
         new_layer.use_bias = json_obj['use_bias']
 
         return new_layer
@@ -111,7 +111,7 @@ class LSTMBuilder(LayerBuilder):
         new_layer.dropout = json_obj['dropout']
         new_layer.recurrent_dropout = json_obj['recurrent_dropout']
         new_layer.activation = activation_lookup[json_obj['activation']]
-        new_layer.recurrent_activation = json_obj['recurrent_activation']
+        new_layer.recurrent_activation = activation_lookup[json_obj['recurrent_activation']]
         new_layer.implementation = json_obj['implementation']
         new_layer.use_bias = json_obj['use_bias']
         new_layer.go_backwards = json_obj['go_backwards']
