@@ -11,6 +11,8 @@
 #include <stdlib.h>
 <%INCLUDE>
 
+gru gru;
+dense dense;
 <%STRUCTS>
 
 void buildLayers(){

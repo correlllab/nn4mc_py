@@ -180,8 +180,8 @@ class Generator():
 
                 #Deal with writing the layer
                 #HEADER: Add the structs
-                pos = nn_header.find(G.NN_STRUCT_DELIMITER)
-                nn_header = nn_header.replace(G.NN_STRUCT_DELIMITER,
+                pos = nn_source.find(G.NN_STRUCT_DELIMITER)
+                nn_source = nn_source.replace(G.NN_STRUCT_DELIMITER,
                     #'struct ' + node.layer.layer_type + ' ' + node.layer.identifier +\
                     node.layer.layer_type + ' ' + node.layer.identifier + \
                     ';\n' + G.NN_STRUCT_DELIMITER)

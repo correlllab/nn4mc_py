@@ -81,7 +81,7 @@ float * relu(float * input, int m)
   return input;
 }
 
-float * elu(float * input, int m, int a)
+float * elu(float * input, int m, float a)
 {
   for (int i = m - 1; i>=0; i--){
         if (input[i] < 0)
