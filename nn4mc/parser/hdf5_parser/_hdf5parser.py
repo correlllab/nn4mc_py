@@ -83,12 +83,9 @@ class HDF5Parser(Parser):
         weightGroup = h5file['model_weights'] #Open weight group
         # NOTE(sarahaguasvivas) here, the order matters,
         #                       therefore, using different list
-        for layer_node in self.nn.iterate():
-            weight = None
-            bias = None
-            rec_weight = None
-            id = layer_node.layer.identifier
-            if layer_node.layer.identifier in weightGroup.keys():
+        for layer in self.nn.iterate_layer_list():
+            id = layer.identifier
+            if layer.identifier in weightGroup.keys():
                 # NOTE(sarahaguasvivas): kernel/weight assigment
                 if 'gru_cell' in weightGroup[id][id].keys():
                     weight = np.array(weightGroup[id][id]['gru_cell']['kernel:0'])
@@ -104,19 +101,16 @@ class HDF5Parser(Parser):
                     rec_weight = np.array(weightGroup[id][id]['gru_cell']['recurrent_kernel:0'][()])
                 else:
                     rec_weight = None
-            layer_node.layer.setParameters('weight', (id + '_W', weight))
-            layer_node.layer.setParameters('bias', (id + '_b', bias))
-            layer_node.layer.setParameters('weight_rec', (id + '_Wrec', rec_weight))
-            print(layer_node.layer.getParameters())
+                layer.setParameters('weight', (id + '_W', weight))
+                layer.setParameters('bias', (id + '_b', bias))
+                layer.setParameters('weight_rec', (id + '_Wrec', rec_weight))
 
-        for layer_node in self.nn.iterate():
-            print(layer_node.layer.identifier)
-            print(layer_node.layer.getParameters())
         # NOTE(sarahaguasvivas): calculating output shapes
         input_shape = self.nn_input_size
-        for layer in self.nn.layer_list:
+        for layer in self.nn.iterate_layer_list():
             if "input" not in layer.identifier:
                 input_shape = layer.computeOutShape(input_shape)
+                print(layer.getParameters())
 
     #parses model for input size
     def parse_nn_input(self, model_config : dict):

@@ -79,3 +79,7 @@ class NeuralNetwork:
                     edge.visited = True
                     q.put(edge)
             yield node #Returns a node
+
+    def iterate_layer_list(self):
+        for layer in self.layer_list:
+            yield layer

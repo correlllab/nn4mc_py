@@ -21,9 +21,9 @@ void buildLayers(){
 
     
 gru = build_layer_gru(
-                          &dense_W[0],
-                          &dense_Wrec[0],
-                          &dense_b[0],
+                          &gru_W[0],
+                          &gru_Wrec[0],
+                          &gru_b[0],
                           0x08,
                           0x07,
                           1,

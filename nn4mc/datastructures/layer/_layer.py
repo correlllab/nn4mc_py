@@ -7,15 +7,17 @@ class Layer(ABC):
     #Input and output data shapes: None if not unspecified
     input_shape = None
     output_shape = None
-    params = {
-        'w':Weight(None, None), 
-        'b':Weight(None, None), 
-        'w_rec':Weight(None, None)
-    }
+
 
     def __init__(self, id, type=None):
         self.identifier = id #Unique ID
         self.layer_type = type #Layer type (i.e conv1d)
+
+        self.params = {
+            'w': Weight(None, None),
+            'b': Weight(None, None),
+            'w_rec': Weight(None, None)
+        }
 
     # add weight and bias parameters
     # takes tuple of (id, values) for weights and biases
@@ -134,7 +136,6 @@ class Dense(Layer):
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = [self.units]
-
         return self.output_shape
 
 class MaxPooling1D(Layer):
@@ -146,7 +147,6 @@ class MaxPooling1D(Layer):
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = input_shape
-
         return self.output_shape
 
 class MaxPooling2D(Layer):
@@ -162,8 +162,8 @@ class MaxPooling2D(Layer):
         return input_shape
 
 ################################################################################
-#TODO: Check on all fwd and init generators, they arent finished in nn4mc std
-#TODO: Check on all parameters
+#TODO(RS-Coop): Check on all fwd and init generators, they arent finished in nn4mc std
+#TODO(RS-Coop): Check on all parameters
 
 class SimpleRNN(Layer):
     units = 0
@@ -190,6 +190,7 @@ class GRU(Layer):
         self.input_shape = input_shape
         self.output_shape = [self.units]
         return self.output_shape
+
 
 class LSTM(Layer):
     units = 0

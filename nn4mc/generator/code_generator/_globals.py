@@ -25,7 +25,10 @@ layer_type_lookup = {
     "lstm" : "LSTM",
     "simplernn" : "simpleRNN",
     "activation" : "Activation",
-    "dropout" : "Dropout"
+    "dropout" : "Dropout",
+    "flatten" : "Flatten",
+    "input" : "Input",
+    "inputlayer" : "InputLayer",
 }
 
 class G():
