@@ -15,6 +15,19 @@ activation_lookup = {
     "custom" : "0xC"
 }
 
+layer_type_lookup = {
+    "dense" : "Dense",
+    "gru" : "GRU",
+    "conv1d" : "Conv1D",
+    "conv2d" : "Conv2D",
+    "maxpooling1d" : "MaxPooling1D",
+    "maxpooling2d" : "MaxPooling2D",
+    "lstm" : "LSTM",
+    "simplernn" : "simpleRNN",
+    "activation" : "Activation",
+    "dropout" : "Dropout"
+}
+
 class G():
 
     #Template files

@@ -9,11 +9,13 @@
 */
 #include "nn4mc.h"
 #include <stdlib.h>
-<%INCLUDE>
+#include gru.h
+#include dense.h
 
-gru gru;
-dense dense;
-<%STRUCTS>
+
+struct GRU gru;
+struct Dense dense;
+
 
 void buildLayers(){
 

@@ -1,5 +1,5 @@
 from nn4mc.datastructures import NeuralNetwork
-from ._globals import G, activation_lookup
+from ._globals import G, layer_type_lookup
 import numpy as np
 import os, json
 
@@ -135,15 +135,7 @@ class Generator():
         with open(self.templates_path + file + '.template', 'r') as header:
             contents = header.read()
             contents = self.replaceDelimiters(contents)
-
-            include_string = ''
-            #Might need to be edited
-            for layer_type in layers:
-                include_string = include_string + '#include ' +\
-                                layer_type + '.h\n'
-
-            contents = contents.replace(G.NN_INCLUDE_DELIMITER, include_string)
-
+            #contents.replace(G.NN_INCLUDE_DELIMITER, include_string)
             self.header_files[file] = contents
 
         #Scrape nn4mc main source file
@@ -151,9 +143,13 @@ class Generator():
         with open(self.templates_path + file + '.template', 'r') as source:
             contents = source.read()
             contents = self.replaceDelimiters(contents)
-
+            include_string = ''
+            # Might need to be edited
+            for layer_type in layers:
+                include_string = include_string + '#include ' + \
+                                 layer_type + '.h\n'
+            contents.replace(G.NN_INCLUDE_DELIMITER, include_string)
             self.source_files[file] = contents
-
     # Iterates through graph to extract all metadata and
     # weight data and place in appropriate templates to
     # be dumped.
@@ -164,7 +160,22 @@ class Generator():
         param_template = self.header_files[G.PARAMETERS_HEADER]
         nn_header = self.header_files[G.NEURAL_NETWORK_HEADER]
         nn_source = self.source_files[G.NEURAL_NETWORK_SOURCE]
-
+        layers = []
+        activations = []
+        for node in self.nn.iterate():
+            type = node.layer.layer_type
+            if type != 'input' and type != 'inputlayer' and type != 'flatten':
+                if hasattr('node.layer', 'activation'):
+                    activation = node.layer.activation
+                    if activation != '' and activation not in activations and activation != 'linear':
+                        activations.append(activation)
+                if type not in layers:
+                    layers.append(type)
+        include_string = ''
+        # Might need to be edited
+        for layer_type in layers:
+            include_string = include_string + '#include ' + \
+                             layer_type + '.h\n'
         for node in self.nn.iterate():
             if node.layer.layer_type != 'input' and \
                     node.layer.layer_type != 'flatten' and \
@@ -182,9 +193,10 @@ class Generator():
                 #HEADER: Add the structs
                 pos = nn_source.find(G.NN_STRUCT_DELIMITER)
                 nn_source = nn_source.replace(G.NN_STRUCT_DELIMITER,
-                    #'struct ' + node.layer.layer_type + ' ' + node.layer.identifier +\
-                    node.layer.layer_type + ' ' + node.layer.identifier + \
+                    "struct " + layer_type_lookup[node.layer.layer_type] + ' ' + node.layer.identifier + \
                     ';\n' + G.NN_STRUCT_DELIMITER)
+                nn_source = nn_source.replace(G.NN_INCLUDE_DELIMITER,
+                                             include_string)
 
                 #SOURCE: Add the init and fwd calls
                 pos = nn_source.find(G.NN_INIT_DELIMITER)
@@ -203,7 +215,7 @@ class Generator():
         #Remove delimiters
         param_template = param_template.replace(
         G.W_WEIGHT_DELIMITER, '')
-        nn_header = nn_header.replace(G.NN_STRUCT_DELIMITER, '')
+        nn_source = nn_source.replace(G.NN_STRUCT_DELIMITER, '')
         nn_source = nn_source.replace(G.NN_INIT_DELIMITER, '')
         nn_source = nn_source.replace(G.NN_FWD_DELIMITER, '')
 
