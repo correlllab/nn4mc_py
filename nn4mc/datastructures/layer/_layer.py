@@ -5,14 +5,11 @@ from ._globals import G
 #Parent class for all available layer types
 class Layer(ABC):
     #Input and output data shapes: None if not unspecified
-    input_shape = None
-    output_shape = None
-
-
     def __init__(self, id, type=None):
         self.identifier = id #Unique ID
         self.layer_type = type #Layer type (i.e conv1d)
-
+        self.input_shape = None
+        self.output_shape = None
         self.params = {
             'w': Weight(None, None),
             'b': Weight(None, None),
@@ -88,14 +85,16 @@ class Layer(ABC):
 #Derived classes (i.e specific layer types)
 
 class Conv1D(Layer):
-    filters = 0
-    kernel_shape = []
-    strides = []
-    dilation_rate = []
-    padding = ''
-    data_format = ''
-    activation = ''
-    use_bias = True
+    def __init__(self, id, layer_type):
+        self.filters = 0
+        self.kernel_shape = []
+        self.strides = []
+        self.dilation_rate = []
+        self.padding = ''
+        self.data_format = ''
+        self.activation = ''
+        self.use_bias = True
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape = None):
         self.input_shape = input_shape
@@ -108,14 +107,16 @@ class Conv1D(Layer):
         return output_shape
 
 class Conv2D(Layer):
-    filters = 0
-    kernel_shape = []
-    strides = []
-    dilation_rate = []
-    padding = ''
-    data_format = ''
-    activation = ''
-    use_bias = True
+    def __init__(self, id, layer_type):
+        self.filters = 0
+        self.kernel_shape = []
+        self.strides = []
+        self.dilation_rate = []
+        self.padding = ''
+        self.data_format = ''
+        self.activation = ''
+        self.use_bias = True
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -129,9 +130,11 @@ class Conv2D(Layer):
         return output_shape
 
 class Dense(Layer):
-    units = 0
-    activation = ''
-    use_bias = True
+    def __init__(self, id, layer_type):
+        self.units = 0
+        self.activation = ''
+        self.use_bias = True
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -139,10 +142,12 @@ class Dense(Layer):
         return self.output_shape
 
 class MaxPooling1D(Layer):
-    pool_shape = []
-    strides = []
-    padding = ''
-    data_format = ''
+    def __init__(self, id, layer_type):
+        self.pool_shape = []
+        self.strides = []
+        self.padding = ''
+        self.data_format = ''
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -150,10 +155,12 @@ class MaxPooling1D(Layer):
         return self.output_shape
 
 class MaxPooling2D(Layer):
-    pool_shape = []
-    strides = []
-    padding = ''
-    data_format = ''
+    def __init__(self, id, layer_type):
+        self.pool_shape = []
+        self.strides = []
+        self.padding = ''
+        self.data_format = ''
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -166,13 +173,15 @@ class MaxPooling2D(Layer):
 #TODO(RS-Coop): Check on all parameters
 
 class SimpleRNN(Layer):
-    units = 0
-    activation = ''
-    use_bias = True
-    return_sequences = False
-    return_state = False
-    go_backwards = False
-    stateful = False
+    def __init(self, id, layer_type):
+        self.units = 0
+        self.activation = ''
+        self.use_bias = True
+        self.return_sequences = False
+        self.return_state = False
+        self.go_backwards = False
+        self.stateful = False
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -181,10 +190,12 @@ class SimpleRNN(Layer):
         return self.output_shape
 
 class GRU(Layer):
-    units = 0
-    activation = ''
-    recurrent_activation = ''
-    use_bias = True
+    def __init__(self, id, layer_type):
+        self.units = 0
+        self.activation = ''
+        self.recurrent_activation = ''
+        self.use_bias = True
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -193,16 +204,18 @@ class GRU(Layer):
 
 
 class LSTM(Layer):
-    units = 0
-    dropout = 0.0
-    implementation = 0
-    recurrent_dropout = 0.0
-    activation = ''
-    recurrent_activation = ''
-    use_bias = True
-    go_backwards = False
-    stateful = False
-    unroll = False
+    def __init__(self, id, layer_type):
+        self.units = 0
+        self.dropout = 0.0
+        self.implementation = 0
+        self.recurrent_dropout = 0.0
+        self.activation = ''
+        self.recurrent_activation = ''
+        self.use_bias = True
+        self.go_backwards = False
+        self.stateful = False
+        self.unroll = False
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
@@ -213,14 +226,15 @@ class LSTM(Layer):
 ################################################################################
 #TODO: Check the implementation of this in code generator
 class Activation(Layer):
-    activation = ''
+    def __init__(self, id, layer_type):
+        self.activation = ''
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         pass
 
 #NOTE: No template or anything for this as everything is already flattened
 class Flatten(Layer):
-
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         temp = 1.0
@@ -230,7 +244,6 @@ class Flatten(Layer):
         return temp
 
 class Dropout(Layer):
-
     def computeOutShape(self, input_shape):
         self.input_shape = input_shape
         self.output_shape = input_shape
@@ -238,7 +251,9 @@ class Dropout(Layer):
 
 #NOTE: This is really just useful in the graph to find starting point
 class Input(Layer):
-    size = 0
+    def __init__(self, id, layer_type):
+        self.size = 0
+        super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
         return input_shape
