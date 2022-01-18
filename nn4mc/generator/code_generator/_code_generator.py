@@ -164,7 +164,7 @@ class Generator():
         activations = []
         for node in self.nn.iterate():
             type = node.layer.layer_type
-            if type != 'input' and type != 'inputlayer' and type != 'flatten':
+            if 'input' not in type and 'inputlayer' not in type and 'flatten' not in type:
                 if hasattr('node.layer', 'activation'):
                     activation = node.layer.activation
                     if activation != '' and activation not in activations and activation != 'linear':
@@ -177,13 +177,14 @@ class Generator():
             include_string = include_string + '#include ' + \
                              layer_type + '.h\n'
         for node in self.nn.iterate():
-            if node.layer.layer_type != 'input' and \
-                    node.layer.layer_type != 'flatten' and \
-                    node.layer.layer_type != 'inputlayer':
+            if 'input' not in node.layer.layer_type and \
+                    'flatten' not in node.layer.layer_type and \
+                    'inputlayer' not in node.layer.layer_type:
                 param_string = node.layer.getParameters()
                 init_string = node.layer.generateCall(self.init_strings[node.layer.layer_type])
                 fwd_string = node.layer.generateCall(self.fwd_strings[node.layer.layer_type])
-                act_string = node.layer.generateAct()
+                if hasattr(node.layer, 'activation'):
+                    act_string = node.layer.generateAct()
 
                 #Deal with weights and bias stuff
                 param_template = param_template.replace(

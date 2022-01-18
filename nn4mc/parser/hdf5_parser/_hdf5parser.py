@@ -85,7 +85,8 @@ class HDF5Parser(Parser):
         #                       therefore, using different list
         for layer in self.nn.iterate_layer_list():
             id = layer.identifier
-            if layer.identifier in weightGroup.keys():
+            if id in weightGroup.keys() and 'max_pooling1d' not in id \
+                    and 'max_pooling2d' not in id and 'flatten' not in id:
                 # NOTE(sarahaguasvivas): kernel/weight assigment
                 if 'gru_cell' in weightGroup[id][id].keys():
                     weight = np.array(weightGroup[id][id]['gru_cell']['kernel:0'])

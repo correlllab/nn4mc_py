@@ -137,7 +137,7 @@ class Dense(Layer):
         super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
-        self.input_shape = input_shape
+        self.input_shape = [input_shape]
         self.output_shape = [self.units]
         return self.output_shape
 
