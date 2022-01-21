@@ -134,10 +134,11 @@ class Dense(Layer):
         self.units = 0
         self.activation = ''
         self.use_bias = True
+        self.input_shape = 0
         super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
-        self.input_shape = [input_shape]
+        self.input_shape = input_shape
         self.output_shape = [self.units]
         return self.output_shape
 

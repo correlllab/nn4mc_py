@@ -153,7 +153,7 @@ float * softmax(float * input, int m)
   return input;
 }
 
-float activate(float input, int output_shape, char type)
+float* activate(float* input, int output_shape, char type)
 {
   if (type == 0x00)
     return softmax(input, output_shape);

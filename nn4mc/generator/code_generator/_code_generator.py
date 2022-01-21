@@ -70,7 +70,6 @@ class Generator():
             with open(self.templates_path + file + '.template', 'r') as header:
                 contents = header.read()
                 contents = self.replaceDelimiters(contents)
-
                 self.header_files[file] = contents
 
             #Replace delimiters and add to layer_templates
@@ -79,7 +78,6 @@ class Generator():
                 contents = source.read()
                 strings = self.extractStrings(contents)
                 contents = self.replaceDelimiters(contents)
-
                 self.source_files[file] = contents
                 self.init_strings[layer_type] = strings[0]
                 self.fwd_strings[layer_type] = strings[1]
@@ -174,8 +172,8 @@ class Generator():
         include_string = ''
         # Might need to be edited
         for layer_type in layers:
-            include_string = include_string + '#include ' + \
-                             layer_type + '.h\n'
+            include_string = include_string + '#include "' + \
+                             layer_type + '.h"\n'
         for node in self.nn.iterate():
             if 'input' not in node.layer.layer_type and \
                     'flatten' not in node.layer.layer_type and \
@@ -268,7 +266,6 @@ class Generator():
         #I think there might be more to this than I am thinking
         contents = contents.replace(G.LAYER_DATATYPE_DELIMITER, self.LAYER_OUTPUT_DATATYPE)
         contents = contents.replace(G.ACTIVATION_DATATYPE_DELIMITER, self.ACTIVATION_DATATYPE)
-
         return contents
 
     #Looks for initialization and forward strings and extracts them
@@ -291,5 +288,4 @@ class Generator():
             start += len(G.START_FWD)
 
             fwd_string = contents[start:end]
-
         return (init_string, fwd_string)

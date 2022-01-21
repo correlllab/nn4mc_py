@@ -126,7 +126,7 @@ struct GRU build_layer_gru(
                           <%ACTIVATION>,
                           <%INPUT_SHAPE_0>,
                           <%INPUT_SHAPE_1>,
-                          <%OUTPUT_SHAPE>,
+                          <%OUTPUT_SHAPE>
 );
 <%END_INITIALIZE_TEMPLATE>
 
