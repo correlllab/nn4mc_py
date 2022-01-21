@@ -208,10 +208,10 @@ class Generator():
                 nn_source = nn_source.replace(G.NN_FWD_DELIMITER,
                     fwd_string + G.NN_FWD_DELIMITER)
 
-                #Add the activation funcion
-                pos = nn_source.find(G.NN_FWD_DELIMITER)
-                nn_source = nn_source.replace(G.NN_FWD_DELIMITER,
-                    act_string + G.NN_FWD_DELIMITER)
+                ##Add the activation funcion
+                #pos = nn_source.find(G.NN_FWD_DELIMITER)
+                #nn_source = nn_source.replace(G.NN_FWD_DELIMITER,
+                #    act_string + G.NN_FWD_DELIMITER)
 
         #Remove delimiters
         param_template = param_template.replace(
