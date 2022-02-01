@@ -54,7 +54,8 @@ class Layer(ABC):
             meta = temp_string[start+len(G.start_delim):end]
             if meta in G.delim_map.keys():
                 try:
-                    val = eval(G.delim_map[meta])
+                    if meta in G.delim_map.keys():
+                        val = eval(G.delim_map[meta])
                 except:
                     print(temp_string)
                     quit()
@@ -134,11 +135,11 @@ class Dense(Layer):
         self.units = 0
         self.activation = ''
         self.use_bias = True
-        self.input_shape = 0
+        self.input_shape = [0]
         super().__init__(id, layer_type)
 
     def computeOutShape(self, input_shape):
-        self.input_shape = input_shape
+        self.input_shape = [input_shape]
         self.output_shape = [self.units]
         return self.output_shape
 

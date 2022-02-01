@@ -10,7 +10,7 @@ class TestTranslator(unittest.TestCase):
         pass
 
     def test_file(self):
-        p = nnPr.HDF5Parser('../data/forward_kinematics_jan_10_2022.hdf5')
+        p = nnPr.HDF5Parser('../data/jan_12_2022_segil_force_region.hdf5')
 
         p.parse()
 
