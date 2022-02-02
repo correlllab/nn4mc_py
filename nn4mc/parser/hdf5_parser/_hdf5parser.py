@@ -89,18 +89,19 @@ class HDF5Parser(Parser):
                     and 'max_pooling2d' not in id and 'flatten' not in id and \
                     'input' not in id:
                 # NOTE(sarahaguasvivas): kernel/weight assigment
-                if 'gru_cell' in weightGroup[id][id].keys():
-                    weight = np.array(weightGroup[id][id]['gru_cell']['kernel:0'])
+                gru_keys = [k for k, v in weightGroup[id][id].items() if 'gru_cell' in k]
+                if len(gru_keys) > 0:
+                    weight = np.array(weightGroup[id][id][gru_keys[0]]['kernel:0'])
                 else:
                     weight = np.array(weightGroup[id][id]['kernel:0'][()])
                 # NOTE(sarahaguasvivas): bias
-                if 'gru_cell' in weightGroup[id][id].keys():
-                    bias = np.array(weightGroup[id][id]['gru_cell']['bias:0'])
+                if len(gru_keys) > 0:
+                    bias = np.array(weightGroup[id][id][gru_keys[0]]['bias:0'])
                 else:
                     bias = np.array(weightGroup[id][id]['bias:0'][()])
                 # NOTE(sarahaguasvivas): recurrent weights
-                if 'gru_cell' in weightGroup[id][id].keys():
-                    rec_weight = np.array(weightGroup[id][id]['gru_cell']['recurrent_kernel:0'][()])
+                if len(gru_keys) > 0:
+                    rec_weight = np.array(weightGroup[id][id][gru_keys[0]]['recurrent_kernel:0'][()])
                 else:
                     rec_weight = None
                 layer.setParameters('weight', (id + '_W', weight))

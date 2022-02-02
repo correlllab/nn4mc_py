@@ -4,7 +4,7 @@ with open('README.md', 'r') as ld:
     long_description = ld.read()
 
 setup(name='nn4mc',
-        version='0.2.9a',
+        version='0.2.9d',
         description='Neural Networks for Microcontrollers (nn4mc) is a Python package '
         'for generating microcontroller code in c from pre-trained models. Our intended '
         'audience is roboticists looking to embed intelligence into their applications; '
