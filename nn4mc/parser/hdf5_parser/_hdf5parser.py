@@ -20,6 +20,7 @@ class HDF5Parser(Parser):
                     'SimpleRNN' : 'SimpleRNNBuilder()',
                     'GRU' : 'GRUBuilder()',
                     'LSTM' : 'LSTMBuilder()',
+
                     'Input' : 'InputBuilder()',
                     'InputLayer': 'InputBuilder()',
                     'Activation' : 'ActivationBuilder()'}
