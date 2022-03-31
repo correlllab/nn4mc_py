@@ -3,7 +3,10 @@ from nn4mc.datastructures import NeuralNetwork
 from ._layerbuilder import *
 import h5py
 import numpy as np
+import keras
 from nn4mc.parser.hdf5_parser.helpers import bytesToJSON
+import distutils.spawn
+import os
 
 # This class deals with parsing an HDF5 file from a keras neural network model.
 # It will scrape the file and generate a NeuralNetwork object
@@ -47,11 +50,26 @@ class HDF5Parser(Parser):
         #Close the file
         h5file.close()
 
+    def onnx_parse(self, h5file):
+        # Parse model configuration (i.e metadata)
+        self.parseModelConfig(h5file)
+
+        # Parse weights and biases
+        self.parseWeights(h5file)
+
+        # Close the file
+        h5file.close()
+
     #Parses all of the layer metadata
     #NOTE:
     def parseModelConfig(self, h5file):
+
         # with h5py.File(self.file_name, 'r') as h5file: #Open hdf5 file
-        configAttr = h5file['/'].attrs['model_config'] #Gets all metadata
+        if not isinstance(h5file, keras.engine.functional.Functional):
+            configAttr = h5file['/'].attrs['model_config'] #Gets all metadata
+        else:
+            configAttr = h5file.to_json()
+
         configJSON = bytesToJSON(configAttr)
 
         self.parse_nn_input(configJSON['config'])
@@ -81,9 +99,36 @@ class HDF5Parser(Parser):
     #Parses all of the weights
     #NOTE:
     def parseWeights(self, h5file):
-        weightGroup = h5file['model_weights'] #Open weight group
-        # NOTE(sarahaguasvivas) here, the order matters,
-        #                       therefore, using different list
+        if not isinstance(h5file, keras.engine.functional.Functional):
+            weightGroup = h5file['model_weights'] #Open weight group
+            # NOTE(sarahaguasvivas) here, the order matters,
+            #                       therefore, using different list
+        else:
+            h5file.save_weights('weights.h5', overwrite = True,
+                                        save_format = 'h5')
+            # TODO(sarahaguasvivas): find where the dictionary is
+            # when you read from h5py.File and assign it to
+            # weightGroup,
+
+            """
+                NOTE(sarahaguasvivas): What you want at this point is
+                for weightGroup to be a serialized dictionary with keys 
+                being the names of the layers and values being a tuple
+                of weights and biases. For example, 
+                
+                weightGroup = {'layer_name_0' : (weights_0, biases_0), 
+                               'layer_name_1' : (weights_1, biases_1 ...
+                               }
+                You can either: 
+                    1) Try to get it directly from the h5py object that we're 
+                    reading --> Running the debug session and digging into the 
+                        weightGroup object on the debugger
+                    2) Serialize it yourself, but make sure it generalizes 
+                    to any model --> digging into model configuration and 
+                        h5file.get_weights() to map the layer names to the
+                        right weights and biases
+            """
+            weightGroup = h5py.File('weights.h5', 'r')
         for layer in self.nn.iterate_layer_list():
             id = layer.identifier
             if id in weightGroup.keys() and 'max_pooling1d' not in id \
