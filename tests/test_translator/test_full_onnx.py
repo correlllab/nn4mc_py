@@ -14,14 +14,14 @@ class TestTranslator(unittest.TestCase):
 
         p.parse()
 
-        # path = os.path.dirname(os.path.abspath(__file__))
-        # if (not os.path.exists(os.path.join(path, 'output'))):
-        #     os.makedirs(os.path.join(path, 'output'))
-        # path2 = os.path.join(path, 'output')
-        #
-        # generator = nnGn.Generator(p.nn)
-        #
-        # generator.generate(path2)
+        path = os.path.dirname(os.path.abspath(__file__))
+        if (not os.path.exists(os.path.join(path, 'output'))):
+            os.makedirs(os.path.join(path, 'output'))
+        path2 = os.path.join(path, 'output')
+
+        generator = nnGn.Generator(p.nn)
+
+        generator.generate(path2)
 
 if __name__=='__main__':
     unittest.main()
