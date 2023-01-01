@@ -128,6 +128,7 @@ class ActivationBuilder(LayerBuilder):
 
         return new_layer
 
+
 class FlattenBuilder(LayerBuilder):
     def build_layer(self, json_obj, id, layer_type):
         new_layer = Flatten(id, layer_type)
